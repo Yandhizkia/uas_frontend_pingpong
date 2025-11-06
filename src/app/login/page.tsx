@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Container, Form, Button, Alert, Card } from "react-bootstrap";
+import { Container, Form, Button, Alert } from "react-bootstrap";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,81 +20,54 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#1a1d29", // tema dark konsisten
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "2rem",
-        color: "white",
-      }}
-    >
-      <Card
-        style={{
-          backgroundColor: "#2c2f4a", // shade sedikit lebih terang dari background
-          borderRadius: "12px",
-          padding: "2rem",
-          width: "100%",
-          maxWidth: "400px",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
-        }}
-      >
-        <h2
-          className="mb-4 text-center"
-          style={{ color: "#f1c76e", fontWeight: 600 }}
-        >
-          Login ke PingPhonk
-        </h2>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formEmail">
-  <Form.Label style={{ color: 'white' }}>Email address</Form.Label>
-  <Form.Control
-    type="email"
-    placeholder="Masukkan email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    autoFocus
-    required
-    className="custom-input"
-  />
-</Form.Group>
+    <div className="register-container">
+      <Container>
+        <div className="register-box mx-auto">
+          <h2>Login</h2>
+          {error && (
+            <Alert variant="danger" className="mb-3" style={{ 
+              backgroundColor: '#dc3545', 
+              border: 'none',
+              color: 'white',
+              borderRadius: '0.7rem'
+            }}>
+              {error}
+            </Alert>
+          )}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="formEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Masukkan email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoFocus
+                required
+              />
+            </Form.Group>
 
-<Form.Group className="mb-3" controlId="formPassword">
-  <Form.Label style={{ color: 'white' }}>Password</Form.Label>
-  <Form.Control
-    type="password"
-    placeholder="Masukkan password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    required
-    className="custom-input"
-  />
-</Form.Group>
+            <Form.Group className="mb-3" controlId="formPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Masukkan password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Form.Group>
 
+            <Button variant="primary" type="submit" className="w-100">
+              Login
+            </Button>
+          </Form>
 
-          <Button
-            variant="warning"
-            type="submit"
-            className="w-100"
-            style={{
-              color: "#1a1d29",
-              fontWeight: "600",
-              borderRadius: "0.5rem",
-            }}
-          >
-            Login
-          </Button>
-        </Form>
-        <div className="mt-3 text-center" style={{ color: "#ccc" }}>
-          Belum punya akun?{" "}
-          <a href="/register" style={{ color: "#f1c76e", fontWeight: 600 }}>
-            Daftar di sini
-          </a>
+          <div className="register-link">
+            Belum punya akun? <Link href="/register">Daftar di sini</Link>
+          </div>
         </div>
-      </Card>
+      </Container>
     </div>
   );
 }

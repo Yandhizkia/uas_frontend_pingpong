@@ -14,7 +14,6 @@ body {
   padding: 0;
 }
 
-/* Navigation */
 .navbar-custom {
   background-color: rgba(45, 55, 72, 0.95) !important;
   backdrop-filter: blur(10px);
@@ -31,7 +30,7 @@ body {
 }
 
 .btn-register {
-  background-color: var(--gray-600);
+  background-color: #b8a080;
   border: none;
   color: white;
   padding: 0.5rem 1.5rem;
@@ -41,7 +40,6 @@ body {
   background-color: var(--gray-700);
 }
 
-/* Hero Carousel */
 .hero-carousel {
   height: 100vh;
   margin-top: 56px;
@@ -99,7 +97,6 @@ body {
   margin: 0 4px !important;
 }
 
-/* Sections */
 .section-title {
   font-size: 2rem;
   font-weight: bold;
@@ -133,7 +130,6 @@ body {
   font-size: 0.875rem;
 }
 
-/* Feature Section */
 .feature-content h3 {
   font-size: 1.25rem;
   font-weight: 600;
@@ -157,7 +153,7 @@ body {
 }
 
 .btn-custom {
-  background-color: var(--gray-700);
+  background-color: #b8a080;
   border: none;
   color: white;
   padding: 0.5rem 1.5rem;
@@ -205,44 +201,6 @@ body {
   background-color: #4299e1;
 }
 
-/* Footer */
-footer {
-  background-color: var(--gray-800);
-  padding: 3rem 0;
-  margin-top: 4rem;
-}
-
-footer h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-footer h4 {
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
-
-footer ul {
-  list-style: none;
-  padding: 0;
-}
-
-footer ul li {
-  margin-bottom: 0.5rem;
-}
-
-footer a {
-  color: var(--gray-400);
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: color 0.3s;
-}
-
-footer a:hover {
-  color: #ffffff;
-}
-
 .social-icon {
   width: 32px;
   height: 32px;
@@ -263,9 +221,6 @@ footer a:hover {
   color: white;
 }
 
-/* About Page Styles */
-
-/* Hero Section with LTMU */
 .about-hero {
   padding: 2rem 0;
 }
@@ -306,7 +261,6 @@ footer a:hover {
   margin: 0;
 }
 
-/* Foto Cards */
 .foto-card {
   background-color: #f5f5f5;
   border-radius: 1.5rem;
@@ -339,7 +293,6 @@ footer a:hover {
   margin: 0;
 }
 
-/* Related Articles */
 .related-card {
   background-color: transparent;
   border: none;
@@ -369,7 +322,6 @@ footer a:hover {
   margin: 0;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .hero-text-overlay h1 {
     font-size: 2rem;
@@ -430,7 +382,6 @@ footer a:hover {
   box-shadow: 0 2px 12px 0 rgba(50, 50, 70, 0.09);
 }
 
-/* Related Products grid */
 .product-card {
   background: var(--gray-800) !important;
   border-radius: 1.2rem !important;
@@ -452,22 +403,20 @@ footer a:hover {
   font-size: 0.95em;
 }
 
-/* Button style buat event page */
 .btn-event-cta {
-  background-color: #f1c76e;
+  background-color: #b8a080;
   border: none;
-  color: var(--gray-800);
+  color: white;
   border-radius: 0.9rem;
   font-weight: 600;
   margin-top: 8px;
   box-shadow: 0 2px 10px 0 rgba(80, 80, 120, 0.09);
 }
 .btn-event-cta:hover {
-  background: #ffe299;
-  color: #232734;
+  background: var(--gray-600);
+  color: white;
 }
 
-/* Footer biar makin smooth & rounded */
 .footer-custom {
   background-color: var(--gray-800);
   color: #cbd5e0;
@@ -489,7 +438,6 @@ footer a:hover {
   color: #232734;
 }
 
-/* Responsive fix kalau mobile */
 @media (max-width: 768px) {
   .event-hero,
   .event-hero-image,
@@ -507,19 +455,15 @@ footer a:hover {
   }
 }
 
-/* CONTACT PAGE STYLE KHUSUS */
-
-/* Container dan grid spacing */
 .contact-container {
   background-color: var(--gray-800);
   border-radius: 2rem;
   padding: 48px 36px;
-  box-shadow: 0 8px 32px 0 rgba(60,60,75,0.17);
+  box-shadow: 0 8px 32px 0 rgba(60, 60, 75, 0.17);
   margin-top: 90px;
   margin-bottom: 36px;
 }
 
-/* Title Contact */
 .contact-title {
   font-size: 2.5rem;
   font-weight: bold;
@@ -527,11 +471,10 @@ footer a:hover {
   margin-bottom: 36px;
 }
 
-/* Contact Form */
 .contact-form-box {
   background: var(--dark-bg);
   border-radius: 1.2rem;
-  box-shadow: 0 8px 24px rgba(40,40,55,0.08);
+  box-shadow: 0 8px 24px rgba(40, 40, 55, 0.08);
   padding: 32px 28px;
 }
 
@@ -574,7 +517,7 @@ footer a:hover {
   border: none;
   border-radius: 0.7rem;
   margin-top: 3px;
-  box-shadow: 0 2px 10px rgba(80,80,120,0.12);
+  box-shadow: 0 2px 10px rgba(80, 80, 120, 0.12);
   transition: background 0.16s;
 }
 
@@ -584,11 +527,10 @@ footer a:hover {
   color: #231e16;
 }
 
-/* Maps Box */
 .maps-box {
   background: var(--gray-700);
   border-radius: 2rem;
-  box-shadow: 0 6px 24px 0 rgba(60,60,75,0.14);
+  box-shadow: 0 6px 24px 0 rgba(60, 60, 75, 0.14);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -601,11 +543,11 @@ footer a:hover {
   height: 340px;
   border: none;
   border-radius: 2rem;
-  filter: brightness(0.89) grayscale(0.05) contrast(1.04) drop-shadow(0 2px 9px rgba(45,45,55,0.11));
+  filter: brightness(0.89) grayscale(0.05) contrast(1.04)
+    drop-shadow(0 2px 9px rgba(45, 45, 55, 0.11));
   transition: filter 0.16s;
 }
 
-/* Card & Responsive Grid */
 @media (max-width: 1200px) {
   .contact-container {
     padding: 32px 6vw;
@@ -620,20 +562,20 @@ footer a:hover {
     border-radius: 1.1rem;
     padding: 18px 4vw;
   }
-  .maps-box, .maps-box iframe {
+  .maps-box,
+  .maps-box iframe {
     border-radius: 0.8rem;
     min-height: 240px;
     height: 240px;
   }
 }
 
-/* Footer disamakan kaya page lain */
 .footer-custom {
   background-color: var(--gray-800);
   color: #cbd5e0;
   border-radius: 2rem 2rem 0 0;
   margin-top: 48px;
-  box-shadow: 0 -6px 32px 0 rgba(40, 40, 55, .06);
+  box-shadow: 0 -6px 32px 0 rgba(40, 40, 55, 0.06);
   padding: 40px 0 30px 0;
 }
 .footer-custom .social-icon {
@@ -642,14 +584,13 @@ footer a:hover {
   border-radius: 12px;
   transition: background 0.17s, color 0.17s;
   font-size: 1.1em;
-  box-shadow: 0 1px 5px 0 rgba(120,100,40,0.06);
+  box-shadow: 0 1px 5px 0 rgba(120, 100, 40, 0.06);
 }
 .footer-custom .social-icon:hover {
   background-color: #ffe299;
   color: #2b2c40;
 }
 
-/* Col and form basic tweak */
 .contact-form .form-row {
   display: flex;
   gap: 18px;
@@ -659,3 +600,114 @@ footer a:hover {
   flex: 1;
 }
 
+
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--dark-bg);
+  padding: 2rem 0;
+}
+
+.register-box {
+  background: var(--gray-800);
+  border-radius: 2rem;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 8px 32px rgba(60, 60, 75, 0.17);
+  max-width: 480px;
+  width: 100%;
+  border: 1px solid rgba(113, 128, 150, 0.1);
+}
+
+.register-box h2 {
+  color: #d3d7e8;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+.register-box .form-label {
+  color: #b8bee6;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+}
+
+.register-box .form-control {
+  background-color: var(--gray-700);
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.18s;
+  color: white;
+  box-shadow: none;
+}
+
+.register-box .form-control::placeholder {
+  color: #a0aec0;
+}
+
+.register-box .form-control:focus {
+  background-color: var(--gray-600);
+  color: white;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(241, 199, 110, 0.16);
+}
+
+.register-box .btn-primary {
+  background: #b8a080;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.875rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  transition: all 0.16s;
+  box-shadow: 0 2px 10px rgba(80, 80, 120, 0.12);
+  color: white;
+}
+
+.register-box .btn-primary:hover {
+  background: #e5cfa7;
+  color: #231e16;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(80, 80, 120, 0.18);
+}
+
+.register-box .btn-primary:active {
+  transform: translateY(0);
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #cbd5e0;
+  font-size: 0.95rem;
+}
+
+.register-link a {
+  color: #f1c76e;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.register-link a:hover {
+  color: #ffe299;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .register-box {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+    border-radius: 1.2rem;
+  }
+
+  .register-box h2 {
+    font-size: 2rem;
+  }
+}

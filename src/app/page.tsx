@@ -18,7 +18,7 @@ export default function HomePage() {
     <div
       style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}
     >
-      {/* Navigation */}
+
       <Navbar expand="lg" className="navbar-custom fixed-top">
         <div className="navbar-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
@@ -48,7 +48,7 @@ export default function HomePage() {
         </Container>
       </Navbar>
 
-      {/* Hero Carousel */}
+
       <Carousel className="hero-carousel">
         <Carousel.Item>
           <img
@@ -73,7 +73,7 @@ export default function HomePage() {
         </Carousel.Item>
       </Carousel>
 
-      {/* Section 1 */}
+
       <Container className="py-5 mt-5">
         <h2 className="section-title">Section heading</h2>
         <Row className="g-4">
@@ -130,7 +130,6 @@ export default function HomePage() {
         </Row>
       </Container>
 
-      {/* Section 2 - Feature Section */}
       <Container className="py-5">
         <h2 className="section-title">Section heading</h2>
         <Row className="align-items-center g-4">
@@ -181,7 +180,7 @@ export default function HomePage() {
         </Row>
       </Container>
 
-      {/* Section 3 - Articles before Feedback */}
+
       <Container className="py-5">
         <h2 className="section-title">Section heading</h2>
         <Row className="g-4">
@@ -222,7 +221,7 @@ export default function HomePage() {
         </Row>
       </Container>
 
-      {/* Feedback Section */}
+
       <Container className="py-5">
         <h2 className="section-title">Feedback</h2>
         <Row className="g-4">

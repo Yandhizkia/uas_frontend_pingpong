@@ -17,7 +17,7 @@ export default function EventPage() {
     <div
       style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}
     >
-      {/* Navigation */}
+    
       <Navbar expand="lg" className="navbar-custom fixed-top">
         <div className="navbar-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
@@ -47,7 +47,7 @@ export default function EventPage() {
         </Container>
       </Navbar>
 
-      {/* Hero Section */}
+    
       <div className="event-hero" style={{ marginTop: "100px" }}>
         <Container>
           <div className="event-hero-content">
@@ -69,7 +69,7 @@ export default function EventPage() {
         </Container>
       </div>
 
-      {/* Related Products */}
+
       <Container className="my-5 py-5">
         <h2 className="section-title">Related products</h2>
         <Row className="g-4">
@@ -160,7 +160,7 @@ export default function EventPage() {
         </Row>
       </Container>
 
-      {/* Footer */}
+
       <footer className="footer-custom">
         <div className="footer-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>

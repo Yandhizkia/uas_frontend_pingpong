@@ -7,7 +7,7 @@ import Link from "next/link";
 const ContactPage = () => {
   return (
     <div style={{ backgroundColor: "var(--dark-bg)", color: "white", minHeight: "100vh" }}>
-      {/* Navbar */}
+
       <Navbar expand="lg" className="navbar-custom fixed-top">
         <Container style={{ position: "relative", zIndex: 2 }}>
           <Navbar.Brand href="/" style={{ fontWeight: 600 }}>
@@ -15,11 +15,7 @@ const ContactPage = () => {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-            <Nav>
-              <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="/about">About</Nav.Link>
-              <Nav.Link href="/event">Event</Nav.Link>
-                         <Nav>
+              <Nav>
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/about">About</Nav.Link>
               <Nav.Link href="/event">Event</Nav.Link>
@@ -30,15 +26,14 @@ const ContactPage = () => {
                 </Button>
               </Link>
             </Nav>
-            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      {/* Main Content */}
+    
       <Container style={{ paddingTop: "120px", paddingBottom: "80px" }}>
         <Row className="g-4">
-          {/* Contact Form */}
+    
           <Col lg={6} md={12}>
             <h3 className="mb-4">Contact Info</h3>
             <Form>
@@ -55,7 +50,7 @@ const ContactPage = () => {
             </Form>
           </Col>
 
-          {/* Google Map */}
+ 
           <Col lg={6} md={12}>
             <div style={{ borderRadius: "2rem", overflow: "hidden", boxShadow: "0 8px 32px rgba(60,60,75,0.18)" }}>
               <iframe
@@ -73,7 +68,7 @@ const ContactPage = () => {
         </Row>
       </Container>
 
-      {/* Footer */}
+
       <footer className="footer-custom">
         <Container>
           <Row>

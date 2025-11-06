@@ -17,7 +17,7 @@ export default function AboutPage() {
     <div
       style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}
     >
-      {/* Navigation */}
+
       <Navbar expand="lg" className="navbar-custom fixed-top">
         <div className="navbar-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
@@ -36,10 +36,6 @@ export default function AboutPage() {
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/about">About</Nav.Link>
               <Nav.Link href="/event">Event</Nav.Link>
-                          <Nav>
-              <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="/about">About</Nav.Link>
-              <Nav.Link href="/event">Event</Nav.Link>
               <Nav.Link href="/contact">Contact</Nav.Link>
               <Link href="/login" passHref legacyBehavior>
                 <Button className="btn-register ms-3" as="a">
@@ -47,12 +43,10 @@ export default function AboutPage() {
                 </Button>
               </Link>
             </Nav>
-            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      {/* Hero Section with LTMU */}
       <div className="about-hero" style={{ marginTop: "100px" }}>
         <Container>
           <div className="hero-content-about">
@@ -77,7 +71,7 @@ export default function AboutPage() {
         </Container>
       </div>
 
-      {/* Foto 1 - Image Left, Text Right */}
+
       <Container className="my-5">
         <div className="foto-card">
           <Row className="align-items-center g-0">
@@ -98,7 +92,7 @@ export default function AboutPage() {
         </div>
       </Container>
 
-      {/* Foto 2 - Text Left, Image Right */}
+
       <Container className="my-5">
         <div className="foto-card">
           <Row className="align-items-center g-0">
@@ -119,7 +113,7 @@ export default function AboutPage() {
         </div>
       </Container>
 
-      {/* Related Articles or Posts */}
+
       <Container className="my-5 py-5">
         <h2 className="section-title">Related articles or posts</h2>
         <Row className="g-4">
@@ -159,7 +153,7 @@ export default function AboutPage() {
         </Row>
       </Container>
 
-      {/* Footer */}
+
       <footer className="footer-custom">
         <div className="footer-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
