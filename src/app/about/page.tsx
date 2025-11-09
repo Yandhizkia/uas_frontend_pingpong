@@ -91,15 +91,22 @@ export default function AboutPage() {
           <Row className="align-items-center g-0">
             <Col md={6}>
               <img
-                src="/images/About/Ketua.jpeg"
+                src="/images/About/Ketua.jpg"
                 alt="Foto 1"
                 className="foto-image"
               />
             </Col>
             <Col md={6}>
               <div className="foto-text">
-                <h2>Foto 1</h2>
-                <p>Lorem ipsum</p>
+                <h2>Den Khennet Neilson</h2>
+                <p>Prodi: Teknik Arsitektur</p>
+                <p>Status: Ketua Umum</p>
+                <p>
+                  Tugas: bertanggung jawab penuh atas seluruh keberlangsungan
+                  organisasi dan pencapaian prestasi. Tugas utamanya meliputi
+                  menetapkan visi dan strategi, mengambil keputusan penting,
+                  mengawasi pelaksanaan program kerja dari semua divisi.
+                </p>
               </div>
             </Col>
           </Row>
@@ -111,13 +118,19 @@ export default function AboutPage() {
           <Row className="align-items-center g-0">
             <Col md={6}>
               <div className="foto-text">
-                <h2>Foto 2</h2>
-                <p>Lorem ipsum</p>
+                <h2>Rafael Amazia Laorence</h2>
+                <p>Prodi: Teknik Informatika</p>
+                <p>Status: Wakil Ketua</p>
+                <p>
+                  Tugas: menggantikan ketua ketika ketua tidak bisa hadir dalam
+                  kegiatan ukm dan membantu ketua mengkoordinasi divisi untuk
+                  menjalankan kegiatan ukm.
+                </p>
               </div>
             </Col>
             <Col md={6}>
               <img
-                src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=500&fit=crop"
+                src="/images/About/Wakil.jpg"
                 alt="Foto 2"
                 className="foto-image"
               />
