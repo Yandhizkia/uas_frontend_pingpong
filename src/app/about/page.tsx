@@ -11,21 +11,28 @@ import {
   Card,
 } from "react-bootstrap";
 import Link from "next/link";
+import { Facebook, Youtube, Twitter, Instagram } from "react-bootstrap-icons";
 
 export default function AboutPage() {
   return (
     <div
       style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}
     >
-
       <Navbar expand="lg" className="navbar-custom fixed-top">
         <div className="navbar-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
-          <Navbar.Brand
-            href="/"
-            style={{ fontSize: "1.25rem", fontWeight: 600 }}
-          >
-            PingPhonk
+          <Navbar.Brand href="/" style={{ fontWeight: 600 }}>
+            <img
+              src="/images/Logo/ltmu.jpg"
+              alt="LTMU Logo"
+              style={{
+                height: "40px",
+                width: "auto",
+                marginRight: "10px",
+                color: "white",
+              }}
+            />
+            <span style={{ color: "white" }}>LTMU</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse
@@ -51,33 +58,40 @@ export default function AboutPage() {
         <Container>
           <div className="hero-content-about">
             <img
-              src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&h=600&fit=crop"
+              src="/images/About/About.jpg"
               alt="LTMU Hero"
               className="hero-image-about"
+              style={{
+                maxWidth: "1500px",
+                maxHeight: "600px",
+                width: "100%",
+                height: "auto",
+                objectFit: "cover",
+                objectPosition: "center bottom",
+              }}
             />
             <div className="hero-text-overlay">
               <h1>LTMU</h1>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+                LTMU adalah singkatan dari Liga Tenis Meja Untar, yang merupakan
+                salah satu Unit Kegiatan Mahasiswa (UKM) di Universitas
+                Tarumanagara. UKM ini berfungsi sebagai wadah bagi mahasiswa
+                untuk mengembangkan minat dan bakat mereka dalam olahraga tenis
+                meja, mulai dari latihan rutin hingga berpartisipasi dalam
+                kompetisi antar universitas. UKM ini bertujuan untuk menumbuhkan
+                prestasi olahraga dan disiplin diri di kalangan mahasiswa.
               </p>
             </div>
           </div>
         </Container>
       </div>
 
-
       <Container className="my-5">
         <div className="foto-card">
           <Row className="align-items-center g-0">
             <Col md={6}>
               <img
-                src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&h=500&fit=crop"
+                src="/images/About/Ketua.jpeg"
                 alt="Foto 1"
                 className="foto-image"
               />
@@ -91,7 +105,6 @@ export default function AboutPage() {
           </Row>
         </div>
       </Container>
-
 
       <Container className="my-5">
         <div className="foto-card">
@@ -112,7 +125,6 @@ export default function AboutPage() {
           </Row>
         </div>
       </Container>
-
 
       <Container className="my-5 py-5">
         <h2 className="section-title">Related articles or posts</h2>
@@ -153,25 +165,48 @@ export default function AboutPage() {
         </Row>
       </Container>
 
-
       <footer className="footer-custom">
         <div className="footer-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
           <Row>
             <Col md={3} className="mb-4">
-              <h3>Pingfbank</h3>
-              <div>
-                <a href="#" className="social-icon">
-                  f
+              <h3>LTMU</h3>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "15px",
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                }}
+              >
+                <a
+                  className="nav-link"
+                  href="#"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Facebook size={24} color="#3b5998" />
                 </a>
-                <a href="#" className="social-icon">
-                  t
+                <a
+                  className="nav-link"
+                  href="#"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Youtube size={24} color="#FF0000" />
                 </a>
-                <a href="#" className="social-icon">
-                  in
+                <a
+                  className="nav-link"
+                  href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Twitter size={24} color="#1DA1F2" />
                 </a>
-                <a href="#" className="social-icon">
-                  yt
+                <a
+                  className="nav-link"
+                  href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Instagram size={24} color="#d620eaff" />
                 </a>
               </div>
             </Col>

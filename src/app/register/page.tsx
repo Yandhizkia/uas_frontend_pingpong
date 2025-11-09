@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import Link from "next/link";
@@ -35,49 +35,49 @@ export default function RegisterPage() {
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formUsername">
               <Form.Label>Username</Form.Label>
-              <Form.Control 
-                type="text" 
-                placeholder="Masukkan username" 
+              <Form.Control
+                type="text"
+                placeholder="Masukkan username"
                 name="username"
                 value={form.username}
                 onChange={handleChange}
-                required 
+                required
               />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formEmail">
               <Form.Label>Email address</Form.Label>
-              <Form.Control 
-                type="email" 
-                placeholder="Masukkan email" 
+              <Form.Control
+                type="email"
+                placeholder="Masukkan email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                required 
+                required
               />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                placeholder="Password" 
+              <Form.Control
+                type="password"
+                placeholder="Password"
                 name="password"
                 value={form.password}
                 onChange={handleChange}
-                required 
+                required
               />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formConfirmPassword">
               <Form.Label>Confirm Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                placeholder="Confirm Password" 
+              <Form.Control
+                type="password"
+                placeholder="Confirm Password"
                 name="confirmPassword"
                 value={form.confirmPassword}
                 onChange={handleChange}
-                required 
+                required
               />
             </Form.Group>
 
@@ -85,7 +85,7 @@ export default function RegisterPage() {
               Register
             </Button>
           </Form>
-          
+
           <div className="register-link">
             Sudah punya akun? <Link href="/login">Login di sini</Link>
           </div>

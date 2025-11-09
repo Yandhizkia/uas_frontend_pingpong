@@ -25,12 +25,16 @@ export default function LoginPage() {
         <div className="register-box mx-auto">
           <h2>Login</h2>
           {error && (
-            <Alert variant="danger" className="mb-3" style={{ 
-              backgroundColor: '#dc3545', 
-              border: 'none',
-              color: 'white',
-              borderRadius: '0.7rem'
-            }}>
+            <Alert
+              variant="danger"
+              className="mb-3"
+              style={{
+                backgroundColor: "#dc3545",
+                border: "none",
+                color: "white",
+                borderRadius: "0.7rem",
+              }}
+            >
               {error}
             </Alert>
           )}

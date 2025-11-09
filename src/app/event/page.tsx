@@ -11,21 +11,28 @@ import {
   Card,
 } from "react-bootstrap";
 import Link from "next/link";
+import { Facebook, Youtube, Twitter, Instagram } from "react-bootstrap-icons";
 
 export default function EventPage() {
   return (
     <div
       style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}
     >
-    
       <Navbar expand="lg" className="navbar-custom fixed-top">
         <div className="navbar-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
-          <Navbar.Brand
-            href="/"
-            style={{ fontSize: "1.25rem", fontWeight: 600 }}
-          >
-            PingPhonk
+          <Navbar.Brand href="/" style={{ fontWeight: 600 }}>
+            <img
+              src="/images/Logo/ltmu.jpg"
+              alt="LTMU Logo"
+              style={{
+                height: "40px",
+                width: "auto",
+                marginRight: "10px",
+                color: "white",
+              }}
+            />
+            <span style={{ color: "white" }}>LTMU</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse
@@ -47,12 +54,11 @@ export default function EventPage() {
         </Container>
       </Navbar>
 
-    
       <div className="event-hero" style={{ marginTop: "100px" }}>
         <Container>
           <div className="event-hero-content">
             <img
-              src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&h=600&fit=crop"
+              src="/images/Event/Event1.jpg"
               alt="Event Hero"
               className="event-hero-image"
             />
@@ -69,7 +75,6 @@ export default function EventPage() {
         </Container>
       </div>
 
-
       <Container className="my-5 py-5">
         <h2 className="section-title">Related products</h2>
         <Row className="g-4">
@@ -77,12 +82,18 @@ export default function EventPage() {
             <Card className="product-card">
               <Card.Img
                 variant="top"
-                src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&h=400&fit=crop"
+                src="/images/Event/Event2.jpg"
+                style={{
+                  width: "100%",
+                  height: "275px",
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                }}
               />
               <Card.Body>
-                <Card.Title className="product-title">Andrei</Card.Title>
+                <Card.Title className="product-title">Event 1</Card.Title>
                 <Card.Text className="product-desc">
-                  This will always be the product
+                  Keterangan event 1
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -91,12 +102,18 @@ export default function EventPage() {
             <Card className="product-card">
               <Card.Img
                 variant="top"
-                src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=400&fit=crop"
+                src="/images/Event/Event3.jpg"
+                style={{
+                  width: "100%",
+                  height: "275px",
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                }}
               />
               <Card.Body>
-                <Card.Title className="product-title">Product</Card.Title>
+                <Card.Title className="product-title">Event 2</Card.Title>
                 <Card.Text className="product-desc">
-                  This will always be the product
+                  Keterangan Event 2
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -105,12 +122,18 @@ export default function EventPage() {
             <Card className="product-card">
               <Card.Img
                 variant="top"
-                src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&h=400&fit=crop"
+                src="/images/Event/Event4.jpg"
+                style={{
+                  width: "100%",
+                  height: "275px",
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                }}
               />
               <Card.Body>
-                <Card.Title className="product-title">Product</Card.Title>
+                <Card.Title className="product-title">Event 3</Card.Title>
                 <Card.Text className="product-desc">
-                  This will always be the product
+                  Keterangan Event 3
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -119,12 +142,18 @@ export default function EventPage() {
             <Card className="product-card">
               <Card.Img
                 variant="top"
-                src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=400&fit=crop"
+                src="/images/Event/Event5.jpg"
+                style={{
+                  width: "100%",
+                  height: "275px",
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                }}
               />
               <Card.Body>
-                <Card.Title className="product-title">Product</Card.Title>
+                <Card.Title className="product-title">Event 4</Card.Title>
                 <Card.Text className="product-desc">
-                  This will always be the product
+                  Keterangan Event 4
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -133,12 +162,18 @@ export default function EventPage() {
             <Card className="product-card">
               <Card.Img
                 variant="top"
-                src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&h=400&fit=crop"
+                src="/images/Event/Event6.jpg"
+                style={{
+                  width: "100%",
+                  height: "275px",
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                }}
               />
               <Card.Body>
-                <Card.Title className="product-title">Product</Card.Title>
+                <Card.Title className="product-title">Event 5</Card.Title>
                 <Card.Text className="product-desc">
-                  This will always be the product
+                  Keterangan Event 5
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -147,12 +182,18 @@ export default function EventPage() {
             <Card className="product-card">
               <Card.Img
                 variant="top"
-                src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&h=400&fit=crop"
+                src="/images/Event/Event7.jpg"
+                style={{
+                  width: "100%",
+                  height: "275px",
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                }}
               />
               <Card.Body>
-                <Card.Title className="product-title">Product</Card.Title>
+                <Card.Title className="product-title">Event 6</Card.Title>
                 <Card.Text className="product-desc">
-                  This will always be the product
+                  Keterangan Event 6
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -160,25 +201,48 @@ export default function EventPage() {
         </Row>
       </Container>
 
-
       <footer className="footer-custom">
         <div className="footer-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
           <Row>
             <Col md={3} className="mb-4">
-              <h3>Pingfbank</h3>
-              <div>
-                <a href="#" className="social-icon">
-                  f
+              <h3>LTMU</h3>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "15px",
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                }}
+              >
+                <a
+                  className="nav-link"
+                  href="#"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Facebook size={24} color="#3b5998" />
                 </a>
-                <a href="#" className="social-icon">
-                  t
+                <a
+                  className="nav-link"
+                  href="#"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Youtube size={24} color="#FF0000" />
                 </a>
-                <a href="#" className="social-icon">
-                  in
+                <a
+                  className="nav-link"
+                  href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Twitter size={24} color="#1DA1F2" />
                 </a>
-                <a href="#" className="social-icon">
-                  yt
+                <a
+                  className="nav-link"
+                  href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Instagram size={24} color="#d620eaff" />
                 </a>
               </div>
             </Col>
