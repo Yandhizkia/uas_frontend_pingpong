@@ -43,7 +43,7 @@ export default function EventPage() {
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/about">About</Nav.Link>
               <Nav.Link href="/event">Event</Nav.Link>
-              <Nav.Link href="/contact">Contact</Nav.Link>
+              <Nav.Link href="/contact">Feedback</Nav.Link>
               <Link href="/login" passHref legacyBehavior>
                 <Button className="btn-register ms-3" as="a">
                   Login
@@ -65,10 +65,11 @@ export default function EventPage() {
             <div className="event-hero-overlay">
               <div className="event-text-box">
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed do
-                  eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  LTMU (Liga Tenis Meja Untar) adalah UKM di Universitas
+                  Tarumanagara yang mewadahi mahasiswa untuk mengembangkan minat
+                  dan bakat dalam tenis meja melalui latihan rutin dan
+                  kompetisi, serta menumbuhkan prestasi dan disiplin diri.
                 </p>
-                <Button className="btn-event-cta">Button</Button>
               </div>
             </div>
           </div>
@@ -76,7 +77,7 @@ export default function EventPage() {
       </div>
 
       <Container className="my-5 py-5">
-        <h2 className="section-title">Related products</h2>
+        <h2 className="section-title">Next Event</h2>
         <Row className="g-4">
           <Col md={4}>
             <Card className="product-card">
@@ -247,41 +248,7 @@ export default function EventPage() {
               </div>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
-            </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
-            </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>Contact Us</h4>
               <ul>
                 <li>
                   <a href="#">Page</a>

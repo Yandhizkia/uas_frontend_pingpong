@@ -46,7 +46,7 @@ const ContactPage = () => {
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/about">About</Nav.Link>
               <Nav.Link href="/event">Event</Nav.Link>
-              <Nav.Link href="/contact">Contact</Nav.Link>
+              <Nav.Link href="/contact">Feedback</Nav.Link>
               <Link href="/login" passHref legacyBehavior>
                 <Button className="btn-register ms-3" as="a">
                   Login
@@ -60,7 +60,7 @@ const ContactPage = () => {
       <Container style={{ paddingTop: "120px", paddingBottom: "80px" }}>
         <Row className="g-4">
           <Col lg={6} md={12}>
-            <h3 className="mb-4">Contact Info</h3>
+            <h3 className="mb-4">Feedback</h3>
             <Form>
               <Form.Group className="mb-3" controlId="formName">
                 <Form.Control type="text" placeholder="Name" />

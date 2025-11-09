@@ -310,7 +310,6 @@ export default function HomePage() {
         </Row>
       </Container>
 
-      {/* Footer */}
       <footer className="footer-custom">
         <div className="footer-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
@@ -357,7 +356,7 @@ export default function HomePage() {
               </div>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>Contact Us</h4>
               <ul>
                 <li>
                   <a href="#">Page</a>
