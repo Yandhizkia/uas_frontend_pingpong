@@ -54,7 +54,9 @@ export default function EventPage() {
         </Container>
       </Navbar>
 
-      <div className="event-hero" style={{ marginTop: "100px" }}>
+<div className="event-hero"
+style={{ marginTop: "100px", marginBottom: "10px" }}
+>
         <Container>
           <div className="event-hero-content">
             <img
@@ -62,16 +64,6 @@ export default function EventPage() {
               alt="Event Hero"
               className="event-hero-image"
             />
-            <div className="event-hero-overlay">
-              <div className="event-text-box">
-                <p>
-                  LTMU (Liga Tenis Meja Untar) adalah UKM di Universitas
-                  Tarumanagara yang mewadahi mahasiswa untuk mengembangkan minat
-                  dan bakat dalam tenis meja melalui latihan rutin dan
-                  kompetisi, serta menumbuhkan prestasi dan disiplin diri.
-                </p>
-              </div>
-            </div>
           </div>
         </Container>
       </div>
@@ -248,19 +240,26 @@ export default function EventPage() {
               </div>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Contact Us</h4>
+              <h4>ApaKabar</h4>
               <ul>
                 <li>
-                  <a href="#">Page</a>
+                  <a href="#">0123456789</a>
                 </li>
+              </ul>
+            </Col>
+            <Col md={3} className="mb-4">
+              <h4>Garis</h4>
+              <ul>
                 <li>
-                  <a href="#">Page</a>
+                  <a href="#">Abibi88</a>
                 </li>
+              </ul>
+            </Col>
+            <Col md={3} className="mb-4">
+              <h4>TokTok</h4>
+              <ul>
                 <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
+                  <a href="#">AbiLTMU</a>
                 </li>
               </ul>
             </Col>

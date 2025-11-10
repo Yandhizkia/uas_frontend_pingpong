@@ -101,7 +101,8 @@ const ContactPage = () => {
       </Container>
 
       <footer className="footer-custom">
-        <Container>
+        <div className="footer-wave"></div>
+        <Container style={{ position: "relative", zIndex: 2 }}>
           <Row>
             <Col md={3} className="mb-4">
               <h3>LTMU</h3>
@@ -145,53 +146,26 @@ const ContactPage = () => {
               </div>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>ApaKabar</h4>
               <ul>
                 <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
+                  <a href="#">0123456789</a>
                 </li>
               </ul>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>Garis</h4>
               <ul>
                 <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
+                  <a href="#">Abibi88</a>
                 </li>
               </ul>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>TokTok</h4>
               <ul>
                 <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
+                  <a href="#">AbiLTMU</a>
                 </li>
               </ul>
             </Col>

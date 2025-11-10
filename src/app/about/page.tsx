@@ -94,6 +94,7 @@ export default function AboutPage() {
                 src="/images/About/Ketua.jpg"
                 alt="Foto 1"
                 className="foto-image"
+                style={{ maxWidth: '400px', height: 'auto' }}
               />
             </Col>
             <Col md={6}>
@@ -128,11 +129,12 @@ export default function AboutPage() {
                 </p>
               </div>
             </Col>
-            <Col md={6}>
+            <Col md={6} className="d-flex justify-content-end"> {/* Tambahkan d-flex dan justify-content-end di sini */}
               <img
                 src="/images/About/Wakil.jpg"
                 alt="Foto 2"
                 className="foto-image"
+                style={{ maxWidth: '400px', height: 'auto' }}
               />
             </Col>
           </Row>
@@ -224,53 +226,26 @@ export default function AboutPage() {
               </div>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>ApaKabar</h4>
               <ul>
                 <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
+                  <a href="#">0123456789</a>
                 </li>
               </ul>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>Garis</h4>
               <ul>
                 <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
+                  <a href="#">Abibi88</a>
                 </li>
               </ul>
             </Col>
             <Col md={3} className="mb-4">
-              <h4>Title</h4>
+              <h4>TokTok</h4>
               <ul>
                 <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
+                  <a href="#">AbiLTMU</a>
                 </li>
               </ul>
             </Col>
