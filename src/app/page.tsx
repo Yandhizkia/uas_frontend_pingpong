@@ -182,10 +182,9 @@ export default function HomePage() {
                     />
                   </div>
                   <Card.Body className="p-0">
-                    <Card.Title>Contact</Card.Title>
+                    <Card.Title>Feedback</Card.Title>
                     <Card.Text>
-                      Untuk informasi lebih lanjut kalian dapat menghubungi
-                      kami.
+                      Silahkan memberikan kritik dan saran melalui Page ini.
                     </Card.Text>
                   </Card.Body>
                 </Card>
