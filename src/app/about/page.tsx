@@ -43,7 +43,7 @@ export default function AboutPage() {
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/about">About</Nav.Link>
               <Nav.Link href="/event">Event</Nav.Link>
-              <Nav.Link href="/contact">Contact</Nav.Link>
+              <Nav.Link href="/contact">Feedback</Nav.Link>
               <Link href="/login" passHref legacyBehavior>
                 <Button className="btn-register ms-3" as="a">
                   Login
@@ -94,6 +94,7 @@ export default function AboutPage() {
                 src="/images/About/Ketua.jpg"
                 alt="Foto 1"
                 className="foto-image"
+                style={{ maxWidth: '400px', height: 'auto' }}
               />
             </Col>
             <Col md={6}>
@@ -128,11 +129,12 @@ export default function AboutPage() {
                 </p>
               </div>
             </Col>
-            <Col md={6}>
+            <Col md={6} className="d-flex justify-content-end"> {/* Tambahkan d-flex dan justify-content-end di sini */}
               <img
                 src="/images/About/Wakil.jpg"
                 alt="Foto 2"
                 className="foto-image"
+                style={{ maxWidth: '400px', height: 'auto' }}
               />
             </Col>
           </Row>
@@ -178,105 +180,96 @@ export default function AboutPage() {
         </Row>
       </Container>
 
-      <footer className="footer-custom">
-        <div className="footer-wave"></div>
-        <Container style={{ position: "relative", zIndex: 2 }}>
-          <Row>
-            <Col md={3} className="mb-4">
-              <h3>LTMU</h3>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "15px",
-                  listStyle: "none",
-                  padding: 0,
-                  margin: 0,
-                }}
-              >
-                <a
-                  className="nav-link"
-                  href="#"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Facebook size={24} color="#3b5998" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="#"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Youtube size={24} color="#FF0000" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Twitter size={24} color="#1DA1F2" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Instagram size={24} color="#d620eaff" />
-                </a>
-              </div>
-            </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
-            </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
-            </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
+     <footer className="footer-custom">
+             <Container>
+               <Row>
+                 <Col md={3}>
+                   <div
+                     style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                   >
+                     <img src="/images/Logo/ltmu.jpg" alt="LTMU Logo" height={35} />
+                     <h3 style={{ margin: 0 }}>LTMU</h3>
+                   </div>
+                   <p style={{ fontSize: 14, marginTop: 8 }}>
+                     © 2025 LTMU UNTAR. All Rights Reserved.
+                   </p>
+                   <Col md={3} className="mb-4">
+                     <div
+                       style={{
+                         display: "flex",
+                         gap: "15px",
+                         listStyle: "none",
+                         padding: 0,
+                         margin: 0,
+                       }}
+                     >
+                       <a
+                         className="nav-link"
+                         href="#"
+                         style={{ display: "flex", alignItems: "center" }}
+                       >
+                         <Facebook size={24} color="#3b5998" />
+                       </a>
+                       <a
+                         className="nav-link"
+                         href="#"
+                         style={{ display: "flex", alignItems: "center" }}
+                       >
+                         <Youtube size={24} color="#FF0000" />
+                       </a>
+                       <a
+                         className="nav-link"
+                         href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
+                         style={{ display: "flex", alignItems: "center" }}
+                       >
+                         <Twitter size={24} color="#1DA1F2" />
+                       </a>
+                       <a
+                         className="nav-link"
+                         href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                         style={{ display: "flex", alignItems: "center" }}
+                       >
+                         <Instagram size={24} color="#d620eaff" />
+                       </a>
+                     </div>
+                   </Col>
+                 </Col>
+                 <Col md={3}>
+                   <h4>Link</h4>
+                   <ul>
+                     <li>
+                       <a href="/about">About</a>
+                     </li>
+                     <li>
+                       <a href="/event">Event</a>
+                     </li>
+                     <li>
+                       <a href="/contact">Feedback</a>
+                     </li>
+                   </ul>
+                 </Col>
+                 <Col md={3}>
+                   <h4>Kontak</h4>
+                   <ul>
+                     <li>
+                       <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
+                     </li>
+                     <li>
+                       <a href="tel:02112345678">0812-1988-2077</a>
+                     </li>
+                   </ul>
+                 </Col>
+                 <Col md={3}>
+                   <h4>Jadwal Latihan</h4>
+                   <ul>
+                     <li>Rabu & Jumat, 13.30-15.30</li>
+                     <li>Kamis, 13.30-17.00</li>
+                     <li>Lokasi: Untar Arena, Gedung Utama</li>
+                   </ul>
+                 </Col>
+               </Row>
+             </Container>
+           </footer>
     </div>
   );
 }
