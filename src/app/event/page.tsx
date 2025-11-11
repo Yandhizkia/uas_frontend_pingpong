@@ -32,7 +32,7 @@ export default function EventPage() {
                 color: "white",
               }}
             />
-            <span style={{ color: "white" }}>LTMU</span>
+            <span className="navbar-logo-text">LTMU</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse
