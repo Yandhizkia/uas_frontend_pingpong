@@ -20,7 +20,6 @@ export default function HomePage() {
       style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}
     >
       <Navbar expand="lg" className="navbar-custom fixed-top">
-        <div className="navbar-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
           <Navbar.Brand href="/" style={{ fontWeight: 600 }}>
             <img
@@ -33,7 +32,7 @@ export default function HomePage() {
                 color: "white",
               }}
             />
-            <span style={{ color: "white" }}>LTMU</span>
+            <span className="navbar-logo-text">LTMU</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse
@@ -194,43 +193,45 @@ export default function HomePage() {
           </Col>
         </Row>
       </Container>
-
-      <Container className="py-5">
-        <h2 className="section-title">Location</h2>
-        <Row className="align-items-center g-4">
-          <Col lg={6}>
-            <div className="feature-content">
-              <div className="mb-4">
-                <h3>Universitas Tarumanagara</h3>
-                <p>
-                  Letjen S. Parman St No.1, RT.6/RW.16, Tomang, Grogol
-                  petamburan, West Jakarta City, Jakarta 11440
-                </p>
-              </div>
-            </div>
-          </Col>
-          <Col lg={6}>
-            <div
-              style={{
-                borderRadius: "2rem",
-                overflow: "hidden",
-                boxShadow: "0 8px 32px rgba(60,60,75,0.18)",
-              }}
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5533.969931984045!2d106.78482255138283!3d-6.1671910691670115!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f65c8572640d%3A0xc0a066d78372614e!2sTarumanagara%20University!5e0!3m2!1sen!2sid!4v1762392557961!5m2!1sen!2sid"
-                width="100%"
-                height="340"
-                style={{ border: 0 }}
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Universitas Tarumanagara"
-              />
-            </div>
-          </Col>
-        </Row>
-      </Container>
+<Container className="py-5">
+  <h2 className="section-title">Location</h2>
+  <Row className="align-items-center g-4">
+    <Col lg={6}>
+      <div className="feature-content" style={{
+        background: " rgba(45, 55, 72, 0.95)",
+        borderRadius: "1rem",
+        boxShadow: "0 2px 24px rgba(60,60,75,0.19)",
+        padding: "2rem",
+        marginBottom: "1rem"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
+          <img src="/images/Home/Section3_2.jpg" alt="location" height={48} style={{ filter: "brightness(0.8)" }} />
+          <div>
+            <h3 style={{ fontWeight: 700, color: "#fff" }}>Universitas Tarumanagara</h3>
+            <p style={{ color: "#fafaff", opacity: 0.79 }}>
+              Letjen S. Parman St No.1, RT.6/RW.16, Tomang, Grogol petamburan, West Jakarta City, Jakarta 11440
+            </p>
+          </div>
+        </div>
+      </div>
+    </Col>
+    <Col lg={6}>
+      <div style={{
+        borderRadius: "2rem",
+        overflow: "hidden",
+        boxShadow: "0 8px 32px rgba(60,60,75,0.18)"
+      }}>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5533.969931984045!2d106.78482255138283!3d-6.1671910691670115!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f65c8572640d%3A0xc0a066d78372614e!2sTarumanagara%20University!5e0!3m2!1sen!2sid!4v1762392557961!5m2!1sen!2sid" width="100%" height="340"
+          style={{ border: 0 }}
+          allowFullScreen={false}
+          loading="lazy"
+          title="Universitas Tarumanagara"
+        />
+      </div>
+    </Col>
+  </Row>
+</Container>
 
       <Container className="py-5">
         <h2 className="section-title">Article</h2>
