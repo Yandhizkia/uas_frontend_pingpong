@@ -9,14 +9,15 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const menuItems = [
-  { name: "Dashboard", path: "/admin", icon: <BarChart size={20} /> },
-  { name: "Homepage", path: "/admin/homepage", icon: <House size={20} /> },
-  { name: "About", path: "/admin/about", icon: <FileText size={20} /> },
-  { name: "Event", path: "/admin/event", icon: <CalendarEvent size={20} /> },
-  { name: "Announcement", path: "/admin/announcement", icon: <Megaphone size={20} /> },
-  { name: "Feedback", path: "/admin/feedback", icon: <Person size={20} /> },
-];
+    { name: "Dashboard", path: "/admin", icon: <BarChart size={20} /> },
+    { name: "Homepage", path: "/admin/homepage", icon: <House size={20} /> },
+    { name: "About", path: "/admin/about", icon: <FileText size={20} /> },
+    { name: "Event", path: "/admin/event", icon: <CalendarEvent size={20} /> },
+    { name: 'Event Registrations', path: '/admin/event-registrations', icon: '📝' },
+    { name: "Announcement", path: "/admin/announcement", icon: <Megaphone size={20} /> },
+    { name: "Feedback", path: "/admin/feedback", icon: <Person size={20} /> },
 
+  ];
 
   const handleLogout = () => {
     if (confirm('Yakin ingin logout?')) {
@@ -27,21 +28,25 @@ export default function Sidebar() {
 
   return (
     <div className="admin-sidebar">
-      <div className="sidebar-header">
-         <img
-              src="/images/Logo/ltmu.jpg"
-              alt="LTMU Logo"
-              style={{
-                height: "40px",
-                width: "auto",
-                marginRight: "10px",
-                color: "white",
-              }}
-            />
-            <span className="sidebar-logo-text">LTMU</span>
-        <p className="sidebar-subtitle">Admin Panel</p>
+      {/* ===== HEADER LOGO ===== */}
+      <div className="sidebar-header d-flex align-items-center mb-4">
+        <img
+          src="/images/Logo/ltmu.jpg"
+          alt="LTMU Logo"
+          style={{
+            height: "45px",
+            width: "45px",
+            borderRadius: "8px",
+            marginRight: "10px",
+          }}
+        />
+        <div>
+          <h3 className="sidebar-logo-text" style={{marginLeft: "6px"}}>LTMU</h3>
+          <p className="sidebar-subtitle" style={{marginLeft: "6px"}}>Admin Panel</p>
+        </div>
       </div>
 
+      {/* ===== NAVIGATION ===== */}
       <nav className="sidebar-nav">
         {menuItems.map((item) => (
           <Link
@@ -54,12 +59,6 @@ export default function Sidebar() {
           </Link>
         ))}
       </nav>
-
-      {/*<div className="sidebar-footer">
-        <button onClick={handleLogout} className="btn-logout">
-          Logout
-        </button>
-      </div> */}
     </div>
   );
 }
