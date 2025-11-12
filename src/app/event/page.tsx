@@ -27,7 +27,8 @@ interface EventType {
 }
 
 // Data contoh untuk event-event Anda
-const eventsData: EventType[] = [ // Gunakan EventType[] untuk array
+const eventsData: EventType[] = [
+  // Gunakan EventType[] untuk array
   {
     id: 1,
     title: "Event 1",
@@ -171,34 +172,38 @@ export default function EventPage() {
       <Container className="my-5 py-5">
         <h2 className="section-title">Next Event</h2>
         <Row className="g-4">
-          {eventsData.map((event: EventType) => ( // Anotasi tipe di map juga opsional tapi bagus
-            <Col md={4} key={event.id}>
-              <Card
-                className="product-card"
-                onClick={() => handleCardClick(event)}
-                style={{ cursor: "pointer" }}
-              >
-                <Card.Img
-                  variant="top"
-                  src={event.image}
-                  style={{
-                    width: "100%",
-                    height: "275px",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                  }}
-                />
-                <Card.Body>
-                  <Card.Title className="product-title">
-                    {event.title}
-                  </Card.Title>
-                  <Card.Text className="product-desc">
-                    {event.shortDescription}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+          {eventsData.map(
+            (
+              event: EventType // Anotasi tipe di map juga opsional tapi bagus
+            ) => (
+              <Col md={4} key={event.id}>
+                <Card
+                  className="product-card"
+                  onClick={() => handleCardClick(event)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Card.Img
+                    variant="top"
+                    src={event.image}
+                    style={{
+                      width: "100%",
+                      height: "275px",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                    }}
+                  />
+                  <Card.Body>
+                    <Card.Title className="product-title">
+                      {event.title}
+                    </Card.Title>
+                    <Card.Text className="product-desc">
+                      {event.shortDescription}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            )
+          )}
         </Row>
       </Container>
 
@@ -315,14 +320,6 @@ export default function EventPage() {
                 </li>
               </ul>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>Garis</h4>
-              <ul>
-                <li>
-                  <a href="/contact">Feedback</a>
-                </li>
-              </ul>
-            </Col>
             <Col md={3}>
               <h4
                 style={{
@@ -337,11 +334,6 @@ export default function EventPage() {
                 <li>
                   <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
                 </li>
-              </ul>
-            </Col>
-            <Col md={3} className="mb-4">
-              <h4>TokTok</h4>
-              <ul>
                 <li>
                   <a href="tel:02112345678">0812-1988-2077</a>
                 </li>
@@ -358,9 +350,9 @@ export default function EventPage() {
                 Practice Schedule
               </h4>
               <ul>
-                <li>Wednesday and Friday, 1:30 PM-3:30 PM</li>
-                <li>Thursday, 1:30 PM-5:00 PM</li>
-                <li>Location: Untar Arena, Main Building</li>
+                <li>Rabu dan Jumat, 13.30–15.30</li>
+                <li>Kamis, 13.30–17.00</li>
+                <li>Lokasi: Untar Arena, Gedung Utama</li>
               </ul>
             </Col>
           </Row>

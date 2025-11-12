@@ -274,7 +274,7 @@ const FeedbackPage = () => {
 
                 <div
                   style={{
-                    marginTop: "1.8rem",
+                    marginTop: "2.1rem",
                     borderRadius: "10px",
                     overflow: "hidden",
                   }}
@@ -399,9 +399,10 @@ const FeedbackPage = () => {
                   Practice Schedule
                   </h4>
               <ul>
-                <li>Wednesday and Friday, 1:30 PM-3:30 PM</li>
-                <li>Thursday, 1:30 PM-5:00 PM</li>
-                <li>Location: Untar Arena, Main Building</li>
+                <li>Rabu dan Jumat, 13.30–15.30</li>
+<li>Kamis, 13.30–17.00</li>
+<li>Lokasi: Untar Arena, Gedung Utama</li>
+
               </ul>
             </Col>
           </Row>
