@@ -274,7 +274,7 @@ const FeedbackPage = () => {
 
                 <div
                   style={{
-                    marginTop: "1.8rem",
+                    marginTop: "2.1rem",
                     borderRadius: "10px",
                     overflow: "hidden",
                   }}
