@@ -313,6 +313,11 @@ export default function EventPage() {
                 <li>
                   <a href="/event">Event</a>
                 </li>
+              </ul>
+            </Col>
+            <Col md={3} className="mb-4">
+              <h4>Garis</h4>
+              <ul>
                 <li>
                   <a href="/contact">Feedback</a>
                 </li>
@@ -332,6 +337,11 @@ export default function EventPage() {
                 <li>
                   <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
                 </li>
+              </ul>
+            </Col>
+            <Col md={3} className="mb-4">
+              <h4>TokTok</h4>
+              <ul>
                 <li>
                   <a href="tel:02112345678">0812-1988-2077</a>
                 </li>

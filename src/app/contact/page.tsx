@@ -296,7 +296,8 @@ const FeedbackPage = () => {
       </Container>
 
       <footer className="footer-custom">
-        <Container>
+        <div className="footer-wave"></div>
+        <Container style={{ position: "relative", zIndex: 2 }}>
           <Row>
             <Col md={3}>
               <div
