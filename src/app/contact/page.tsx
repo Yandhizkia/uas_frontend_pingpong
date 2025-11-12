@@ -13,7 +13,15 @@ import {
   Alert,
 } from "react-bootstrap";
 import Link from "next/link";
-import { Facebook, Youtube, Twitter, Instagram } from "react-bootstrap-icons";
+import {
+  Facebook,
+  Youtube,
+  Twitter,
+  Instagram,
+  GeoAlt,
+  LightbulbFill,
+  CheckCircleFill,
+} from "react-bootstrap-icons";
 
 const FeedbackPage = () => {
   const [formData, setFormData] = useState({
@@ -200,16 +208,49 @@ const FeedbackPage = () => {
           <Col lg={5} md={12}>
             <Card className="info-card mb-3">
               <Card.Body className="p-4">
-                <h4 style={{ color: "#f1c76e", marginBottom: "1rem" }}>
-                  💡 Why Send Feedback?
-                </h4>
+                <div className="d-flex align-items-center mb-3">
+                  <div className="me-2">
+                    <LightbulbFill size={24} color="#f1c76e" />
+                  </div>
+                  <h4 style={{ color: "#f1c76e", marginBottom: "0" }}>
+                    Why Send Feedback?
+                  </h4>
+                </div>
                 <ul
                   style={{ listStyle: "none", padding: 0, lineHeight: "1.8" }}
                 >
-                  <li>✅ Help us improve our services</li>
-                  <li>✅ Get answers to your questions</li>
-                  <li>✅ Share your experience with LTMU</li>
-                  <li>✅ Suggest new features or activities</li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Help us improve our services
+                  </li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Get answers to your questions
+                  </li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Share your experience with LTMU
+                  </li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Suggest new features or activities
+                  </li>
                 </ul>
               </Card.Body>
             </Card>
@@ -217,14 +258,15 @@ const FeedbackPage = () => {
             <Card className="info-card mb-3" style={{ minHeight: "420px" }}>
               <Card.Body className="p-4 d-flex flex-column justify-content-between">
                 <div>
-                  <h4 style={{ color: "#f1c76e", marginBottom: "1rem" }}>
-                    📍 Find Us
-                  </h4>
+                  <div className="d-flex align-items-center mb-3">
+                    <div className="location-icon me-3">
+                      <GeoAlt size={32} color="#f1c76e" />
+                    </div>
+                    <h4 style={{ color: "#f1c76e", marginBottom: "1rem" }}>
+                      Universitas Tarumanagara
+                    </h4>
+                  </div>
                   <p style={{ marginBottom: "0.5rem" }}>
-                    <strong>Location:</strong>
-                    <br />
-                    Universitas Tarumanagara
-                    <br />
                     Letjen S. Parman St No.1, RT.6/RW.16, Tomang, Grogol
                     petamburan, West Jakarta City, Jakarta 11440
                   </p>
@@ -240,7 +282,7 @@ const FeedbackPage = () => {
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.601988112077!2d106.79257287590297!3d-6.184567893806403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f68e67ab5fdb%3A0x34c7de9a62eeb0f6!2sUniversitas%20Tarumanagara!5e0!3m2!1sen!2sid!4v1698158888888!5m2!1sen!2sid"
                     width="100%"
-                    height="250"
+                    height="298px"
                     style={{ border: 0 }}
                     allowFullScreen={true}
                     loading="lazy"
@@ -257,60 +299,109 @@ const FeedbackPage = () => {
         <div className="footer-wave"></div>
         <Container style={{ position: "relative", zIndex: 2 }}>
           <Row>
-            <Col md={3} className="mb-4">
-              <h3>LTMU</h3>
+            <Col md={3}>
               <div
-                style={{
-                  display: "flex",
-                  gap: "15px",
-                  listStyle: "none",
-                  padding: 0,
-                  margin: 0,
-                }}
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
               >
-                <a className="nav-link" href="#">
-                  <Facebook size={24} color="#3b5998" />
-                </a>
-                <a className="nav-link" href="#">
-                  <Youtube size={24} color="#FF0000" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
-                >
-                  <Twitter size={24} color="#1DA1F2" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="https://www.instagram.com/ltmu_untar"
-                >
-                  <Instagram size={24} color="#d620eaff" />
-                </a>
+                <img src="/images/Logo/ltmu.jpg" alt="LTMU Logo" height={35} />
+                <h3 style={{ margin: 0 }}>LTMU</h3>
               </div>
+              <p style={{ fontSize: 14, marginTop: 8 }}>
+                © 2025 LTMU UNTAR. All Rights Reserved.
+              </p>
+              <Col md={3} className="mb-4">
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "15px",
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
+                  <a
+                    className="nav-link"
+                    href="#"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Facebook size={24} color="#3b5998" />
+                  </a>
+                  <a
+                    className="nav-link"
+                    href="#"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Youtube size={24} color="#FF0000" />
+                  </a>
+                  <a
+                    className="nav-link"
+                    href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Twitter size={24} color="#1DA1F2" />
+                  </a>
+                  <a
+                    className="nav-link"
+                    href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Instagram size={24} color="#d620eaff" />
+                  </a>
+                </div>
+              </Col>
             </Col>
-
-            <Col md={3} className="mb-4">
-              <h4>ApaKabar</h4>
+            <Col md={3}>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+              Link
+              </h4>
               <ul>
                 <li>
-                  <a href="#">0123456789</a>
+                  <a href="/about">About</a>
+                </li>
+                <li>
+                  <a href="/event">Event</a>
+                </li>
+                <li>
+                  <a href="/contact">Feedback</a>
                 </li>
               </ul>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>Garis</h4>
+            <Col md={3}>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Contact
+                  </h4>
               <ul>
                 <li>
-                  <a href="#">Abibi88</a>
+                  <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
+                </li>
+                <li>
+                  <a href="tel:02112345678">0812-1988-2077</a>
                 </li>
               </ul>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>TokTok</h4>
+            <Col md={3}>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Practice Schedule
+                  </h4>
               <ul>
-                <li>
-                  <a href="#">AbiLTMU</a>
-                </li>
+                <li>Wednesday and Friday, 1:30 PM-3:30 PM</li>
+                <li>Thursday, 1:30 PM-5:00 PM</li>
+                <li>Location: Untar Arena, Main Building</li>
               </ul>
             </Col>
           </Row>

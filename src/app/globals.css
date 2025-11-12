@@ -48,6 +48,14 @@ body {
   background-color: var(--gray-700);
 }
 
+.btn-register:active,
+.btn-register:focus {
+  background-color: #d6b15e !important; /* biar sama kayak hover */
+  color: #fff !important;
+  box-shadow: none !important; /* hapus efek biru outline bootstrap */
+  transform: scale(0.98); /* kecilin dikit pas ditekan, biar ada feedback */
+}
+
 .hero-carousel {
   height: 100vh;
   margin-top: 56px;
@@ -189,13 +197,17 @@ body {
 }
 
 .feedback-avatar {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  background-color: #f1c76e; /* atau warna sesuai avatar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #1a1d29;
 }
+
 
 .avatar-red {
   background-color: #f56565;
@@ -432,7 +444,37 @@ body {
   box-shadow: 0 -6px 32px 0 rgba(40, 40, 55, 0.06);
   margin-top: 60px;
   padding: 42px 0 30px 0;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.footer-custom h3,
+.footer-custom h4 {
+  font-weight: 700;
+  color: #e2e8f0; /* sedikit lebih cerah dari teks utama */
+  margin-bottom: 1rem;
+}
+
+.footer-custom ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-custom ul li {
+  margin-bottom: 0.65rem;
+}
+
+.footer-custom ul li a {
+  color: #cbd5e0;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-custom ul li a:hover {
+  color: #f1c76e; /* warna gold yang sesuai .social-icon */
+}
+
 .footer-custom .social-icon {
   background: #f1c76e;
   color: var(--gray-800);
@@ -440,11 +482,53 @@ body {
   box-shadow: 0 1px 5px 0 rgba(120, 100, 40, 0.06);
   font-size: 1.1em;
   transition: background 0.17s, color 0.17s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-right: 10px;
 }
+
 .footer-custom .social-icon:hover {
   background-color: #ffe299;
   color: #232734;
 }
+
+.footer-custom .nav-link {
+  padding: 0;
+  margin: 0 10px 0 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-custom .footer-wave {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: url('/images/footer-wave.svg') no-repeat bottom center;
+  background-size: cover;
+  z-index: 0;
+}
+
+@media (max-width: 767px) {
+  .footer-custom {
+    padding: 30px 15px;
+    text-align: center;
+  }
+
+  .footer-custom .social-icon {
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .footer-custom ul li {
+    margin-bottom: 0.5rem;
+  }
+}
+
 
 @media (max-width: 768px) {
   .event-hero,
@@ -578,26 +662,7 @@ body {
   }
 }
 
-.footer-custom {
-  background-color: var(--gray-800);
-  color: #cbd5e0;
-  border-radius: 2rem 2rem 0 0;
-  margin-top: 48px;
-  box-shadow: 0 -6px 32px 0 rgba(40, 40, 55, 0.06);
-  padding: 40px 0 30px 0;
-}
-.footer-custom .social-icon {
-  background: #f1c76e;
-  color: #232734;
-  border-radius: 12px;
-  transition: background 0.17s, color 0.17s;
-  font-size: 1.1em;
-  box-shadow: 0 1px 5px 0 rgba(120, 100, 40, 0.06);
-}
-.footer-custom .social-icon:hover {
-  background-color: #ffe299;
-  color: #2b2c40;
-}
+
 
 .contact-form .form-row {
   display: flex;
@@ -680,7 +745,6 @@ body {
 
 .register-box .btn-primary:hover {
   background: #e5cfa7;
-  color: #231e16;
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(80, 80, 120, 0.18);
 }
@@ -1408,3 +1472,162 @@ body {
   border-color: var(--gray 600);
   color: white;
 }
+
+/* Hero Carousel Improvements */
+.hero-caption {
+  bottom: 15% !important;
+  text-align: center;
+}
+
+.hero-caption-title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  margin-bottom: 1rem;
+}
+
+.hero-caption-text {
+  font-size: 1.25rem;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Location Section Improvements */
+.location-info-card {
+  background-color: var(--gray-800) !important;
+  border: 1px solid var(--gray-700) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: 0 8px 24px rgba(60, 60, 75, 0.17);
+  height: 100%;
+}
+
+.location-icon {
+  background: rgba(241, 199, 110, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.location-detail-item {
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem;
+  background: rgba(184, 160, 128, 0.05);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(184, 160, 128, 0.1);
+}
+
+.location-detail-item strong {
+  color: #f1c76e;
+  font-size: 0.95rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.location-detail-item p {
+  color: #cbd5e0;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.maps-container {
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(60, 60, 75, 0.18);
+  height: 100%;
+}
+
+.maps-container iframe {
+  filter: grayscale(0.2) contrast(1.1);
+}
+
+/* Improved Feedback Cards */
+.feedback-card-improved {
+  background-color: #f5deb3;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-card-improved:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.feedback-message {
+  color: #2d3748;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.feedback-footer {
+  display: flex;
+  align-items: center; /* biar avatar dan nama sejajar vertikal */
+  gap: 10px; /* jarak antara foto dan nama */
+  margin-top: 1rem;
+}
+
+.feedback-card-improved .feedback-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.feedback-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.feedback-user-info strong {
+  color: #2d3748;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.feedback-user-info small {
+  color: #4a5568;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-caption-title {
+    font-size: 2rem;
+  }
+  
+  .hero-caption-text {
+    font-size: 1rem;
+  }
+  
+  .location-details {
+    gap: 1rem;
+  }
+  
+  .maps-container iframe {
+    height: 300px;
+  }
+}
+

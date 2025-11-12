@@ -238,47 +238,17 @@ const ProfilePage: React.FC = () => {
                 </a>
               </div>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
+            <Col md={3} className="mb-4 text-center">
+              <h4>ApaKabar</h4>
+                  <h6>0123456789</h6>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
+            <Col md={3} className="mb-4 text-center">
+              <h4>Garis</h4>
+                  <h6>Abibi88</h6>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>Title</h4>
-              <ul>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-                <li>
-                  <a href="#">Page</a>
-                </li>
-              </ul>
+            <Col md={3} className="mb-4 text-center">
+              <h4>TokTok</h4>
+                  <h6>AbiLTMU</h6>
             </Col>
           </Row>
         </Container>

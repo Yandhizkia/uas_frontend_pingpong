@@ -181,72 +181,111 @@ export default function AboutPage() {
       </Container>
 
       <footer className="footer-custom">
-        <div className="footer-wave"></div>
-        <Container style={{ position: "relative", zIndex: 2 }}>
+        <Container>
           <Row>
-            <Col md={3} className="mb-4">
-              <h3>LTMU</h3>
+            <Col md={3}>
               <div
-                style={{
-                  display: "flex",
-                  gap: "15px",
-                  listStyle: "none",
-                  padding: 0,
-                  margin: 0,
-                }}
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
               >
-                <a
-                  className="nav-link"
-                  href="#"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Facebook size={24} color="#3b5998" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="#"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Youtube size={24} color="#FF0000" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Twitter size={24} color="#1DA1F2" />
-                </a>
-                <a
-                  className="nav-link"
-                  href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Instagram size={24} color="#d620eaff" />
-                </a>
+                <img src="/images/Logo/ltmu.jpg" alt="LTMU Logo" height={35} />
+                <h3 style={{ margin: 0 }}>LTMU</h3>
               </div>
+              <p style={{ fontSize: 14, marginTop: 8 }}>
+                © 2025 LTMU UNTAR. All Rights Reserved.
+              </p>
+              <Col md={3} className="mb-4">
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "15px",
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
+                  <a
+                    className="nav-link"
+                    href="#"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Facebook size={24} color="#3b5998" />
+                  </a>
+                  <a
+                    className="nav-link"
+                    href="#"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Youtube size={24} color="#FF0000" />
+                  </a>
+                  <a
+                    className="nav-link"
+                    href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Twitter size={24} color="#1DA1F2" />
+                  </a>
+                  <a
+                    className="nav-link"
+                    href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Instagram size={24} color="#d620eaff" />
+                  </a>
+                </div>
+              </Col>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>ApaKabar</h4>
+            <Col md={3}>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+              Link
+              </h4>
               <ul>
                 <li>
-                  <a href="#">0123456789</a>
+                  <a href="/about">About</a>
+                </li>
+                <li>
+                  <a href="/event">Event</a>
+                </li>
+                <li>
+                  <a href="/contact">Feedback</a>
                 </li>
               </ul>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>Garis</h4>
+            <Col md={3}>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Contact
+                  </h4>
               <ul>
                 <li>
-                  <a href="#">Abibi88</a>
+                  <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
+                </li>
+                <li>
+                  <a href="tel:02112345678">0812-1988-2077</a>
                 </li>
               </ul>
             </Col>
-            <Col md={3} className="mb-4">
-              <h4>TokTok</h4>
+            <Col md={3}>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Practice Schedule
+                  </h4>
               <ul>
-                <li>
-                  <a href="#">AbiLTMU</a>
-                </li>
+                <li>Wednesday and Friday, 1:30 PM-3:30 PM</li>
+                <li>Thursday, 1:30 PM-5:00 PM</li>
+                <li>Location: Untar Arena, Main Building</li>
               </ul>
             </Col>
           </Row>
