@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react"; // Import useState
 import {
   Navbar,
   Nav,
@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   Carousel,
+  Modal, // Import Modal
 } from "react-bootstrap";
 import Link from "next/link";
 import {
@@ -21,6 +22,15 @@ import {
   Clock,
   People,
 } from "react-bootstrap-icons";
+
+// Interface untuk tipe Article
+interface ArticleType {
+  id: number;
+  title: string;
+  shortDescription: string;
+  image: string;
+  fullDescription: string;
+}
 
 export default function HomePage() {
   // Simulate logged in user - nanti diganti dengan real auth
@@ -48,6 +58,38 @@ export default function HomePage() {
       isLoggedIn: false,
     },
   ];
+
+  // Data contoh untuk article-artikel Anda
+  const articlesData: ArticleType[] = [
+    {
+      id: 1,
+      title: "Keseruan UKM LTMU",
+      shortDescription: "Must have for someone good luck to see more for the real person.",
+      image: "/images/Home/Section4_1.jpg",
+      fullDescription: "Ini adalah deskripsi lengkap tentang keseruan kegiatan UKM LTMU. Setiap anggota merasakan pengalaman berharga, mulai dari latihan rutin hingga kebersamaan dalam setiap event. Kami selalu berusaha menciptakan lingkungan yang positif dan mendukung bagi semua anggota untuk berkembang.",
+    },
+    {
+      id: 2,
+      title: "Kegiatan Latihan LTMU",
+      shortDescription: "This is the awesome give lots of awesome for it about one of those.",
+      image: "/images/Home/Section4_2.jpg",
+      fullDescription: "Kegiatan latihan rutin LTMU dirancang untuk meningkatkan kemampuan tenis meja anggota, mulai dari teknik dasar hingga strategi tingkat lanjut. Kami juga memiliki sesi sparring yang intensif dan bimbingan dari pelatih berpengalaman untuk membantu setiap anggota mencapai potensi terbaik mereka.",
+    },
+  ];
+
+  // State untuk modal article
+  const [showArticleModal, setShowArticleModal] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState<ArticleType | null>(null);
+
+  const handleArticleClick = (article: ArticleType) => {
+    setSelectedArticle(article);
+    setShowArticleModal(true);
+  };
+
+  const handleCloseArticleModal = () => {
+    setShowArticleModal(false);
+    setSelectedArticle(null);
+  };
 
   return (
     <div
@@ -80,7 +122,7 @@ export default function HomePage() {
               <Nav.Link href="/contact">Feedback</Nav.Link>
               <Link href="/login" passHref legacyBehavior>
                 <Button className="btn-register ms-3" as="a">
-                  Login
+                  {isLoggedIn ? `Welcome, ${userName}` : "Login"}
                 </Button>
               </Link>
             </Nav>
@@ -318,54 +360,33 @@ export default function HomePage() {
       <Container className="py-5">
         <h2 className="section-title">Article</h2>
         <Row className="g-4">
-          <Col md={6}>
-            <Card className="card-custom">
-              <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
-                <Card.Img
-                  variant="top"
-                  src="/images/Home/Section4_1.jpg"
-                  style={{
-                    maxWidth: "800px",
-                    maxHeight: "400px",
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "cover",
-                  }}
-                />
-              </div>
-              <Card.Body className="p-0">
-                <Card.Title>Keseruan UKM LTMU</Card.Title>
-                <Card.Text>
-                  Must have for someone good luck to see more for the real
-                  person.
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={6}>
-            <Card className="card-custom">
-              <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
-                <Card.Img
-                  variant="top"
-                  src="/images/Home/Section4_2.jpg"
-                  style={{
-                    maxWidth: "800px",
-                    maxHeight: "400px",
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "cover",
-                  }}
-                />
-              </div>
-              <Card.Body className="p-0">
-                <Card.Title>Kegiatan Latihan LTMU</Card.Title>
-                <Card.Text>
-                  This is the awesome give lots of awesome for it about one of
-                  those.
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
+          {articlesData.map((article: ArticleType) => (
+            <Col md={6} key={article.id}>
+              <Card
+                className="card-custom"
+                onClick={() => handleArticleClick(article)}
+                style={{ cursor: "pointer" }} // Memberikan indikasi bahwa kartu bisa diklik
+              >
+                <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
+                  <Card.Img
+                    variant="top"
+                    src={article.image}
+                    style={{
+                      maxWidth: "800px",
+                      maxHeight: "400px",
+                      width: "100%",
+                      height: "auto",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+                <Card.Body className="p-0">
+                  <Card.Title>{article.title}</Card.Title>
+                  <Card.Text>{article.shortDescription}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </Row>
       </Container>
       <Container className="py-5">
@@ -389,6 +410,38 @@ export default function HomePage() {
           ))}
         </Row>
       </Container>
+
+      {/* Modal untuk detail Artikel */}
+      <Modal show={showArticleModal} onHide={handleCloseArticleModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{selectedArticle?.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedArticle && (
+            <>
+              <img
+                src={selectedArticle.image}
+                alt={selectedArticle.title}
+                style={{
+                  width: "100%",
+                  maxHeight: "250px",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  marginBottom: "15px",
+                  borderRadius: "5px",
+                }}
+              />
+              <h5>Deskripsi Lengkap:</h5>
+              <p>{selectedArticle.fullDescription}</p>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseArticleModal}>
+            Tutup
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <footer className="footer-custom">
         <Container>
@@ -445,7 +498,14 @@ export default function HomePage() {
               </Col>
             </Col>
             <Col md={3}>
-              <h4>Link</h4>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+              Link
+              </h4>
               <ul>
                 <li>
                   <a href="/about">About</a>
@@ -459,7 +519,14 @@ export default function HomePage() {
               </ul>
             </Col>
             <Col md={3}>
-              <h4>Kontak</h4>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Contact
+                  </h4>
               <ul>
                 <li>
                   <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
@@ -470,11 +537,18 @@ export default function HomePage() {
               </ul>
             </Col>
             <Col md={3}>
-              <h4>Jadwal Latihan</h4>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Practice Schedule
+                  </h4>
               <ul>
-                <li>Rabu & Jumat, 13.30-15.30</li>
-                <li>Kamis, 13.30-17.00</li>
-                <li>Lokasi: Untar Arena, Gedung Utama</li>
+                <li>Wednesday and Friday, 1:30 PM-3:30 PM</li>
+                <li>Thursday, 1:30 PM-5:00 PM</li>
+                <li>Location: Untar Arena, Main Building</li>
               </ul>
             </Col>
           </Row>

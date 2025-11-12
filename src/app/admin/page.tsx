@@ -14,13 +14,13 @@ export default function DashboardPage() {
       <div className="admin-content">
         <Header title="Dashboard" />
 
-        <Container fluid className="admin-main">
+<Container fluid className="admin-main">
           <Row className="g-4">
             <Col md={4}>
-              <Card className="stat-card">
+              <Card className="stat-card h-100"> {/* Added h-100 here */}
                 <Card.Body>
                   <div className="stat-icon">
-                    <House size={40} />
+                    <House size={48} color="#f1c76e" />
                   </div>
                   <h3>Homepage</h3>
                   <p>Manage homepage content</p>
@@ -32,10 +32,10 @@ export default function DashboardPage() {
             </Col>
 
             <Col md={4}>
-              <Card className="stat-card">
+              <Card className="stat-card h-100"> {/* Added h-100 here */}
                 <Card.Body>
                   <div className="stat-icon">
-                    <FileText size={40} />
+                    <FileText size={48} color="#f1c76e" />
                   </div>
                   <h3>About</h3>
                   <p>Manage about page</p>
@@ -47,10 +47,10 @@ export default function DashboardPage() {
             </Col>
 
             <Col md={4}>
-              <Card className="stat-card">
+              <Card className="stat-card h-100"> {/* Added h-100 here */}
                 <Card.Body>
                   <div className="stat-icon">
-                    <CalendarEvent size={40} />
+                    <CalendarEvent size={48} color="#f1c76e" />
                   </div>
                   <h3>Event</h3>
                   <p>Manage events & products</p>
@@ -62,10 +62,10 @@ export default function DashboardPage() {
             </Col>
 
               <Col md={4}>
-              <Card className="stat-card">
+              <Card className="stat-card h-100"> {/* Added h-100 here */}
                 <Card.Body>
                   <div className="stat-icon">
-                    <Megaphone size={40} />
+                    <Megaphone size={48} color="#f1c76e" />
                   </div>
                   <h3>Announcement</h3>
                   <p>Manage Info for Customers</p>
@@ -77,10 +77,10 @@ export default function DashboardPage() {
             </Col>
 
             <Col md={4}>
-              <Card className="stat-card">
+              <Card className="stat-card h-100"> {/* Added h-100 here */}
                 <Card.Body>
                   <div className="stat-icon">
-                    <Megaphone size={40} />
+                    <Megaphone size={48} color="#f1c76e" />
                   </div>
                   <h3>Feedback</h3>
                   <p>Read & reply message from customers</p>

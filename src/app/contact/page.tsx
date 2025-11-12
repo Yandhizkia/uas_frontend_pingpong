@@ -13,7 +13,15 @@ import {
   Alert,
 } from "react-bootstrap";
 import Link from "next/link";
-import { Facebook, Youtube, Twitter, Instagram } from "react-bootstrap-icons";
+import {
+  Facebook,
+  Youtube,
+  Twitter,
+  Instagram,
+  GeoAlt,
+  LightbulbFill,
+  CheckCircleFill,
+} from "react-bootstrap-icons";
 
 const FeedbackPage = () => {
   const [formData, setFormData] = useState({
@@ -200,16 +208,49 @@ const FeedbackPage = () => {
           <Col lg={5} md={12}>
             <Card className="info-card mb-3">
               <Card.Body className="p-4">
-                <h4 style={{ color: "#f1c76e", marginBottom: "1rem" }}>
-                  💡 Why Send Feedback?
-                </h4>
+                <div className="d-flex align-items-center mb-3">
+                  <div className="me-2">
+                    <LightbulbFill size={24} color="#f1c76e" />
+                  </div>
+                  <h4 style={{ color: "#f1c76e", marginBottom: "0" }}>
+                    Why Send Feedback?
+                  </h4>
+                </div>
                 <ul
                   style={{ listStyle: "none", padding: 0, lineHeight: "1.8" }}
                 >
-                  <li>✅ Help us improve our services</li>
-                  <li>✅ Get answers to your questions</li>
-                  <li>✅ Share your experience with LTMU</li>
-                  <li>✅ Suggest new features or activities</li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Help us improve our services
+                  </li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Get answers to your questions
+                  </li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Share your experience with LTMU
+                  </li>
+                  <li className="d-flex align-items-center">
+                    <CheckCircleFill
+                      size={18}
+                      color="#28a745"
+                      className="me-2"
+                    />{" "}
+                    Suggest new features or activities
+                  </li>
                 </ul>
               </Card.Body>
             </Card>
@@ -217,14 +258,15 @@ const FeedbackPage = () => {
             <Card className="info-card mb-3" style={{ minHeight: "420px" }}>
               <Card.Body className="p-4 d-flex flex-column justify-content-between">
                 <div>
-                  <h4 style={{ color: "#f1c76e", marginBottom: "1rem" }}>
-                    📍 Find Us
-                  </h4>
+                  <div className="d-flex align-items-center mb-3">
+                    <div className="location-icon me-3">
+                      <GeoAlt size={32} color="#f1c76e" />
+                    </div>
+                    <h4 style={{ color: "#f1c76e", marginBottom: "1rem" }}>
+                      Universitas Tarumanagara
+                    </h4>
+                  </div>
                   <p style={{ marginBottom: "0.5rem" }}>
-                    <strong>Location:</strong>
-                    <br />
-                    Universitas Tarumanagara
-                    <br />
                     Letjen S. Parman St No.1, RT.6/RW.16, Tomang, Grogol
                     petamburan, West Jakarta City, Jakarta 11440
                   </p>
@@ -240,7 +282,7 @@ const FeedbackPage = () => {
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.601988112077!2d106.79257287590297!3d-6.184567893806403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f68e67ab5fdb%3A0x34c7de9a62eeb0f6!2sUniversitas%20Tarumanagara!5e0!3m2!1sen!2sid!4v1698158888888!5m2!1sen!2sid"
                     width="100%"
-                    height="250"
+                    height="298px"
                     style={{ border: 0 }}
                     allowFullScreen={true}
                     loading="lazy"
@@ -253,7 +295,7 @@ const FeedbackPage = () => {
         </Row>
       </Container>
 
-<footer className="footer-custom">
+      <footer className="footer-custom">
         <Container>
           <Row>
             <Col md={3}>
@@ -308,7 +350,14 @@ const FeedbackPage = () => {
               </Col>
             </Col>
             <Col md={3}>
-              <h4>Link</h4>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+              Link
+              </h4>
               <ul>
                 <li>
                   <a href="/about">About</a>
@@ -322,7 +371,14 @@ const FeedbackPage = () => {
               </ul>
             </Col>
             <Col md={3}>
-              <h4>Kontak</h4>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Contact
+                  </h4>
               <ul>
                 <li>
                   <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
@@ -333,17 +389,23 @@ const FeedbackPage = () => {
               </ul>
             </Col>
             <Col md={3}>
-              <h4>Jadwal Latihan</h4>
+              <h4
+                style={{
+                fontWeight: 700,
+                color: "#f1c76e",
+                marginBottom: "0.5rem",
+                }}>
+                  Practice Schedule
+                  </h4>
               <ul>
-                <li>Rabu & Jumat, 13.30-15.30</li>
-                <li>Kamis, 13.30-17.00</li>
-                <li>Lokasi: Untar Arena, Gedung Utama</li>
+                <li>Wednesday and Friday, 1:30 PM-3:30 PM</li>
+                <li>Thursday, 1:30 PM-5:00 PM</li>
+                <li>Location: Untar Arena, Main Building</li>
               </ul>
             </Col>
           </Row>
         </Container>
       </footer>
-
     </div>
   );
 };
