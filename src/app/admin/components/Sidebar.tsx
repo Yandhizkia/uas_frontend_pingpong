@@ -3,7 +3,16 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart, House, FileText, CalendarEvent, Megaphone, Person } from "react-bootstrap-icons";
+import {
+  BarChart,
+  House,
+  FileText,
+  CalendarEvent,
+  Megaphone,
+  Person,
+  ClipboardCheck,
+  Calendar2Event, 
+} from 'react-bootstrap-icons';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -13,10 +22,10 @@ export default function Sidebar() {
     { name: "Homepage", path: "/admin/homepage", icon: <House size={20} /> },
     { name: "About", path: "/admin/about", icon: <FileText size={20} /> },
     { name: "Event", path: "/admin/event", icon: <CalendarEvent size={20} /> },
-    { name: 'Event Registrations', path: '/admin/event-registrations', icon: '📝' },
+    { name: 'Events Management', path: '/admin/events', icon :<Calendar2Event size={20} /> },
+    { name: 'Event Registrations', path: '/admin/event-registrations', icon: <ClipboardCheck size={20} /> },
     { name: "Announcement", path: "/admin/announcement", icon: <Megaphone size={20} /> },
     { name: "Feedback", path: "/admin/feedback", icon: <Person size={20} /> },
-
   ];
 
   const handleLogout = () => {
@@ -41,8 +50,8 @@ export default function Sidebar() {
           }}
         />
         <div>
-          <h3 className="sidebar-logo-text" style={{marginLeft: "6px"}}>LTMU</h3>
-          <p className="sidebar-subtitle" style={{marginLeft: "6px"}}>Admin Panel</p>
+          <h3 className="sidebar-logo-text" style={{ marginLeft: "6px" }}>LTMU</h3>
+          <p className="sidebar-subtitle" style={{ marginLeft: "6px" }}>Admin Panel</p>
         </div>
       </div>
 

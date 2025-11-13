@@ -17,16 +17,17 @@ interface EventRegistrationModalProps {
 
 export default function EventRegistrationModal({ show, onHide, event }: EventRegistrationModalProps) {
   const [formData, setFormData] = useState({
-    name: 'John Doe', // Pre-filled from logged in user
-    nim: '525200999',
-    email: 'john.doe@student.untar.ac.id',
-    phone: '081234567890',
-    faculty: 'Teknik',
-    major: 'Informatika',
-    category: 'singles',
-    experience: 'intermediate',
+    name: '',
+    nim: '',
+    email: '',
+    phone: '',
+    faculty: '',
+    major: '',
+    category: '',
+    experience: '',
     notes: ''
   });
+
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<any>) => {
@@ -44,7 +45,6 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
     setTimeout(() => {
       setShowSuccess(false);
       onHide();
-      // Reset form if needed
     }, 2000);
   };
 
@@ -70,6 +70,7 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
         </div>
 
         <Form onSubmit={handleSubmit}>
+          {/* ===== Basic Info ===== */}
           <div className="row">
             <div className="col-md-6">
               <Form.Group className="mb-3">
@@ -81,7 +82,6 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
                   onChange={handleChange}
                   className="user-form-input"
                   required
-                  readOnly
                 />
               </Form.Group>
             </div>
@@ -95,12 +95,12 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
                   onChange={handleChange}
                   className="user-form-input"
                   required
-                  readOnly
                 />
               </Form.Group>
             </div>
           </div>
 
+          {/* ===== Contact Info ===== */}
           <div className="row">
             <div className="col-md-6">
               <Form.Group className="mb-3">
@@ -130,6 +130,7 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
             </div>
           </div>
 
+          {/* ===== Academic Info ===== */}
           <div className="row">
             <div className="col-md-6">
               <Form.Group className="mb-3">
@@ -141,7 +142,6 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
                   onChange={handleChange}
                   className="user-form-input"
                   required
-                  readOnly
                 />
               </Form.Group>
             </div>
@@ -155,12 +155,12 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
                   onChange={handleChange}
                   className="user-form-input"
                   required
-                  readOnly
                 />
               </Form.Group>
             </div>
           </div>
 
+          {/* ===== Category & Experience ===== */}
           <div className="row">
             <div className="col-md-6">
               <Form.Group className="mb-3">
@@ -172,6 +172,7 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
                   className="user-form-input"
                   required
                 >
+                  <option value="">-- Select Category --</option>
                   <option value="singles">Singles</option>
                   <option value="doubles">Doubles</option>
                   <option value="mixed">Mixed Doubles</option>
@@ -189,6 +190,7 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
                   className="user-form-input"
                   required
                 >
+                  <option value="">-- Select Experience --</option>
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
                   <option value="advanced">Advanced</option>
@@ -198,6 +200,7 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
             </div>
           </div>
 
+          {/* ===== Notes ===== */}
           <Form.Group className="mb-4">
             <Form.Label className="user-form-label">Additional Notes (Optional)</Form.Label>
             <Form.Control
@@ -211,14 +214,19 @@ export default function EventRegistrationModal({ show, onHide, event }: EventReg
             />
           </Form.Group>
 
+          {/* ===== Buttons ===== */}
           <div className="d-flex gap-2 justify-content-end">
-            <Button variant="secondary" onClick={onHide} style={{
-              backgroundColor: 'var(--gray-600)',
-              border: 'none'
-            }}>
+            <Button
+              variant="secondary"
+              onClick={onHide}
+              style={{
+                backgroundColor: 'var(--gray-600)',
+                border: 'none'
+              }}
+            >
               Cancel
             </Button>
-            <Button type="submit" className="btn-user-submit">
+            <Button type="submit" className="btn-user-submit" style={{color:"white"}}>
               Submit Registration
             </Button>
           </div>
