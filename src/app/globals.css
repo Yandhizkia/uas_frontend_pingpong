@@ -38,7 +38,7 @@ body {
 }
 
 .btn-register {
-  background-color: #b8a080;
+  background-color: #f1c76e;
   border: none;
   color: white;
   padding: 0.5rem 1.5rem;
@@ -1784,7 +1784,7 @@ body {
 }
 
 .auth-submit-btn {
-  background: linear-gradient(135deg, #b8a080 0%, #d4b896 100%) !important;
+  background: linear-gradient(135deg, #f1c76e) !important;
   border: none !important;
   color: #ffffff !important;
   font-weight: 700;
@@ -2816,4 +2816,27 @@ body {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
+}
+
+.btn-user-submit {
+  /* Gaya default (tidak di-hover): Outline */
+  background-color: transparent;
+  border: 2px solid #f1c76e; /* Border kuning keemasan */
+  color: #f1c76e;            /* Teks kuning keemasan */
+  border-radius: 8px;        /* Contoh radius border, sesuaikan jika perlu */
+  padding: 10px 20px;        /* Contoh padding, sesuaikan jika perlu */
+  transition: all 0.3s ease; /* Transisi halus untuk semua properti yang berubah */
+}
+
+.btn-user-submit:hover {
+  /* Gaya saat di-hover: Solid */
+  background-color: #f1c76e; /* Latar belakang solid kuning keemasan */
+  color: #000;               /* Teks hitam untuk kontras yang baik */
+  border-color: #f1c76e;     /* Pastikan border juga sesuai */
+}
+
+.btn-user-submit:focus {
+  /* Menghilangkan outline biru default browser/Bootstrap saat fokus */
+  outline: none !important;
+  box-shadow: none !important;
 }

@@ -318,6 +318,9 @@ export default function EventPage() {
                 <li>
                   <a href="/event">Event</a>
                 </li>
+                <li>
+                  <a href="/contact">Feedback</a>
+                </li>
               </ul>
             </Col>
             <Col md={3}>

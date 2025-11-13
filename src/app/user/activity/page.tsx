@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import UserSidebar from '../components/Sidebar';
 import UserHeader from '../components/Header';
 import { Container, Card, Badge, Tabs, Tab } from 'react-bootstrap';
+// Import icons dari react-icons/bs
+import { Clock, GeoAlt } from "react-bootstrap-icons";
 
 export default function ActivityPage() {
   const [activeTab, setActiveTab] = useState('all');
@@ -84,6 +86,67 @@ export default function ActivityPage() {
 
   return (
     <div className="admin-layout">
+      <style jsx global>{`
+        /* Mengatur gaya dasar untuk semua nav-link (tab tidak aktif) */
+        .activity-tabs .nav-link {
+          color: #ADB5BD !important; /* Warna teks abu-abu untuk tab yang TIDAK dipilih */
+          font-weight: bold !important; /* Membuat teks menjadi lebih tebal */
+          background-color: transparent !important; /* Latar belakang selalu transparan */
+          border-bottom: 3px solid transparent !important; /* Garis bawah transparan */
+          border-radius: 0 !important; /* Hapus border-radius */
+          outline: none !important; /* Pastikan tidak ada outline default */
+          box-shadow: none !important; /* Pastikan tidak ada box-shadow default */
+          transition: all 0.2s ease-in-out; /* Transisi halus untuk efek hover */
+        }
+
+        /* Mengatur gaya saat tab TIDAK aktif di-hover atau fokus */
+        .activity-tabs .nav-link:not(.active):hover,
+        .activity-tabs .nav-link:not(.active):focus {
+          background-color: #FFFFFF !important; /* Latar belakang menjadi putih (seperti card) */
+          color: #2C313A !important; /* Warna teks menjadi gelap (seperti background utama) */
+          border-bottom-color: transparent !important; /* Hapus garis bawah saat di-hover */
+          border-radius: 0.25rem 0.25rem 0 0 !important; /* Tambahkan border-radius di atas */
+          outline: none !important; /* Hapus outline saat hover/focus */
+          box-shadow: none !important; /* Hapus box-shadow saat hover/focus */
+        }
+
+        /* Mengatur gaya untuk tab yang aktif */
+        .activity-tabs .nav-link.active {
+          color: #f1c76e !important; /* Warna teks kuning untuk tab yang DIPILIH */
+          background-color: transparent !important; /* Latar belakang tab aktif tetap transparan */
+          border-bottom-color: #f1c76e !important; /* Garis bawah kuning untuk tab aktif */
+          border-color: transparent transparent #f1c56e transparent !important; /* Sesuaikan border agar hanya bawah yang kuning */
+          outline: none !important; /* Hapus outline saat aktif */
+          box-shadow: none !important; /* Hapus box-shadow saat aktif */
+        }
+
+        /* Mengatur gaya saat tab AKTIF di-hover atau fokus (agar tidak berubah dari state aktif) */
+        .activity-tabs .nav-link.active:hover,
+        .activity-tabs .nav-link.active:focus {
+          color: #f1c76e !important; /* Tetap kuning */
+          background-color: transparent !important; /* Tetap transparan */
+          border-bottom-color: #f1c76e !important; /* Tetap garis bawah kuning */
+          outline: none !important; /* Hapus outline */
+          box-shadow: none !important; /* Hapus box-shadow */
+        }
+
+        /* Menyesuaikan jarak antar tab jika diperlukan */
+        .activity-tabs .nav-item {
+          margin-right: 15px; /* Sesuaikan jarak antar tab */
+        }
+
+        /* Menghilangkan garis abu-abu di bawah tab secara keseluruhan jika ada */
+        .activity-tabs .nav-tabs {
+          border-bottom: none !important;
+        }
+
+        /* Gaya untuk ikon di activity-meta agar sejajar dengan teks */
+        .activity-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Jarak antara ikon dan teks */
+        }
+      `}</style>
       <UserSidebar />
       <div className="admin-content">
         <UserHeader title="My Activity" />
@@ -131,8 +194,9 @@ export default function ActivityPage() {
                             <p className="activity-description">{activity.description}</p>
                             
                             <div className="activity-meta">
-                              <span>🕐 {activity.time}</span>
-                              <span>📍 {activity.location}</span>
+                              {/* Menggunakan React Bootstrap Icons di sini */}
+                              <span><Clock /> {activity.time}</span>
+                              <span><GeoAlt /> {activity.location}</span>
                             </div>
                           </Card.Body>
                         </Card>
@@ -168,8 +232,9 @@ export default function ActivityPage() {
                             <p className="activity-description">{activity.description}</p>
                             
                             <div className="activity-meta">
-                              <span>🕐 {activity.time}</span>
-                              <span>📍 {activity.location}</span>
+                              {/* Menggunakan React Bootstrap Icons di sini */}
+                              <span><Clock /> {activity.time}</span>
+                              <span><GeoAlt /> {activity.location}</span>
                             </div>
                           </Card.Body>
                         </Card>
@@ -205,8 +270,9 @@ export default function ActivityPage() {
                             <p className="activity-description">{activity.description}</p>
                             
                             <div className="activity-meta">
-                              <span>🕐 {activity.time}</span>
-                              <span>📍 {activity.location}</span>
+                              {/* Menggunakan React Bootstrap Icons di sini */}
+                              <span><Clock /> {activity.time}</span>
+                              <span><GeoAlt /> {activity.location}</span>
                             </div>
                           </Card.Body>
                         </Card>

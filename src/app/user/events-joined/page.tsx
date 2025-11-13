@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import UserSidebar from '../components/Sidebar';
 import UserHeader from '../components/Header';
 import { Container, Card, Badge, Row, Col, Button, Modal } from 'react-bootstrap';
+// Import icons dari react-bootstrap-icons
+import { CalendarDate, Clock, GeoAlt, Trophy } from 'react-bootstrap-icons';
 
 export default function EventsJoinedPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -107,6 +109,9 @@ export default function EventsJoinedPage() {
     setShowDetailModal(true);
   };
 
+  // Define a dark background color for the icons to contrast with yellow
+  const iconBgColor = '#343a40'; // Using the same dark color as button hover text for consistency
+
   return (
     <div className="admin-layout">
       <UserSidebar />
@@ -126,8 +131,8 @@ export default function EventsJoinedPage() {
               <Row className="g-4">
                 {eventsJoined.map((event) => (
                   <Col md={6} lg={4} key={event.id}>
-                    <Card className="event-joined-card">
-                      <Card.Body className="p-4">
+                    <Card className="event-joined-card h-100"> 
+                      <Card.Body className="p-4 d-flex flex-column"> 
                         <div className="d-flex justify-content-between align-items-start mb-3">
                           <Badge bg={getTypeColor(event.type)}>
                             {event.type.toUpperCase()}
@@ -137,23 +142,29 @@ export default function EventsJoinedPage() {
 
                         <h5 className="event-joined-title">{event.title}</h5>
 
-                        <div className="event-joined-meta">
+                        <div className="event-joined-meta mb-3"> {/* mb-3 for ~15px spacing */}
                           <div className="meta-item">
-                            <span className="meta-icon">📅</span>
+                            <span className="icon-with-background">
+                                <CalendarDate style={{ color: iconBgColor }} /> {/* Icon color */}
+                            </span>
                             <span>{event.date}</span>
                           </div>
                           <div className="meta-item">
-                            <span className="meta-icon">🕐</span>
+                            <span className="icon-with-background">
+                                <Clock style={{ color: iconBgColor }} /> {/* Icon color */}
+                            </span>
                             <span>{event.time}</span>
                           </div>
                           <div className="meta-item">
-                            <span className="meta-icon">📍</span>
+                            <span className="icon-with-background">
+                                <GeoAlt style={{ color: iconBgColor }} /> {/* Icon color */}
+                            </span>
                             <span>{event.location}</span>
                           </div>
                         </div>
 
                         {event.status === 'completed' && (
-                          <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--gray-600)' }}>
+                          <div className="mt-3 pt-3 mb-3" style={{ borderTop: '1px solid var(--gray-600)' }}> {/* mb-3 for ~15px spacing */}
                             <div className="d-flex justify-content-between align-items-center">
                               <span style={{ color: 'var(--gray-400)', fontSize: '0.85rem' }}>
                                 Attendance:
@@ -163,15 +174,17 @@ export default function EventsJoinedPage() {
                             {event.achievement && (
                               <div className="mt-2">
                                 <Badge bg="warning" style={{ fontSize: '0.85rem' }}>
-                                  🏆 {event.achievement}
+                                  <span className="icon-with-background small-icon-bg me-1">
+                                      <Trophy style={{ color: iconBgColor }} />
+                                  </span> 
+                                  {event.achievement}
                                 </Badge>
                               </div>
                             )}
                           </div>
                         )}
-
                         <Button 
-                          className="btn-view-detail w-100 mt-3"
+                          className="btn-view-detail w-100 mt-auto btn-custom-yellow-outline" 
                           onClick={() => handleShowDetail(event)}
                         >
                           View Details
@@ -227,7 +240,12 @@ export default function EventsJoinedPage() {
                 {selectedEvent.achievement && (
                   <div className="detail-row">
                     <strong>Achievement:</strong>
-                    <span style={{ color: '#f1c76e' }}>{selectedEvent.achievement}</span>
+                    <span style={{ color: '#f1c76e' }}>
+                      <span className="icon-with-background small-icon-bg me-1">
+                          <Trophy style={{ color: iconBgColor }} />
+                      </span>
+                      {selectedEvent.achievement}
+                    </span>
                   </div>
                 )}
               </div>
@@ -242,6 +260,70 @@ export default function EventsJoinedPage() {
           )}
         </Modal.Body>
       </Modal>
+
+      {/* Custom styles for the button, icons, and their backgrounds */}
+      <style jsx global>{`
+        .btn-custom-yellow-outline {
+          border: 1px solid #f1c76e !important;
+          color: #f1c76e !important;
+          background-color: transparent !important;
+          transition: all 0.2s ease-in-out;
+        }
+
+        .btn-custom-yellow-outline:hover {
+          background-color: #f1c76e !important;
+          color: #343a40 !important; /* Dark text for contrast on yellow background */
+          border-color: #f1c76e !important;
+        }
+
+        .event-joined-card .card-body {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .event-joined-card {
+            height: 100%;
+        }
+
+        /* Styles for the icon with yellow background */
+        .icon-with-background {
+          display: inline-flex; /* Use inline-flex to align with text */
+          align-items: center;
+          justify-content: center;
+          width: 30px; /* Fixed width for the background circle */
+          height: 30px; /* Fixed height for the background circle */
+          background-color: #f1c76e; /* Yellow background */
+          border-radius: 50%; /* Make it circular */
+          margin-right: 0.75rem; /* Space between icon background and text, roughly 12px */
+          flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .icon-with-background svg {
+          font-size: 1.1rem; /* Adjust icon size to fit well within the circle */
+        }
+
+        /* Smaller version for the trophy icon in the achievement badge */
+        .icon-with-background.small-icon-bg {
+            width: 22px;
+            height: 22px;
+            margin-right: 0.5rem; /* Adjust margin for smaller icon */
+        }
+
+        .icon-with-background.small-icon-bg svg {
+            font-size: 0.9rem; /* Adjust icon size for smaller background */
+        }
+
+        /* Ensure meta-item items align nicely */
+        .event-joined-meta .meta-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem; /* Space between meta items */
+        }
+
+        .event-joined-meta .meta-item:last-child {
+            margin-bottom: 0; /* No margin for the last item */
+        }
+      `}</style>
     </div>
   );
 }
