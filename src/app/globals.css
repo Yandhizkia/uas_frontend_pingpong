@@ -2764,3 +2764,56 @@ body {
     padding: 0.75rem;
   }
 }
+
+/* Events Management Tabs */
+.event-tabs .nav-link {
+  color: var(--gray-400);
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.event-tabs .nav-link:hover {
+  color: #f1c76e;
+  border-bottom-color: rgba(241, 199, 110, 0.3);
+}
+
+.event-tabs .nav-link.active {
+  color: #f1c76e;
+  background: transparent;
+  border-bottom-color: #f1c76e;
+}
+
+/* Form improvements for Events Management */
+.modal-body-custom .form-check {
+  padding: 1rem;
+  background: rgba(184, 160, 128, 0.05);
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.modal-body-custom .form-check-input:checked {
+  background-color: #f1c76e;
+  border-color: #f1c76e;
+}
+
+.modal-body-custom .form-check-label {
+  color: #cbd5e0;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+/* Table row hover for events */
+.cms-table tbody tr:hover {
+  background-color: rgba(241, 199, 110, 0.05);
+}
+
+/* Responsive for events management */
+@media (max-width: 768px) {
+  .event-tabs .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}

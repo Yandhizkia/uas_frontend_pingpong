@@ -4,7 +4,7 @@ import React from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { House, FileText, CalendarEvent, Megaphone } from "react-bootstrap-icons";
+import { House, FileText, CalendarEvent, Megaphone, ClipboardCheck, ChatDots } from "react-bootstrap-icons";
 
 
 export default function DashboardPage() {
@@ -80,11 +80,26 @@ export default function DashboardPage() {
               <Card className="stat-card h-100"> {/* Added h-100 here */}
                 <Card.Body>
                   <div className="stat-icon">
-                    <Megaphone size={48} color="#f1c76e" />
+                    <ChatDots size={48} color="#f1c76e" />
                   </div>
                   <h3>Feedback</h3>
                   <p>Read & reply message from customers</p>
                   <a href="/admin/announcement" className="stat-link">
+                    Kelola →
+                  </a>
+                </Card.Body>
+              </Card>
+            </Col>
+
+              <Col md={4}>
+              <Card className="stat-card h-100"> {/* Added h-100 here */}
+                <Card.Body>
+                  <div className="stat-icon">
+                    <ClipboardCheck size={48} color="#f1c76e" />
+                  </div>
+                  <h3>Event Registration</h3>
+                  <p>Manage Event Registration</p>
+                  <a href="/admin/event-registrations" className="stat-link">
                     Kelola →
                   </a>
                 </Card.Body>
