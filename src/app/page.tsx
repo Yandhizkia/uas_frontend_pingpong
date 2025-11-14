@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react"; // Import useState
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   Nav,
@@ -10,7 +10,7 @@ import {
   Row,
   Col,
   Carousel,
-  Modal, // Import Modal
+  Modal,
 } from "react-bootstrap";
 import Link from "next/link";
 import {
@@ -23,21 +23,45 @@ import {
   People,
 } from "react-bootstrap-icons";
 
-// Interface untuk tipe Article
 interface ArticleType {
   id: number;
   title: string;
-  shortDescription: string;
+  description: string;
   image: string;
   fullDescription: string;
 }
 
-export default function HomePage() {
-  // Simulate logged in user - nanti diganti dengan real auth
-  const isLoggedIn = false; // ubah jadi true buat test logged in
-  const userName = "John Doe"; // dari session/auth nanti
+interface SectionType {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+}
 
-  // Sample feedbacks with user info
+interface CarouselType {
+  id: number;
+  image: string;
+
+  // ⬅️ Tambahan: field baru untuk title & description
+  title?: string;
+  description?: string;
+}
+
+export default function HomePage() {
+  const isLoggedIn = false;
+  const userName = "John Doe";
+
+  // STATE untuk data dari localStorage
+  const [carouselItems, setCarouselItems] = useState<CarouselType[]>([]);
+  const [sections, setSections] = useState<SectionType[]>([]);
+  const [articlesData, setArticlesData] = useState<ArticleType[]>([]);
+
+  // Modal article
+  const [showArticleModal, setShowArticleModal] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState<ArticleType | null>(
+    null
+  );
+
   const feedbacks = [
     {
       name: "John Doe",
@@ -59,27 +83,16 @@ export default function HomePage() {
     },
   ];
 
-  // Data contoh untuk article-artikel Anda
-  const articlesData: ArticleType[] = [
-    {
-      id: 1,
-      title: "Keseruan UKM LTMU",
-      shortDescription: "Must have for someone good luck to see more for the real person.",
-      image: "/images/Home/Section4_1.jpg",
-      fullDescription: "Ini adalah deskripsi lengkap tentang keseruan kegiatan UKM LTMU. Setiap anggota merasakan pengalaman berharga, mulai dari latihan rutin hingga kebersamaan dalam setiap event. Kami selalu berusaha menciptakan lingkungan yang positif dan mendukung bagi semua anggota untuk berkembang.",
-    },
-    {
-      id: 2,
-      title: "Kegiatan Latihan LTMU",
-      shortDescription: "This is the awesome give lots of awesome for it about one of those.",
-      image: "/images/Home/Section4_2.jpg",
-      fullDescription: "Kegiatan latihan rutin LTMU dirancang untuk meningkatkan kemampuan tenis meja anggota, mulai dari teknik dasar hingga strategi tingkat lanjut. Kami juga memiliki sesi sparring yang intensif dan bimbingan dari pelatih berpengalaman untuk membantu setiap anggota mencapai potensi terbaik mereka.",
-    },
-  ];
+  // Load data dari localStorage
+  useEffect(() => {
+    const savedCarousel = localStorage.getItem("homepage_carousel");
+    const savedSections = localStorage.getItem("homepage_sections");
+    const savedArticles = localStorage.getItem("homepage_articles");
 
-  // State untuk modal article
-  const [showArticleModal, setShowArticleModal] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<ArticleType | null>(null);
+    setCarouselItems(savedCarousel ? JSON.parse(savedCarousel) : []);
+    setSections(savedSections ? JSON.parse(savedSections) : []);
+    setArticlesData(savedArticles ? JSON.parse(savedArticles) : []);
+  }, []);
 
   const handleArticleClick = (article: ArticleType) => {
     setSelectedArticle(article);
@@ -92,9 +105,8 @@ export default function HomePage() {
   };
 
   return (
-    <div
-      style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}
-    >
+    <div style={{ backgroundColor: "#1a1d29", minHeight: "100vh", color: "white" }}>
+      {/* Navbar */}
       <Navbar expand="lg" className="navbar-custom fixed-top">
         <Container style={{ position: "relative", zIndex: 2 }}>
           <Navbar.Brand href="/" style={{ fontWeight: 600 }}>
@@ -111,10 +123,7 @@ export default function HomePage() {
             <span className="navbar-logo-text">LTMU</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse
-            id="basic-navbar-nav"
-            className="justify-content-end"
-          >
+          <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
             <Nav>
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/about">About</Nav.Link>
@@ -129,77 +138,78 @@ export default function HomePage() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      {/* Hero Carousel */}
       <Carousel className="hero-carousel" fade interval={5000} pause="hover">
-        <Carousel.Item>
-          <img
-            src="/images/Home/Section1_1.jpg"
-            alt="Hero 1"
-            style={{
-              maxWidth: "1800px",
-              maxHeight: "680px",
-              width: "100%",
-              height: "auto",
-              objectFit: "cover",
-              objectPosition: "center 75%",
-            }}
-          />
-          <div className="hero-overlay"></div>
-          <Carousel.Caption className="hero-caption">
-            <h2 className="hero-caption-title">Welcome to LTMU</h2>
-            <p className="hero-caption-text">Latihan Tenis Meja Untar</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            src="/images/Home/Section1_2.jpg"
-            alt="Hero 2"
-            style={{
-              maxWidth: "1800px",
-              maxHeight: "680px",
-              width: "100%",
-              height: "auto",
-              objectFit: "cover",
-              objectPosition: "center bottom",
-            }}
-          />
-          <div className="hero-overlay"></div>
-          <Carousel.Caption className="hero-caption">
-            <h2 className="hero-caption-title">Join Our Community</h2>
-            <p className="hero-caption-text">
-              Kembangkan skill tenis meja kamu bersama kami
-            </p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            src="/images/Home/Section1_3.jpg"
-            alt="Hero 3"
-            style={{
-              maxWidth: "1800px",
-              maxHeight: "680px",
-              width: "100%",
-              height: "auto",
-              objectFit: "cover",
-            }}
-          />
-          <div className="hero-overlay"></div>
-          <Carousel.Caption className="hero-caption">
-            <h2 className="hero-caption-title">Compete & Excel</h2>
-            <p className="hero-caption-text">Raih prestasi bersama LTMU</p>
-          </Carousel.Caption>
-        </Carousel.Item>
+        {carouselItems.length > 0 ? (
+          carouselItems.map((item) => (
+            <Carousel.Item key={item.id}>
+              <img
+                src={item.image}
+                alt="Hero Slide"
+                style={{
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                  objectPosition: "center 75%",
+                }}
+              />
+              <div className="hero-overlay"></div>
+
+              {/* ⬅️ Diperbarui: Caption fixed di bagian atas tengah */}
+              {(item.title || item.description) && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "65%", // ⬅️ Naik ke atas (dari bawah ke atas)
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    textAlign: "center",
+                    padding: "15px 25px",
+                    borderRadius: "12px",
+                    maxWidth: "100%",
+                    zIndex: 2,
+                  }}
+                >
+                  {item.title && (
+                    <h3 style={{ fontWeight: 700, color: "#fff", marginBottom: "8px", textShadow: "2px 4px 8px rgba(0, 0, 0, 0.9)", }}>
+                      {item.title}
+                    </h3>
+                  )}
+                  {item.description && (
+                    <p style={{ color: "#ddd", fontSize: "1rem", margin: 0 }}>
+                      {item.description}
+                    </p>
+                  )}
+                </div>
+              )}
+            </Carousel.Item>
+          ))
+        ) : (
+          <Carousel.Item>
+            <img
+              src="/images/Home/pingpong.jpeg"
+              alt="Default"
+              style={{ width: "100%", height: "auto" }}
+            />
+          </Carousel.Item>
+        )}
       </Carousel>
+
+      {/* Content Sections */}
       <Container className="py-5 mt-5">
         <h2 className="section-title">Info Lengkap</h2>
         <Row className="g-4">
-          <Col md={4}>
-            <Link href="/about" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", color: "inherit" }}>
+          {sections.length > 0 ? (
+            sections.map((sec) => (
+              <Col md={4} key={sec.id}>
                 <Card className="card-custom">
                   <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
                     <Card.Img
                       variant="top"
-                      src="/images/Home/Section2_1.jpg"
+                      src={sec.image}
                       style={{
                         maxWidth: "800px",
                         maxHeight: "415px",
@@ -210,76 +220,19 @@ export default function HomePage() {
                     />
                   </div>
                   <Card.Body className="p-0">
-                    <Card.Title>About</Card.Title>
-                    <Card.Text>
-                      LTMU adalah UKM di Universitas Tarumanagara yang menjadi
-                      wadah bagi mahasiswa untuk mengembangkan minat dan bakat
-                      dalam olahraga tenis meja melalui latihan rutin dan
-                      kompetisi, dengan tujuan meningkatkan prestasi dan
-                      disiplin diri.
-                    </Card.Text>
+                    <Card.Title>{sec.title}</Card.Title>
+                    <Card.Text>{sec.description}</Card.Text>
                   </Card.Body>
                 </Card>
-              </a>
-            </Link>
-          </Col>
-          <Col md={4}>
-            <Link href="/event" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", color: "inherit" }}>
-                <Card className="card-custom">
-                  <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
-                    <Card.Img
-                      variant="top"
-                      src="/images/Home/Section2_2.jpg"
-                      style={{
-                        maxWidth: "800px",
-                        maxHeight: "415px",
-                        width: "100%",
-                        height: "auto",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </div>
-                  <Card.Body className="p-0">
-                    <Card.Title>Event</Card.Title>
-                    <Card.Text>
-                      Selain melaksanakan latiha, LTMU juga ada beberapa
-                      kegiatan lain yang bisa kalian ikutin loh!
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </a>
-            </Link>
-          </Col>
-          <Col md={4}>
-            <Link href="/contact" passHref legacyBehavior>
-              <a style={{ textDecoration: "none", color: "inherit" }}>
-                <Card className="card-custom">
-                  <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
-                    <Card.Img
-                      variant="top"
-                      src="/images/Home/Section2_3.jpg"
-                      style={{
-                        maxWidth: "800px",
-                        maxHeight: "415px",
-                        width: "100%",
-                        height: "auto",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </div>
-                  <Card.Body className="p-0">
-                    <Card.Title>Feedback</Card.Title>
-                    <Card.Text>
-                      Silahkan memberikan kritik dan saran melalui Page ini.
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </a>
-            </Link>
-          </Col>
+              </Col>
+            ))
+          ) : (
+            <p>Belum ada konten Info Lengkap.</p>
+          )}
         </Row>
       </Container>
+
+      {/* Location (JANGAN DIUBAH) */}
       <Container className="py-5">
         <h2 className="section-title">Location</h2>
         <Row className="align-items-center g-4">
@@ -291,24 +244,12 @@ export default function HomePage() {
                     <GeoAlt size={32} color="#f1c76e" />
                   </div>
                   <div>
-                    <h4
-                      style={{
-                        fontWeight: 700,
-                        color: "#f1c76e",
-                        marginBottom: "0.5rem",
-                      }}
-                    >
+                    <h4 style={{ fontWeight: 700, color: "#f1c76e", marginBottom: "0.5rem" }}>
                       Universitas Tarumanagara
                     </h4>
-                    <p
-                      style={{
-                        color: "#cbd5e0",
-                        marginBottom: 0,
-                        lineHeight: "1.6",
-                      }}
-                    >
-                      Letjen S. Parman St No.1, RT.6/RW.16, Tomang, Grogol
-                      petamburan, West Jakarta City, Jakarta 11440
+                    <p style={{ color: "#cbd5e0", marginBottom: 0, lineHeight: "1.6" }}>
+                      Letjen S. Parman St No.1, RT.6/RW.16, Tomang, Grogol petamburan,
+                      West Jakarta City, Jakarta 11440
                     </p>
                   </div>
                 </div>
@@ -357,38 +298,46 @@ export default function HomePage() {
           </Col>
         </Row>
       </Container>
+
+      {/* Articles */}
       <Container className="py-5">
         <h2 className="section-title">Article</h2>
         <Row className="g-4">
-          {articlesData.map((article: ArticleType) => (
-            <Col md={6} key={article.id}>
-              <Card
-                className="card-custom"
-                onClick={() => handleArticleClick(article)}
-                style={{ cursor: "pointer" }} // Memberikan indikasi bahwa kartu bisa diklik
-              >
-                <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
-                  <Card.Img
-                    variant="top"
-                    src={article.image}
-                    style={{
-                      maxWidth: "800px",
-                      maxHeight: "400px",
-                      width: "100%",
-                      height: "auto",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-                <Card.Body className="p-0">
-                  <Card.Title>{article.title}</Card.Title>
-                  <Card.Text>{article.shortDescription}</Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+          {articlesData.length > 0 ? (
+            articlesData.map((article) => (
+              <Col md={6} key={article.id}>
+                <Card
+                  className="card-custom"
+                  onClick={() => handleArticleClick(article)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div style={{ overflow: "hidden", borderRadius: "0.5rem" }}>
+                    <Card.Img
+                      variant="top"
+                      src={article.image}
+                      style={{
+                        maxWidth: "800px",
+                        maxHeight: "400px",
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
+                  <Card.Body className="p-0">
+                    <Card.Title>{article.title}</Card.Title>
+                    <Card.Text>{article.description}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))
+          ) : (
+            <p>Belum ada artikel yang ditambahkan.</p>
+          )}
         </Row>
       </Container>
+
+      {/* Feedback (TIDAK DIUBAH) */}
       <Container className="py-5">
         <h2 className="section-title">Feedback</h2>
         <Row className="g-4">
@@ -411,7 +360,7 @@ export default function HomePage() {
         </Row>
       </Container>
 
-      {/* Modal untuk detail Artikel */}
+      {/* Modal Artikel */}
       <Modal show={showArticleModal} onHide={handleCloseArticleModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>{selectedArticle?.title}</Modal.Title>
@@ -443,13 +392,12 @@ export default function HomePage() {
         </Modal.Footer>
       </Modal>
 
+      {/* Footer (TIDAK DIUBAH) */}
       <footer className="footer-custom">
         <Container>
           <Row>
             <Col md={3}>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}
-              >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <img src="/images/Logo/ltmu.jpg" alt="LTMU Logo" height={35} />
                 <h3 style={{ margin: 0 }}>LTMU</h3>
               </div>
@@ -466,31 +414,21 @@ export default function HomePage() {
                     margin: 0,
                   }}
                 >
-                  <a
-                    className="nav-link"
-                    href="#"
-                    style={{ display: "flex", alignItems: "center" }}
-                  >
+                  <a className="nav-link" href="#">
                     <Facebook size={24} color="#3b5998" />
                   </a>
-                  <a
-                    className="nav-link"
-                    href="#"
-                    style={{ display: "flex", alignItems: "center" }}
-                  >
+                  <a className="nav-link" href="#">
                     <Youtube size={24} color="#FF0000" />
                   </a>
                   <a
                     className="nav-link"
                     href="https://x.com/tenismejauntar?t=auj9mGyE3DCK6YlYJCFgbQ&s=09"
-                    style={{ display: "flex", alignItems: "center" }}
                   >
                     <Twitter size={24} color="#1DA1F2" />
                   </a>
                   <a
                     className="nav-link"
                     href="https://www.instagram.com/ltmu_untar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                    style={{ display: "flex", alignItems: "center" }}
                   >
                     <Instagram size={24} color="#d620eaff" />
                   </a>
@@ -498,13 +436,8 @@ export default function HomePage() {
               </Col>
             </Col>
             <Col md={3}>
-              <h4
-                style={{
-                fontWeight: 700,
-                color: "#f1c76e",
-                marginBottom: "0.5rem",
-                }}>
-              Link
+              <h4 style={{ fontWeight: 700, color: "#f1c76e", marginBottom: "0.5rem" }}>
+                Link
               </h4>
               <ul>
                 <li>
@@ -519,14 +452,9 @@ export default function HomePage() {
               </ul>
             </Col>
             <Col md={3}>
-              <h4
-                style={{
-                fontWeight: 700,
-                color: "#f1c76e",
-                marginBottom: "0.5rem",
-                }}>
-                  Contact
-                  </h4>
+              <h4 style={{ fontWeight: 700, color: "#f1c76e", marginBottom: "0.5rem" }}>
+                Contact
+              </h4>
               <ul>
                 <li>
                   <a href="mailto:ltmu@untar.ac.id">maheshaabi@gmail.com</a>
@@ -537,19 +465,13 @@ export default function HomePage() {
               </ul>
             </Col>
             <Col md={3}>
-              <h4
-                style={{
-                fontWeight: 700,
-                color: "#f1c76e",
-                marginBottom: "0.5rem",
-                }}>
-                  Practice Schedule
-                  </h4>
+              <h4 style={{ fontWeight: 700, color: "#f1c76e", marginBottom: "0.5rem" }}>
+                Practice Schedule
+              </h4>
               <ul>
                 <li>Rabu dan Jumat, 13.30–15.30</li>
-<li>Kamis, 13.30–17.00</li>
-<li>Lokasi: Untar Arena, Gedung Utama</li>
-
+                <li>Kamis, 13.30–17.00</li>
+                <li>Lokasi: Untar Arena, Gedung Utama</li>
               </ul>
             </Col>
           </Row>
