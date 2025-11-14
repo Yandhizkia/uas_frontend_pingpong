@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import UserSidebar from '../components/Sidebar';
 import UserHeader from '../components/Header';
 import { Container, Card, Badge, Form, Modal, Button } from 'react-bootstrap';
-import { BellFill, CheckCircleFill } from 'react-bootstrap-icons';
+import { BellFill, CheckCircleFill, ExclamationDiamondFill } from 'react-bootstrap-icons';
+
 
 export default function AnnouncementPage() {
   const [filter, setFilter] = useState('all');
@@ -127,8 +128,9 @@ export default function AnnouncementPage() {
               <Card className="announcement-stat-card">
                 <Card.Body className="d-flex align-items-center gap-3">
                   <div className="stat-icon-announcement important">
-                    <span style={{ fontSize: '1.5rem' }}>⭐</span>
-                  </div>
+  <ExclamationDiamondFill size={24} />
+</div>
+
                   <div>
                     <div className="stat-number">{importantCount}</div>
                     <div className="stat-label">Important</div>
@@ -197,9 +199,10 @@ export default function AnnouncementPage() {
                             <h5 className="announcement-title-user mb-0">
                               {announcement.title}
                             </h5>
-                            {announcement.important && (
-                              <span style={{ fontSize: '1.25rem' }}>⭐</span>
-                            )}
+                           {announcement.important && (
+  <ExclamationDiamondFill size={20} color="#f1c76e" />
+)}
+
                           </div>
                           {getTypeBadge(announcement.type)}
                         </div>
@@ -258,9 +261,10 @@ export default function AnnouncementPage() {
                   <h4 style={{ color: '#f1c76e', marginBottom: 0 }}>
                     {selectedAnnouncement.title}
                   </h4>
-                  {selectedAnnouncement.important && (
-                    <span style={{ fontSize: '1.5rem' }}>⭐</span>
-                  )}
+                 {selectedAnnouncement.important && (
+  <ExclamationDiamondFill size={24} color="#f1c76e" />
+)}
+
                 </div>
                 {getTypeBadge(selectedAnnouncement.type)}
               </div>
