@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+import CustomToast from "@/app/components/CustomToast";
+import CustomConfirm from "@/app/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
 import {
   Container,
   Row,
@@ -29,66 +33,42 @@ interface Section {
 type ModalType = 'carousel' | 'section' | 'article';
 
 export default function HomepageManagement() {
+  // ✅ Tambahin hooks untuk notifications
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
+
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<ModalType>('carousel');
 
   const [editingItem, setEditingItem] = useState<any>(null);
 
-  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([
-    {
-      id: 1,
-      image:
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
-    },
-    {
-      id: 3,
-      image:
-        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
-    },
-  ]);
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [articles, setArticles] = useState<Section[]>([]);
 
-  const [sections, setSections] = useState<Section[]>([
-    {
-      id: 1,
-      title: "About",
-      description: "Lorem ipsum dolor sit amet",
-      image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400",
-    },
-    {
-      id: 2,
-      title: "Game",
-      description: "This will be awesome",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
-    },
-    {
-      id: 3,
-      title: "Contact",
-      description: "Lorem ipsum, awesome",
-      image:
-        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
-    },
-  ]);
+  // Load data dari localStorage saat pertama kali render
+  useEffect(() => {
+    const storedCarousel = localStorage.getItem("homepage_carousel");
+    const storedSections = localStorage.getItem("homepage_sections");
+    const storedArticles = localStorage.getItem("homepage_articles");
 
-  const [articles, setArticles] = useState<Section[]>([
-    {
-      id: 1,
-      title: "Keseruan UKM LTMU",
-      description:
-        "Must have for someone good luck to see more for the real person.",
-      image: "/images/Home/Section4_1.jpg",
-    },
-    {
-      id: 2,
-      title: "Kegiatan Latihan LTMU",
-      description:
-        "This is the awesome give lots of awesome for it about one of those.",
-      image: "/images/Home/Section4_2.jpg",
-    },
-  ]);
+    if (storedCarousel) setCarouselItems(JSON.parse(storedCarousel));
+    if (storedSections) setSections(JSON.parse(storedSections));
+    if (storedArticles) setArticles(JSON.parse(storedArticles));
+  }, []);
+
+  // Simpan ke localStorage setiap kali data berubah
+  useEffect(() => {
+    localStorage.setItem("homepage_carousel", JSON.stringify(carouselItems));
+  }, [carouselItems]);
+
+  useEffect(() => {
+    localStorage.setItem("homepage_sections", JSON.stringify(sections));
+  }, [sections]);
+
+  useEffect(() => {
+    localStorage.setItem("homepage_articles", JSON.stringify(articles));
+  }, [articles]);
 
   const handleOpenModal = (
     type: "carousel" | "section" | "article",
@@ -104,22 +84,37 @@ export default function HomepageManagement() {
     setEditingItem(null);
   };
 
+  // ✅ GANTI confirm() dengan showConfirm()
   const handleDelete = (
     type: "carousel" | "section" | "article",
     id: number
   ) => {
-    if (confirm("Yakin ingin menghapus item ini?")) {
-      if (type === "carousel") {
-        setCarouselItems(carouselItems.filter((item) => item.id !== id));
-      } else if (type === "section") {
-        setSections(sections.filter((item) => item.id !== id));
-      } else {
-        setArticles(articles.filter((item) => item.id !== id));
-      }
-      alert("Item berhasil dihapus!");
-    }
+    const typeLabels = {
+      carousel: 'slide carousel',
+      section: 'section',
+      article: 'article'
+    };
+
+    showConfirm({
+      title: `Delete ${typeLabels[type]}`,
+      message: `Yakin ingin menghapus ${typeLabels[type]} ini? Tindakan ini tidak dapat dibatalkan.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      variant: 'danger',
+      onConfirm: () => {
+        if (type === "carousel") {
+          setCarouselItems((prev) => prev.filter((item) => item.id !== id));
+        } else if (type === "section") {
+          setSections((prev) => prev.filter((item) => item.id !== id));
+        } else {
+          setArticles((prev) => prev.filter((item) => item.id !== id));
+        }
+        success(`${typeLabels[type]} berhasil dihapus!`);
+      },
+    });
   };
 
+  // ✅ GANTI alert() dengan success()
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -155,7 +150,7 @@ export default function HomepageManagement() {
     }
 
     handleCloseModal();
-    alert("Data berhasil disimpan!");
+    success(editingItem ? 'Data berhasil diupdate!' : 'Data berhasil ditambahkan!');
   };
 
   return (
@@ -211,7 +206,7 @@ export default function HomepageManagement() {
           </Card>
 
           {/* Sections */}
-          <Card className="cms-card">
+          <Card className="cms-card mb-4">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="cms-section-title">Content Sections</h4>
@@ -265,65 +260,68 @@ export default function HomepageManagement() {
                   ))}
                 </tbody>
               </Table>
+
+          
             </Card.Body>
           </Card>
 
-           <Card className="cms-card mt-4">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h4 className="cms-section-title">Article Section</h4>
-            <Button
-              className="btn-add"
-              onClick={() => handleOpenModal("article")}
-            >
-              + Add Article
-            </Button>
-          </div>
+          {/* Article Section */}
+          <Card className="cms-card">
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4 className="cms-section-title">Article Section</h4>
+                <Button
+                  className="btn-add"
+                  onClick={() => handleOpenModal("article")}
+                >
+                  + Add Article
+                </Button>
+              </div>
 
-          <Table className="cms-table" hover responsive>
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {articles.map((article) => (
-                <tr key={article.id}>
-                  <td>
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="table-image"
-                    />
-                  </td>
-                  <td>{article.title}</td>
-                  <td>{article.description}</td>
-                  <td>
-                    <Button
-                      variant="warning"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleOpenModal("article", article)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDelete("article", article.id)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Card.Body>
-      </Card>
+              <Table className="cms-table" hover responsive>
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {articles.map((article) => (
+                    <tr key={article.id}>
+                      <td>
+                        <img
+                          src={article.image}
+                          alt={article.title}
+                          className="table-image"
+                        />
+                      </td>
+                      <td>{article.title}</td>
+                      <td>{article.description}</td>
+                      <td>
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => handleOpenModal("article", article)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete("article", article.id)}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
         </Container>
       </div>
 
@@ -348,7 +346,9 @@ export default function HomepageManagement() {
               <Form.Text>Recommended size: 1600x900px</Form.Text>
             </Form.Group>
 
-            {(modalType === "section" || modalType === "article") && (
+            {(modalType === "carousel" ||
+              modalType === "section" ||
+              modalType === "article") && (
               <>
                 <Form.Group className="mb-3">
                   <Form.Label>Title</Form.Label>
@@ -382,6 +382,19 @@ export default function HomepageManagement() {
           </Form>
         </Modal.Body>
       </Modal>
+
+      {/* ✅ TAMBAHIN Custom Toast & Confirm di akhir */}
+      <CustomToast toasts={toasts} onClose={removeToast} />
+      <CustomConfirm
+        show={confirmState.show}
+        title={confirmState.options.title}
+        message={confirmState.options.message}
+        confirmText={confirmState.options.confirmText}
+        cancelText={confirmState.options.cancelText}
+        variant={confirmState.options.variant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+      />
     </div>
   );
 }

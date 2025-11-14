@@ -1160,6 +1160,14 @@ body {
   border-radius: 0.75rem;
   padding: 1rem;
   transition: all 0.3s;
+  position: relative;
+}
+
+.item-actions {
+  bottom: 10px;
+  right: 10px;
+  gap: 6px;
+  display: flex;
 }
 
 .carousel-item-card:hover {
@@ -2815,5 +2823,116 @@ body {
   .event-tabs .nav-link {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+  }
+}
+
+.btn-user-submit {
+  /* Gaya default (tidak di-hover): Outline */
+  background-color: transparent;
+  border: 2px solid #f1c76e; /* Border kuning keemasan */
+  color: #f1c76e;            /* Teks kuning keemasan */
+  border-radius: 8px;        /* Contoh radius border, sesuaikan jika perlu */
+  padding: 10px 20px;        /* Contoh padding, sesuaikan jika perlu */
+  transition: all 0.3s ease; /* Transisi halus untuk semua properti yang berubah */
+}
+
+.btn-user-submit:hover {
+  /* Gaya saat di-hover: Solid */
+  background-color: #f1c76e; /* Latar belakang solid kuning keemasan */
+  color: #000;               /* Teks hitam untuk kontras yang baik */
+  border-color: #f1c76e;     /* Pastikan border juga sesuai */
+}
+
+.btn-user-submit:focus {
+  /* Menghilangkan outline biru default browser/Bootstrap saat fokus */
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Custom Toast Notifications */
+.custom-toast-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 400px;
+}
+
+.custom-toast {
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  margin-bottom: 1rem;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.custom-toast .toast-header {
+  background-color: var(--gray-800);
+  border-bottom: 1px solid var(--gray-700);
+  color: #d3d7e8;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.custom-toast .toast-header .btn-close {
+  filter: invert(1);
+  opacity: 0.5;
+}
+
+.custom-toast .toast-header .btn-close:hover {
+  opacity: 1;
+}
+
+.custom-toast .toast-body {
+  background-color: var(--gray-700);
+  color: #cbd5e0;
+  padding: 1rem;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.custom-toast-success {
+  border-left: 4px solid #28a745;
+}
+
+.custom-toast-error {
+  border-left: 4px solid #dc3545;
+}
+
+.custom-toast-warning {
+  border-left: 4px solid #ffc107;
+}
+
+.custom-toast-info {
+  border-left: 4px solid #17a2b8;
+}
+
+/* Custom Modal Footer */
+.modal-footer-custom {
+  background-color: var(--gray-800);
+  border-top: 1px solid var(--gray-700);
+  padding: 1rem 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .custom-toast-container {
+    right: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
   }
 }
