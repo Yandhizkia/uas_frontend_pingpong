@@ -169,7 +169,8 @@ export default function HomepageManagement() {
                         alt="Carousel"
                         className="carousel-preview"
                       />
-                      <div className="item-actions">
+                      {/* BUTTON DIPINDAH KE KANAN BAWAH */}
+                      <div className="item-actions position-absolute">
                         <Button
                           variant="warning"
                           size="sm"
@@ -180,9 +181,7 @@ export default function HomepageManagement() {
                         <Button
                           variant="danger"
                           size="sm"
-                          onClick={() =>
-                            handleDelete("carousel", item.id)
-                          }
+                          onClick={() => handleDelete("carousel", item.id)}
                         >
                           Delete
                         </Button>
@@ -232,25 +231,6 @@ export default function HomepageManagement() {
                       </td>
                       <td>{section.title}</td>
                       <td>{section.description}</td>
-                      <td>
-                        <Button
-                          variant="warning"
-                          size="sm"
-                          className="me-2"
-                          onClick={() => handleOpenModal("section", section)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() =>
-                            handleDelete("section", section.id)
-                          }
-                        >
-                          Delete
-                        </Button>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -304,9 +284,7 @@ export default function HomepageManagement() {
                         <Button
                           variant="danger"
                           size="sm"
-                          onClick={() =>
-                            handleDelete("article", article.id)
-                          }
+                          onClick={() => handleDelete("article", article.id)}
                         >
                           Delete
                         </Button>

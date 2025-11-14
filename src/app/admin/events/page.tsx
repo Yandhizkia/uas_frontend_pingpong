@@ -19,7 +19,6 @@ export default function EventsManagementPage() {
       time: '16.00 - 18.00 WIB',
       location: 'GOR Untar',
       type: 'training',
-      status: 'active'
     },
     {
       id: 2,
@@ -28,7 +27,6 @@ export default function EventsManagementPage() {
       time: '09.00 - 15.00',
       location: 'GOR Untar',
       type: 'tournament',
-      status: 'active'
     },
     {
       id: 3,
@@ -37,7 +35,6 @@ export default function EventsManagementPage() {
       time: '14.00 - 16.00',
       location: 'Ruang A',
       type: 'workshop',
-      status: 'active'
     },
   ]);
 
@@ -51,8 +48,6 @@ export default function EventsManagementPage() {
       location: 'GOR Untar',
       type: 'training',
       recurring: true,
-      coach: 'Coach Budi',
-      status: 'active'
     },
     {
       id: 2,
@@ -62,8 +57,6 @@ export default function EventsManagementPage() {
       location: 'GOR Untar',
       type: 'training',
       recurring: true,
-      coach: 'Coach Sari',
-      status: 'active'
     },
     {
       id: 3,
@@ -73,8 +66,6 @@ export default function EventsManagementPage() {
       location: 'GOR Untar',
       type: 'training',
       recurring: true,
-      coach: 'Coach Budi',
-      status: 'active'
     },
     {
       id: 4,
@@ -84,8 +75,6 @@ export default function EventsManagementPage() {
       location: 'GOR Untar',
       type: 'special',
       recurring: true,
-      coach: 'Coach Andi',
-      status: 'active'
     },
   ]);
 
@@ -101,7 +90,6 @@ export default function EventsManagementPage() {
       participants: 24,
       maxParticipants: 50,
       description: 'Tournament internal untuk seleksi atlet',
-      status: 'active'
     },
     {
       id: 2,
@@ -113,7 +101,6 @@ export default function EventsManagementPage() {
       participants: 15,
       maxParticipants: 30,
       description: 'Workshop teknik backhand dengan coach profesional',
-      status: 'active'
     },
   ]);
 
@@ -166,11 +153,6 @@ export default function EventsManagementPage() {
     return <Badge bg={colors[type] || 'secondary'}>{type.toUpperCase()}</Badge>;
   };
 
-  const getStatusBadge = (status: string) => {
-    return status === 'active' 
-      ? <Badge bg="success">Active</Badge>
-      : <Badge bg="secondary">Inactive</Badge>;
-  };
 
   return (
     <div className="admin-layout">
@@ -205,7 +187,6 @@ export default function EventsManagementPage() {
                           <th>Time</th>
                           <th>Location</th>
                           <th>Type</th>
-                          <th>Status</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -217,7 +198,6 @@ export default function EventsManagementPage() {
                             <td>{event.time}</td>
                             <td>{event.location}</td>
                             <td>{getTypeBadge(event.type)}</td>
-                            <td>{getStatusBadge(event.status)}</td>
                             <td>
                               <div className="d-flex gap-1">
                                 <Button 
@@ -269,9 +249,7 @@ export default function EventsManagementPage() {
                           <th>Day</th>
                           <th>Time</th>
                           <th>Location</th>
-                          <th>Coach</th>
                           <th>Type</th>
-                          <th>Status</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -282,9 +260,9 @@ export default function EventsManagementPage() {
                             <td>{schedule.day}</td>
                             <td>{schedule.time}</td>
                             <td>{schedule.location}</td>
-                            <td>{schedule.coach}</td>
+
                             <td>{getTypeBadge(schedule.type)}</td>
-                            <td>{getStatusBadge(schedule.status)}</td>
+
                             <td>
                               <div className="d-flex gap-1">
                                 <Button 
@@ -338,7 +316,6 @@ export default function EventsManagementPage() {
                           <th>Location</th>
                           <th>Type</th>
                           <th>Participants</th>
-                          <th>Status</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -361,7 +338,6 @@ export default function EventsManagementPage() {
                                 {event.participants}/{event.maxParticipants}
                               </Badge>
                             </td>
-                            <td>{getStatusBadge(event.status)}</td>
                             <td>
                               <div className="d-flex gap-1">
                                 <Button 
@@ -465,15 +441,6 @@ export default function EventsManagementPage() {
                       </Form.Select>
                     </Form.Group>
                   </div>
-                  <div className="col-md-6">
-                    <Form.Group className="mb-3">
-                      <Form.Label>Status</Form.Label>
-                      <Form.Select defaultValue={editingItem?.status || 'active'}>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </div>
                 </div>
               </>
             ) : modalType === 'regular' ? (
@@ -544,15 +511,6 @@ export default function EventsManagementPage() {
                       <Form.Select defaultValue={editingItem?.type || 'training'}>
                         <option value="training">Training</option>
                         <option value="special">Special Training</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </div>
-                  <div className="col-md-6">
-                    <Form.Group className="mb-3">
-                      <Form.Label>Status</Form.Label>
-                      <Form.Select defaultValue={editingItem?.status || 'active'}>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
                       </Form.Select>
                     </Form.Group>
                   </div>
@@ -645,15 +603,6 @@ export default function EventsManagementPage() {
                         defaultValue={editingItem?.maxParticipants}
                         required
                       />
-                    </Form.Group>
-                  </div>
-                  <div className="col-md-4">
-                    <Form.Group className="mb-3">
-                      <Form.Label>Status</Form.Label>
-                      <Form.Select defaultValue={editingItem?.status || 'active'}>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </Form.Select>
                     </Form.Group>
                   </div>
                 </div>
