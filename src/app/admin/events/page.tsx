@@ -494,16 +494,6 @@ export default function EventsManagementPage() {
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
-                  <Form.Label>Coach Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="e.g., Coach Budi"
-                    defaultValue={editingItem?.coach}
-                    required
-                  />
-                </Form.Group>
-
                 <div className="row">
                   <div className="col-md-6">
                     <Form.Group className="mb-3">
