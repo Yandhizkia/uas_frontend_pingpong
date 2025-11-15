@@ -9,20 +9,56 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!email || !password) {
       setError("Email dan password harus diisi");
       return;
     }
+
     setError("");
-    alert("Login berhasil (simulasi)");
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: email, 
+          password,
+        }),
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (!res.ok) {
+        setError(data.message || "Login gagal");
+        return;
+      }
+
+      // simpan token & role supaya bisa cek siapa yg login
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+
+      // sesuai role
+      if (data.role === "admin") {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "user";
+      }
+    } catch (err) {
+      setLoading(false);
+      setError("Terjadi kesalahan server.");
+    }
   };
 
   return (
     <div className="auth-container">
-      {/* Left Side - Welcome Section */}
+      {/* LEFT SIDE */}
       <div className="auth-welcome-section">
         <div className="auth-welcome-content">
           <div className="auth-logo">
@@ -40,7 +76,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - Form Section */}
+      {/* RIGHT SIDE */}
       <div className="auth-form-section">
         <div className="auth-form-content">
           <div className="auth-form-header">
@@ -55,13 +91,12 @@ export default function LoginPage() {
           )}
 
           <Form onSubmit={handleSubmit} className="auth-form">
-            {/* Email */}
             <Form.Group className="mb-4">
-              <Form.Label className="auth-label">Email Address</Form.Label>
+              <Form.Label className="auth-label">Email / Username</Form.Label>
               <div className="auth-input-wrapper">
                 <EnvelopeFill className="auth-input-icon" size={18} />
                 <Form.Control
-                  type="email"
+                  type="text"
                   placeholder="your.email@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -71,7 +106,6 @@ export default function LoginPage() {
               </div>
             </Form.Group>
 
-            {/* Password */}
             <Form.Group className="mb-4">
               <Form.Label className="auth-label">Password</Form.Label>
               <div className="auth-input-wrapper">
@@ -87,7 +121,6 @@ export default function LoginPage() {
               </div>
             </Form.Group>
 
-            {/* Remember Me + Forgot Password */}
             <div className="d-flex justify-content-between align-items-center mb-4">
               <Form.Check
                 type="checkbox"
@@ -99,18 +132,15 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            {/* Submit Button */}
-            <Button type="submit" className="auth-submit-btn w-100">
-              Login
+            <Button type="submit" className="auth-submit-btn w-100" disabled={loading}>
+              {loading ? "Loading..." : "Login"}
             </Button>
           </Form>
 
-          {/* Divider */}
           <div className="auth-divider">
             <span>or</span>
           </div>
 
-          {/* Register Link */}
           <div className="auth-footer-text">
             Don't have an account?{" "}
             <Link href="/register" className="auth-link">
