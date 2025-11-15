@@ -350,7 +350,15 @@ export default function HomepageManagement() {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cancel
               </Button>
-              <Button variant="primary" type="submit">
+              <Button
+                variant="primary"
+                type="submit"
+                style={{
+                  backgroundColor: "#f1c76e",
+                  borderColor: "#f1c76e",
+                  color: "#333", // Dark text for better contrast
+                }}
+              >
                 Save Changes
               </Button>
             </div>

@@ -2937,3 +2937,28 @@ body {
     max-width: calc(100% - 20px);
   }
 }
+
+.user-form-input::placeholder { /* Untuk browser modern */
+  color: #cbd5e0 !important;
+  opacity: 1; /* Pastikan opacity tidak membuat teks terlalu transparan */
+}
+
+.user-form-input::-webkit-input-placeholder { /* Untuk Chrome, Safari, Opera */
+  color: #cbd5e0 !important;
+  opacity: 1;
+}
+
+.user-form-input::-moz-placeholder { /* Untuk Firefox 19+ */
+  color: #cbd5e0 !important;
+  opacity: 1;
+}
+
+.user-form-input:-ms-input-placeholder { /* Untuk IE 10+ */
+  color: #cbd5e0 !important;
+  opacity: 1;
+}
+
+.user-form-input:-moz-placeholder { /* Untuk Firefox 18- */
+  color: #cbd5e0 !important;
+  opacity: 1;
+}
