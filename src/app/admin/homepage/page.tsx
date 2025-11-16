@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import {
@@ -13,12 +13,14 @@ import {
   Modal,
   Table,
 } from "react-bootstrap";
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
 
 interface CarouselItem {
   id: number;
   image: string;
-  title: string;
-  description: string;
 }
 
 interface Section {
@@ -28,40 +30,71 @@ interface Section {
   image: string;
 }
 
-type ModalType = "carousel" | "section" | "article";
+type ModalType = 'carousel' | 'section' | 'article';
 
 export default function HomepageManagement() {
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState<ModalType>("carousel");
+  const [modalType, setModalType] = useState<ModalType>('carousel');
   const [editingItem, setEditingItem] = useState<any>(null);
+  
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
 
-  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
-  const [sections, setSections] = useState<Section[]>([]);
-  const [articles, setArticles] = useState<Section[]>([]);
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([
+    {
+      id: 1,
+      image:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
+    },
+    {
+      id: 3,
+      image:
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
+    },
+  ]);
 
-  // ✅ Load data dari localStorage saat pertama kali render
-  useEffect(() => {
-    const storedCarousel = localStorage.getItem("homepage_carousel");
-    const storedSections = localStorage.getItem("homepage_sections");
-    const storedArticles = localStorage.getItem("homepage_articles");
+  const [sections, setSections] = useState<Section[]>([
+    {
+      id: 1,
+      title: "About",
+      description: "Lorem ipsum dolor sit amet",
+      image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400",
+    },
+    {
+      id: 2,
+      title: "Game",
+      description: "This will be awesome",
+      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
+    },
+    {
+      id: 3,
+      title: "Contact",
+      description: "Lorem ipsum, awesome",
+      image:
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
+    },
+  ]);
 
-    if (storedCarousel) setCarouselItems(JSON.parse(storedCarousel));
-    if (storedSections) setSections(JSON.parse(storedSections));
-    if (storedArticles) setArticles(JSON.parse(storedArticles));
-  }, []);
-
-  // ✅ Simpan ke localStorage setiap kali data berubah
-  useEffect(() => {
-    localStorage.setItem("homepage_carousel", JSON.stringify(carouselItems));
-  }, [carouselItems]);
-
-  useEffect(() => {
-    localStorage.setItem("homepage_sections", JSON.stringify(sections));
-  }, [sections]);
-
-  useEffect(() => {
-    localStorage.setItem("homepage_articles", JSON.stringify(articles));
-  }, [articles]);
+  const [articles, setArticles] = useState<Section[]>([
+    {
+      id: 1,
+      title: "Keseruan UKM LTMU",
+      description:
+        "Must have for someone good luck to see more for the real person.",
+      image: "/images/Home/Section4_1.jpg",
+    },
+    {
+      id: 2,
+      title: "Kegiatan Latihan LTMU",
+      description:
+        "This is the awesome give lots of awesome for it about one of those.",
+      image: "/images/Home/Section4_2.jpg",
+    },
+  ]);
 
   const handleOpenModal = (
     type: "carousel" | "section" | "article",
@@ -81,39 +114,39 @@ export default function HomepageManagement() {
     type: "carousel" | "section" | "article",
     id: number
   ) => {
-    if (confirm("Yakin ingin menghapus item ini?")) {
-      if (type === "carousel") {
-        setCarouselItems((prev) => prev.filter((item) => item.id !== id));
-      } else if (type === "section") {
-        setSections((prev) => prev.filter((item) => item.id !== id));
-      } else {
-        setArticles((prev) => prev.filter((item) => item.id !== id));
-      }
-      alert("Item berhasil dihapus!");
-    }
+    const typeLabel = type === "carousel" ? "slide" : type === "section" ? "section" : "article";
+    
+    showConfirm({
+      title: `Delete ${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)}`,
+      message: `Are you sure you want to delete this ${typeLabel}?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: () => {
+        if (type === "carousel") {
+          setCarouselItems(carouselItems.filter((item) => item.id !== id));
+        } else if (type === "section") {
+          setSections(sections.filter((item) => item.id !== id));
+        } else {
+          setArticles(articles.filter((item) => item.id !== id));
+        }
+        success(`${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} deleted successfully!`);
+      },
+    });
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const form = e.currentTarget;
-    const titleInput = form.elements.namedItem("title") as HTMLInputElement;
-    const descInput = form.elements.namedItem(
-      "description"
-    ) as HTMLTextAreaElement;
-    const fileInput = form.elements.namedItem("file") as HTMLInputElement;
-
-    let imageUrl = editingItem?.image || "/images/default.jpg";
-
-    if (fileInput?.files && fileInput.files[0]) {
-      imageUrl = URL.createObjectURL(fileInput.files[0]);
-    }
-
-    const newItem: any = {
+    const newItem = {
       id: editingItem ? editingItem.id : Date.now(),
-      title: titleInput?.value || "",
-      description: descInput?.value || "",
-      image: imageUrl,
+      title:
+        (form.elements.namedItem("title") as HTMLInputElement)?.value || "",
+      description:
+        (form.elements.namedItem("description") as HTMLTextAreaElement)
+          ?.value || "",
+      image: "/images/default.jpg",
     };
 
     if (modalType === "carousel") {
@@ -137,7 +170,7 @@ export default function HomepageManagement() {
     }
 
     handleCloseModal();
-    alert("Data berhasil disimpan!");
+    success("Changes saved successfully!");
   };
 
   return (
@@ -169,8 +202,7 @@ export default function HomepageManagement() {
                         alt="Carousel"
                         className="carousel-preview"
                       />
-                      {/* BUTTON DIPINDAH KE KANAN BAWAH */}
-                      <div className="item-actions position-absolute">
+                      <div className="item-actions">
                         <Button
                           variant="warning"
                           size="sm"
@@ -185,10 +217,6 @@ export default function HomepageManagement() {
                         >
                           Delete
                         </Button>
-                      </div>
-                      <div className="mt-2 text-center">
-                        <h6>{item.title}</h6>
-                        <p className="text-muted small">{item.description}</p>
                       </div>
                     </div>
                   </Col>
@@ -231,6 +259,23 @@ export default function HomepageManagement() {
                       </td>
                       <td>{section.title}</td>
                       <td>{section.description}</td>
+                      <td>
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => handleOpenModal("section", section)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete("section", section.id)}
+                        >
+                          Delete
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -238,7 +283,6 @@ export default function HomepageManagement() {
             </Card.Body>
           </Card>
 
-          {/* Article Section */}
           <Card className="cms-card mt-4">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -314,20 +358,17 @@ export default function HomepageManagement() {
           <Form onSubmit={handleSave}>
             <Form.Group className="mb-3">
               <Form.Label>Upload Image</Form.Label>
-              <Form.Control type="file" name="file" accept="image/*" />
+              <Form.Control type="file" accept="image/*" />
               <Form.Text>Recommended size: 1600x900px</Form.Text>
             </Form.Group>
 
-            {/* Tambahan untuk Carousel */}
-            {(modalType === "carousel" ||
-              modalType === "section" ||
-              modalType === "article") && (
+            {(modalType === "section" || modalType === "article") && (
               <>
                 <Form.Group className="mb-3">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
-                    name="title"
                     type="text"
+                    name="title"
                     defaultValue={editingItem?.title}
                     placeholder="Enter title"
                   />
@@ -336,9 +377,9 @@ export default function HomepageManagement() {
                 <Form.Group className="mb-3">
                   <Form.Label>Description</Form.Label>
                   <Form.Control
-                    name="description"
                     as="textarea"
                     rows={3}
+                    name="description"
                     defaultValue={editingItem?.description}
                     placeholder="Enter description"
                   />
@@ -350,13 +391,33 @@ export default function HomepageManagement() {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cancel
               </Button>
-              <Button variant="primary" type="submit">
+              <Button
+                variant="primary"
+                type="submit"
+                style={{
+                  backgroundColor: "#f1c76e",
+                  borderColor: "#f1c76e",
+                  color: "#333",
+                }}
+              >
                 Save Changes
               </Button>
             </div>
           </Form>
         </Modal.Body>
       </Modal>
+
+      <CustomToast toasts={toasts} onClose={removeToast} />
+      <CustomConfirm
+        show={confirmState.show}
+        title={confirmState.options.title}
+        message={confirmState.options.message}
+        confirmText={confirmState.options.confirmText}
+        cancelText={confirmState.options.cancelText}
+        variant={confirmState.options.variant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+      />
     </div>
   );
 }

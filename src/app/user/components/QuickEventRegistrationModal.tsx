@@ -81,10 +81,10 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
         <div className="mb-4">
           <h5 style={{ color: '#f1c76e', marginBottom: '0.5rem' }}>{event.title}</h5>
           <p style={{ color: '#cbd5e0', fontSize: '0.9rem', margin: 0 }}>
-            📅 {event.date} | 🕐 {event.time}
+            <CalendarEvent className="me-2" /> {event.date} | <Clock className="me-2" /> {event.time}
           </p>
           <p style={{ color: '#cbd5e0', fontSize: '0.9rem', margin: 0 }}>
-            📍 {event.location}
+            <GeoAlt className="me-2" /> {event.location}
           </p>
         </div>
 

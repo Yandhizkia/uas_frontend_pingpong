@@ -4,6 +4,11 @@ import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { Container, Card, Table, Badge, Button, Modal, Form } from 'react-bootstrap';
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
+ 
 
 export default function EventRegistrationsPage() {
   const [registrations, setRegistrations] = useState([
@@ -78,6 +83,9 @@ export default function EventRegistrationsPage() {
   const [filterEvent, setFilterEvent] = useState('all');
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedRegistration, setSelectedRegistration] = useState<any>(null);
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
+
 
   const safeRegistrations = registrations || [];
 
@@ -105,27 +113,44 @@ const events = Array.from(new Set(registrations.map(r => r.eventTitle)));
     setShowDetailModal(true);
   };
 
-  const handleApprove = (id: number) => {
-    if (confirm('Approve this registration?')) {
+const handleApprove = (id: number) => {
+  showConfirm({
+    title: "Approve Registration",
+    message: "Are you sure you want to approve this participant?",
+    confirmText: "Approve",
+    cancelText: "Cancel",
+    variant: "success", // ✅ Sekarang bisa pakai "success"
+    onConfirm: () => {
       setRegistrations(prev =>
         prev.map(r => (r.id === id ? { ...r, status: 'approved' } : r))
       );
-      alert('Registration approved!');
+      success("Registration approved successfully!");
       setShowDetailModal(false);
-    }
-  };
+    },
+  });
+};
 
   const handleReject = (id: number) => {
-    const reason = prompt('Rejection reason:');
+showConfirm({
+  title: "Reject Registration",
+  message: "Provide a reason for rejection.",
+  confirmText: "Reject",
+  cancelText: "Cancel",
+  variant: "danger",
+  onConfirm: () => {
+    const reason = prompt("Rejection reason:");
     if (reason) {
       setRegistrations(prev =>
         prev.map(r =>
           r.id === id ? { ...r, status: 'rejected', rejectionReason: reason } : r
         )
       );
-      alert('Registration rejected!');
+      error("Registration has been rejected.");
       setShowDetailModal(false);
     }
+  },
+});
+
   };
 
   return (
@@ -312,6 +337,17 @@ const events = Array.from(new Set(registrations.map(r => r.eventTitle)));
             )}
           </Modal.Body>
         </Modal>
+         <CustomToast toasts={toasts} onClose={removeToast} />
+              <CustomConfirm
+                show={confirmState.show}
+                title={confirmState.options.title}
+                message={confirmState.options.message}
+                confirmText={confirmState.options.confirmText}
+                cancelText={confirmState.options.cancelText}
+                variant={confirmState.options.variant}
+                onConfirm={handleConfirm}
+                onCancel={hideConfirm}
+              />
       </div>
     </div>
   );

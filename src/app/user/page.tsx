@@ -9,6 +9,8 @@ import axios from 'axios';
 import { Calendar, Trophy, ChatDots, Megaphone } from 'react-bootstrap-icons';
 import QuickEventRegistrationModal from '../user/components/QuickEventRegistrationModal';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function UserDashboard() {
 
   const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
@@ -41,10 +43,25 @@ export default function UserDashboard() {
     { id: 1, event: 'Latihan Rutin', date: '2024-01-15', status: 'completed' },
     { id: 2, event: 'Friendly Match', date: '2024-01-10', status: 'completed' },
     { id: 3, event: 'Team Meeting', date: '2024-01-05', status: 'completed' },
-  ];
+  ]);
 
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  useEffect(() => {
+    fetchQuick();
+  }, []);
+
+  const fetchQuick = async () => {
+    try {
+      const res = await fetch(`${API}/api/quick-events`);
+      if (!res.ok) throw new Error('Fetch quick events failed');
+      const data = await res.json();
+      setUpcomingEvents(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleRegisterClick = (event: any) => {
   setSelectedEvent({
@@ -188,7 +205,8 @@ export default function UserDashboard() {
                   <div className="activity-list">
                     {recentActivity.map((activity) => (
                       <div key={activity.id} className="activity-item-user">
-                        <div className="activity-icon">✓</div>
+                        {/* Changed '✓' to CheckCircleFill icon */}
+                        <div className="activity-icon"><CheckCircleFill color="#28a745" size={20} /></div>
                         <div className="activity-content">
                           <strong>{activity.event}</strong>
                           <small>{activity.date}</small>
