@@ -10,7 +10,6 @@ import {
   Trophy,          // Already used for "Upcoming Events" stat
   ChatDots,        // Already used for "Feedback Sent" stat
   Megaphone,       // Already used for "Announcements" stat
-  CalendarEvent,   // For event date in event list
   Clock,           // For event time in event list
   GeoAlt,          // For event location in event list
   CheckCircleFill, // For activity status in recent activity
