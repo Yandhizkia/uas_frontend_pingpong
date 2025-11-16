@@ -221,7 +221,15 @@ export default function EventManagement() {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cancel
               </Button>
-              <Button variant="primary" type="submit">
+              <Button 
+                type="submit"
+                // Apply custom styles for the background, border, and text color
+                style={{ 
+                  backgroundColor: '#f1c76e', 
+                  borderColor: '#f1c76e', 
+                  color: '#333' // Dark text for better contrast
+                }}
+              >
                 Save Changes
               </Button>
             </div>

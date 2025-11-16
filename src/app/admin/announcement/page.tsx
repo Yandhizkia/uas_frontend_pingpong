@@ -3,6 +3,12 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
+
 import {
   Container,
   Card,
@@ -19,10 +25,15 @@ interface Announcement {
   message: string;
   type: "info" | "warning" | "urgent";
   date: string;
-  active: boolean;
+  important: boolean;
 }
 
 export default function AnnouncementPage() {
+  // 🔥 Tambahin hook toast & confirm
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } =
+    useConfirm();
+
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Announcement | null>(null);
 
@@ -33,7 +44,7 @@ export default function AnnouncementPage() {
       message: "Kegiatan club minggu ini ditiadakan karena ada acara sekolah.",
       type: "warning",
       date: "2024-01-15",
-      active: true,
+      important: false,
     },
     {
       id: 2,
@@ -41,7 +52,7 @@ export default function AnnouncementPage() {
       message: "Jadwal latihan dipindah dari Jumat ke Sabtu jam 14.00.",
       type: "info",
       date: "2024-01-10",
-      active: true,
+      important: false,
     },
   ]);
 
@@ -55,21 +66,22 @@ export default function AnnouncementPage() {
     setEditingItem(null);
   };
 
+  // 🚀 Ganti confirm() → CustomConfirm
   const handleDelete = (id: number) => {
-    if (confirm("Yakin ingin menghapus announcement ini?")) {
-      setAnnouncements(announcements.filter((item) => item.id !== id));
-      alert("Announcement berhasil dihapus!");
-    }
+    showConfirm({
+      title: "Delete Announcement",
+      message: "Yakin ingin menghapus announcement ini?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: () => {
+        setAnnouncements((prev) => prev.filter((item) => item.id !== id));
+        success("Announcement berhasil dihapus!");
+      },
+    });
   };
 
-  const handleToggleActive = (id: number) => {
-    setAnnouncements(
-      announcements.map((item) =>
-        item.id === id ? { ...item, active: !item.active } : item
-      )
-    );
-  };
-
+  // 🚀 Ganti alert() → success()
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -84,7 +96,8 @@ export default function AnnouncementPage() {
         | "warning"
         | "urgent",
       date: (form.elements.namedItem("date") as HTMLInputElement).value,
-      active: (form.elements.namedItem("active") as HTMLInputElement).checked,
+      important: (form.elements.namedItem("important") as HTMLInputElement).checked,
+
     };
 
     if (editingItem) {
@@ -98,7 +111,7 @@ export default function AnnouncementPage() {
     }
 
     handleCloseModal();
-    alert("Announcement berhasil disimpan!");
+    success("Announcement berhasil disimpan!");
   };
 
   const getBadgeVariant = (type: string) => {
@@ -142,7 +155,7 @@ export default function AnnouncementPage() {
                     <th>Message</th>
                     <th>Type</th>
                     <th>Date</th>
-                    <th>Status</th>
+                    <th>Important</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -165,14 +178,14 @@ export default function AnnouncementPage() {
                         </Badge>
                       </td>
                       <td>{item.date}</td>
-                      <td>
-                        <Form.Check
-                          type="switch"
-                          checked={item.active}
-                          onChange={() => handleToggleActive(item.id)}
-                          label={item.active ? "Active" : "Inactive"}
-                        />
-                      </td>
+
+                        <td>
+        {item.important ? (
+          <Badge bg="danger">YES</Badge>
+        ) : (
+          <Badge bg="secondary">NO</Badge>
+        )}
+      </td>
                       <td>
                         <Button
                           variant="warning"
@@ -264,11 +277,13 @@ export default function AnnouncementPage() {
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label>Important</Form.Label>
               <Form.Check
                 type="switch"
-                name="active"
-                label="Active (Show to members)"
-                defaultChecked={editingItem?.active ?? true}
+                name="important"
+                id="important"
+                label="Mark this announcement as Important"
+                defaultChecked={editingItem?.important || false}
               />
             </Form.Group>
 
@@ -276,13 +291,35 @@ export default function AnnouncementPage() {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cancel
               </Button>
-              <Button variant="primary" type="submit">
+              <Button 
+                type="submit"
+                // Apply custom styles for the background, border, and text color
+                style={{ 
+                  backgroundColor: '#f1c76e', 
+                  borderColor: '#f1c76e', 
+                  color: '#333' // Dark text for better contrast
+                }}
+              >
                 Save Announcement
               </Button>
             </div>
           </Form>
         </Modal.Body>
       </Modal>
+
+      {/* 🔥 Tambahin komponen toast & confirm */}
+      <CustomToast toasts={toasts} onClose={removeToast} />
+
+      <CustomConfirm
+        show={confirmState.show}
+        title={confirmState.options.title}
+        message={confirmState.options.message}
+        confirmText={confirmState.options.confirmText}
+        cancelText={confirmState.options.cancelText}
+        variant={confirmState.options.variant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+      />
     </div>
   );
 }

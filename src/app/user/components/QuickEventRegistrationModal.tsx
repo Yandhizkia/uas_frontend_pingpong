@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
+import { CalendarEvent, Clock, GeoAlt } from 'react-bootstrap-icons'; // Import icons
 
 interface QuickEventRegistrationModalProps {
   show: boolean;
@@ -17,10 +18,10 @@ interface QuickEventRegistrationModalProps {
 
 export default function QuickEventRegistrationModal({ show, onHide, event }: QuickEventRegistrationModalProps) {
   const [formData, setFormData] = useState({
-    name: 'John Doe',
-    nim: '525200999',
-    faculty: 'Teknik',
-    major: 'Informatika'
+    name: '',
+    nim: '',
+    faculty: '',
+    major: ''
   });
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -39,6 +40,13 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
     setTimeout(() => {
       setShowSuccess(false);
       onHide();
+      // Optionally reset form after submission
+      setFormData({
+        name: '',
+        nim: '',
+        faculty: '',
+        major: ''
+      });
     }, 2000);
   };
 
@@ -59,10 +67,10 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
         <div className="mb-4">
           <h5 style={{ color: '#f1c76e', marginBottom: '0.5rem' }}>{event.title}</h5>
           <p style={{ color: '#cbd5e0', fontSize: '0.9rem', margin: 0 }}>
-            📅 {event.date} | 🕐 {event.time}
+            <CalendarEvent className="me-2" /> {event.date} | <Clock className="me-2" /> {event.time}
           </p>
           <p style={{ color: '#cbd5e0', fontSize: '0.9rem', margin: 0 }}>
-            📍 {event.location}
+            <GeoAlt className="me-2" /> {event.location}
           </p>
         </div>
 
@@ -75,8 +83,8 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
               value={formData.name}
               onChange={handleChange}
               className="user-form-input"
+              placeholder="Masukkan Nama Lengkap Anda"
               required
-              readOnly
             />
           </Form.Group>
 
@@ -88,8 +96,8 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
               value={formData.nim}
               onChange={handleChange}
               className="user-form-input"
+              placeholder="Masukkan NIM Anda"
               required
-              readOnly
             />
           </Form.Group>
 
@@ -101,8 +109,8 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
               value={formData.faculty}
               onChange={handleChange}
               className="user-form-input"
+              placeholder="Masukkan Fakultas Anda"
               required
-              readOnly
             />
           </Form.Group>
 
@@ -114,8 +122,8 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
               value={formData.major}
               onChange={handleChange}
               className="user-form-input"
+              placeholder="Masukkan Jurusan Anda"
               required
-              readOnly
             />
           </Form.Group>
 
@@ -128,7 +136,10 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
               Cancel
             </Button>
             <Button type="submit" className="btn-user-submit" style={{
-              padding: '0.75rem 1.5rem'
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#f1c76e', 
+              borderColor: '#f1c76e', 
+              color: '#333'
             }}>
               Confirm Registration
             </Button>

@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import Link from "next/link";
@@ -19,18 +20,45 @@ export default function RegisterPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (form.password !== form.confirmPassword) {
       alert("Password dan konfirmasi harus sama.");
       return;
     }
-    alert(`Registrasi berhasil! Username: ${form.username}`);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: form.username,
+          email: form.email,
+          password: form.password,
+          role: "user", 
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
+      alert("Registrasi berhasil!");
+      window.location.href = "/login";
+
+    } catch (err) {
+      alert("Terjadi kesalahan server.");
+    }
   };
 
   return (
     <div className="auth-container">
-      {/* Left Side - Welcome Section */}
+
+      {/* LEFT SIDE */}
       <div className="auth-welcome-section">
         <div className="auth-welcome-content">
           <div className="auth-logo">
@@ -48,7 +76,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Right Side - Form Section */}
+      {/* RIGHT SIDE */}
       <div className="auth-form-section">
         <div className="auth-form-content">
           <div className="auth-form-header">
@@ -57,6 +85,7 @@ export default function RegisterPage() {
           </div>
 
           <Form onSubmit={handleSubmit} className="auth-form">
+
             <Form.Group className="mb-4">
               <Form.Label className="auth-label">Username</Form.Label>
               <div className="auth-input-wrapper">
@@ -136,6 +165,7 @@ export default function RegisterPage() {
               Login here
             </Link>
           </div>
+
         </div>
       </div>
     </div>
