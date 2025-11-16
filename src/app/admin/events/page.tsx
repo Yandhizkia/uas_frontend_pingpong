@@ -732,6 +732,7 @@ export default function EventsManagementPage() {
                 Cancel
               </Button>
               <Button 
+                variant="primary"
                 type="submit"
                 // Apply custom styles for the background, border, and text color
                 style={{ 
