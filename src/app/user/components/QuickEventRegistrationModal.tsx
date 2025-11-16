@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
-import { CalendarEvent, Clock, GeoAlt } from 'react-bootstrap-icons'; // Import icons
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 interface QuickEventRegistrationModalProps {
   show: boolean;
   onHide: () => void;
   event: {
-    id: number;
+    _id: string;   // <= pakai _id dari MongoDB
     title: string;
     date: string;
     time: string;
@@ -17,37 +18,49 @@ interface QuickEventRegistrationModalProps {
 }
 
 export default function QuickEventRegistrationModal({ show, onHide, event }: QuickEventRegistrationModalProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    nim: '',
-    faculty: '',
-    major: ''
+  const [formData] = useState({
+    name: 'John Doe',
+    nim: '525200999',
+    faculty: 'Teknik',
+    major: 'Informatika'
   });
+
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const decoded: any = token ? jwtDecode(token) : null;
+  const userId = decoded?.id;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Quick registration submitted:', { ...formData, eventId: event?.id });
-    setShowSuccess(true);
-    
-    setTimeout(() => {
-      setShowSuccess(false);
-      onHide();
-      // Optionally reset form after submission
-      setFormData({
-        name: '',
-        nim: '',
-        faculty: '',
-        major: ''
-      });
-    }, 2000);
+
+    if (!token) return alert("Anda harus login dulu!");
+    if (!userId) return alert("Token tidak valid!");
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/registrations",
+        {
+          user_id: userId,
+          event_id: event?._id
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      setShowSuccess(true);
+
+      setTimeout(() => {
+        setShowSuccess(false);
+        onHide();
+      }, 2000);
+
+    } catch (err) {
+      console.error(err);
+      alert("Gagal mengirim pendaftaran");
+    }
   };
 
   if (!event) return null;
@@ -57,6 +70,7 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
       <Modal.Header closeButton className="modal-header-custom">
         <Modal.Title>Quick Registration</Modal.Title>
       </Modal.Header>
+
       <Modal.Body className="modal-body-custom">
         {showSuccess && (
           <Alert variant="success" className="mb-3">
@@ -77,70 +91,30 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">Full Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="user-form-input"
-              placeholder="Masukkan Nama Lengkap Anda"
-              required
-            />
+            <Form.Control type="text" value={formData.name} readOnly className="user-form-input" />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">NIM</Form.Label>
-            <Form.Control
-              type="text"
-              name="nim"
-              value={formData.nim}
-              onChange={handleChange}
-              className="user-form-input"
-              placeholder="Masukkan NIM Anda"
-              required
-            />
+            <Form.Control type="text" value={formData.nim} readOnly className="user-form-input" />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">Faculty</Form.Label>
-            <Form.Control
-              type="text"
-              name="faculty"
-              value={formData.faculty}
-              onChange={handleChange}
-              className="user-form-input"
-              placeholder="Masukkan Fakultas Anda"
-              required
-            />
+            <Form.Control type="text" value={formData.faculty} readOnly className="user-form-input" />
           </Form.Group>
 
           <Form.Group className="mb-4">
             <Form.Label className="user-form-label">Major</Form.Label>
-            <Form.Control
-              type="text"
-              name="major"
-              value={formData.major}
-              onChange={handleChange}
-              className="user-form-input"
-              placeholder="Masukkan Jurusan Anda"
-              required
-            />
+            <Form.Control type="text" value={formData.major} readOnly className="user-form-input" />
           </Form.Group>
 
           <div className="d-flex gap-2 justify-content-end">
-            <Button variant="secondary" onClick={onHide} style={{
-              backgroundColor: 'var(--gray-600)',
-              border: 'none',
-              padding: '0.75rem 1.5rem'
-            }}>
+            <Button variant="secondary" onClick={onHide}>
               Cancel
             </Button>
-            <Button type="submit" className="btn-user-submit" style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#f1c76e', 
-              borderColor: '#f1c76e', 
-              color: '#333'
-            }}>
+
+            <Button type="submit" className="btn-user-submit">
               Confirm Registration
             </Button>
           </div>
