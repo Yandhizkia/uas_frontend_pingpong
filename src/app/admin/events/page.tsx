@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { Container, Card, Button, Table, Modal, Form, Badge, Tabs, Tab } from 'react-bootstrap';
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -16,6 +20,9 @@ export default function EventsManagementPage() {
   const [regularSchedule, setRegularSchedule] = useState<any[]>([]);
   const [specialEvents, setSpecialEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
 
   useEffect(() => {
     fetchAll();
@@ -35,7 +42,7 @@ export default function EventsManagementPage() {
       setQuickEvents(data);
     } catch (err) {
       console.error(err);
-      alert('Gagal memuat quick events');
+      error('Failed to load quick events');
     }
   };
 
@@ -47,7 +54,7 @@ export default function EventsManagementPage() {
       setRegularSchedule(data);
     } catch (err) {
       console.error(err);
-      alert('Gagal memuat schedules');
+      error('Failed to load schedules');
     }
   };
 
@@ -56,11 +63,10 @@ export default function EventsManagementPage() {
       const res = await fetch(`${API}/api/events`);
       if (!res.ok) throw new Error('Gagal fetch events');
       const data = await res.json();
-      // treat all events as "special" for this tab (backend's event model)
       setSpecialEvents(data);
     } catch (err) {
       console.error(err);
-      alert('Gagal memuat special events');
+      error('Failed to load special events');
     }
   };
 
@@ -77,42 +83,66 @@ export default function EventsManagementPage() {
 
   // ---------- DELETE handlers ----------
   const handleDeleteQuick = async (id: number) => {
-    if (!confirm('Yakin ingin menghapus event ini?')) return;
-    try {
-      const res = await fetch(`${API}/api/quick-events/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Delete failed');
-      setQuickEvents(prev => prev.filter(e => e.id !== id));
-      alert('Event berhasil dihapus!');
-    } catch (err) {
-      console.error(err);
-      alert('Gagal menghapus quick event');
-    }
+    showConfirm({
+      title: "Delete Quick Event",
+      message: "Are you sure you want to delete this quick event?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API}/api/quick-events/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Delete failed');
+          setQuickEvents(prev => prev.filter(e => e.id !== id));
+          success('Quick event deleted successfully!');
+        } catch (err) {
+          console.error(err);
+          error('Failed to delete quick event');
+        }
+      },
+    });
   };
 
   const handleDeleteRegular = async (id: number) => {
-    if (!confirm('Yakin ingin menghapus schedule ini?')) return;
-    try {
-      const res = await fetch(`${API}/api/schedules/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Delete failed');
-      setRegularSchedule(prev => prev.filter(e => e.id !== id));
-      alert('Schedule berhasil dihapus!');
-    } catch (err) {
-      console.error(err);
-      alert('Gagal menghapus schedule');
-    }
+    showConfirm({
+      title: "Delete Schedule",
+      message: "Are you sure you want to delete this schedule?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API}/api/schedules/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Delete failed');
+          setRegularSchedule(prev => prev.filter(e => e.id !== id));
+          success('Schedule deleted successfully!');
+        } catch (err) {
+          console.error(err);
+          error('Failed to delete schedule');
+        }
+      },
+    });
   };
 
   const handleDeleteSpecial = async (id: number) => {
-    if (!confirm('Yakin ingin menghapus special event ini?')) return;
-    try {
-      const res = await fetch(`${API}/api/events/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Delete failed');
-      setSpecialEvents(prev => prev.filter(e => e.id !== id));
-      alert('Special event berhasil dihapus!');
-    } catch (err) {
-      console.error(err);
-      alert('Gagal menghapus special event');
-    }
+    showConfirm({
+      title: "Delete Special Event",
+      message: "Are you sure you want to delete this special event?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API}/api/events/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Delete failed');
+          setSpecialEvents(prev => prev.filter(e => e.id !== id));
+          success('Special event deleted successfully!');
+        } catch (err) {
+          console.error(err);
+          error('Failed to delete special event');
+        }
+      },
+    });
   };
 
   // ---------- SAVE (Create or Update) ----------
@@ -123,7 +153,6 @@ export default function EventsManagementPage() {
 
     try {
       if (modalType === 'quick') {
-        // quick event fields
         const payload: any = {
           title: fd.get('title') as string,
           date: fd.get('date') as string,
@@ -134,7 +163,6 @@ export default function EventsManagementPage() {
         };
 
         if (editingItem) {
-          // UPDATE
           const res = await fetch(`${API}/api/quick-events/${editingItem.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -143,9 +171,8 @@ export default function EventsManagementPage() {
           if (!res.ok) throw new Error('Update failed');
           const data = await res.json();
           setQuickEvents(prev => prev.map(p => (p.id === data.id ? data : p)));
-          alert('Quick event berhasil diperbarui');
+          success('Quick event updated successfully!');
         } else {
-          // CREATE
           const res = await fetch(`${API}/api/quick-events`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -154,10 +181,9 @@ export default function EventsManagementPage() {
           if (!res.ok) throw new Error('Create failed');
           const data = await res.json();
           setQuickEvents(prev => [data, ...prev]);
-          alert('Quick event berhasil dibuat');
+          success('Quick event created successfully!');
         }
       } else if (modalType === 'regular') {
-        // schedule fields
         const payload: any = {
           title: fd.get('title') as string,
           day: fd.get('day') as string,
@@ -176,7 +202,7 @@ export default function EventsManagementPage() {
           if (!res.ok) throw new Error('Update failed');
           const data = await res.json();
           setRegularSchedule(prev => prev.map(p => (p.id === data.id ? data : p)));
-          alert('Schedule berhasil diperbarui');
+          success('Schedule updated successfully!');
         } else {
           const res = await fetch(`${API}/api/schedules`, {
             method: 'POST',
@@ -186,10 +212,9 @@ export default function EventsManagementPage() {
           if (!res.ok) throw new Error('Create failed');
           const data = await res.json();
           setRegularSchedule(prev => [data, ...prev]);
-          alert('Schedule berhasil dibuat');
+          success('Schedule created successfully!');
         }
       } else {
-        // special event fields (use Event model)
         const payload: any = {
           title: fd.get('title') as string,
           description: fd.get('description') as string,
@@ -209,7 +234,7 @@ export default function EventsManagementPage() {
           if (!res.ok) throw new Error('Update failed');
           const data = await res.json();
           setSpecialEvents(prev => prev.map(p => (p.id === data.id ? data : p)));
-          alert('Special event berhasil diperbarui');
+          success('Special event updated successfully!');
         } else {
           const res = await fetch(`${API}/api/events`, {
             method: 'POST',
@@ -219,14 +244,14 @@ export default function EventsManagementPage() {
           if (!res.ok) throw new Error('Create failed');
           const data = await res.json();
           setSpecialEvents(prev => [data, ...prev]);
-          alert('Special event berhasil dibuat');
+          success('Special event created successfully!');
         }
       }
 
       handleCloseModal();
     } catch (err) {
       console.error(err);
-      alert('Gagal menyimpan data. Cek console untuk detail.');
+      error('Failed to save data. Check console for details.');
     }
   };
 
@@ -626,7 +651,7 @@ export default function EventsManagementPage() {
                 </Form.Group>
               </>
             ) : (
-              // Special Event Form - NEW!
+              // Special Event Form
               <>
                 <Form.Group className="mb-3">
                   <Form.Label>Event Title</Form.Label>
@@ -734,11 +759,10 @@ export default function EventsManagementPage() {
               <Button 
                 variant="primary"
                 type="submit"
-                // Apply custom styles for the background, border, and text color
                 style={{ 
                   backgroundColor: '#f1c76e', 
                   borderColor: '#f1c76e', 
-                  color: '#333' // Dark text for better contrast
+                  color: '#333'
                 }}
               >
                 {editingItem ? 'Update' : 'Create'} {
@@ -751,6 +775,18 @@ export default function EventsManagementPage() {
           </Form>
         </Modal.Body>
       </Modal>
+
+      <CustomToast toasts={toasts} onClose={removeToast} />
+      <CustomConfirm
+        show={confirmState.show}
+        title={confirmState.options.title}
+        message={confirmState.options.message}
+        confirmText={confirmState.options.confirmText}
+        cancelText={confirmState.options.cancelText}
+        variant={confirmState.options.variant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+      />
     </div>
   );
 }

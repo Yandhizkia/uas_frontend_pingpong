@@ -3,6 +3,10 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
 import {
   Container,
   Card,
@@ -19,6 +23,12 @@ export default function AboutManagement() {
   const [modalType, setModalType] = useState<"ltmu" | "foto" | "related">(
     "ltmu"
   );
+
+const { success, error, info } = useToast();
+const { showConfirm } = useConfirm();
+const { toasts, removeToast } = useToast();
+const { confirmState, hideConfirm, handleConfirm } = useConfirm();
+
   const [editingItem, setEditingItem] = useState<any>(null);
 
   const [ltmu, setLtmu] = useState({
@@ -75,14 +85,22 @@ export default function AboutManagement() {
   };
 
   const handleDelete = (type: "foto" | "related", id: number) => {
-    if (confirm("Yakin ingin menghapus item ini?")) {
-      if (type === "foto") {
-        setFotos(fotos.filter((item) => item.id !== id));
-      } else {
-        setRelated(related.filter((item) => item.id !== id));
-      }
-      alert("Item berhasil dihapus!");
+ showConfirm({
+  title: "Konfirmasi Penghapusan",
+  message: "Yakin ingin menghapus item ini?",
+  confirmText: "Ya, Hapus",
+  cancelText: "Batal",
+  variant: "danger",
+  onConfirm: () => {
+    if (type === "foto") {
+      setFotos(fotos.filter((item) => item.id !== id));
+    } else {
+      setRelated(related.filter((item) => item.id !== id));
     }
+    success("Item berhasil dihapus!");
+  },
+});
+
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
@@ -149,7 +167,7 @@ export default function AboutManagement() {
     }
 
     handleCloseModal();
-    alert("Data berhasil disimpan!");
+    success('Event berhasil disimpan!');
   };
 
   return (
@@ -354,6 +372,19 @@ export default function AboutManagement() {
           </Form>
         </Modal.Body>
       </Modal>
+      <CustomToast toasts={toasts} onClose={removeToast} />
+
+<CustomConfirm
+  show={confirmState.show}
+  title={confirmState.options.title}
+  message={confirmState.options.message}
+  confirmText={confirmState.options.confirmText}
+  cancelText={confirmState.options.cancelText}
+  variant={confirmState.options.variant}
+  onConfirm={handleConfirm}
+  onCancel={hideConfirm}
+/>
+
     </div>
   );
 }

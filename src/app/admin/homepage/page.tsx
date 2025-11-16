@@ -13,6 +13,10 @@ import {
   Modal,
   Table,
 } from "react-bootstrap";
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
 
 interface CarouselItem {
   id: number;
@@ -31,8 +35,10 @@ type ModalType = 'carousel' | 'section' | 'article';
 export default function HomepageManagement() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<ModalType>('carousel');
-
   const [editingItem, setEditingItem] = useState<any>(null);
+  
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
 
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([
     {
@@ -108,16 +114,25 @@ export default function HomepageManagement() {
     type: "carousel" | "section" | "article",
     id: number
   ) => {
-    if (confirm("Yakin ingin menghapus item ini?")) {
-      if (type === "carousel") {
-        setCarouselItems(carouselItems.filter((item) => item.id !== id));
-      } else if (type === "section") {
-        setSections(sections.filter((item) => item.id !== id));
-      } else {
-        setArticles(articles.filter((item) => item.id !== id));
-      }
-      alert("Item berhasil dihapus!");
-    }
+    const typeLabel = type === "carousel" ? "slide" : type === "section" ? "section" : "article";
+    
+    showConfirm({
+      title: `Delete ${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)}`,
+      message: `Are you sure you want to delete this ${typeLabel}?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: () => {
+        if (type === "carousel") {
+          setCarouselItems(carouselItems.filter((item) => item.id !== id));
+        } else if (type === "section") {
+          setSections(sections.filter((item) => item.id !== id));
+        } else {
+          setArticles(articles.filter((item) => item.id !== id));
+        }
+        success(`${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} deleted successfully!`);
+      },
+    });
   };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
@@ -155,7 +170,7 @@ export default function HomepageManagement() {
     }
 
     handleCloseModal();
-    alert("Data berhasil disimpan!");
+    success("Changes saved successfully!");
   };
 
   return (
@@ -187,8 +202,7 @@ export default function HomepageManagement() {
                         alt="Carousel"
                         className="carousel-preview"
                       />
-                      {/* BUTTON DIPINDAH KE KANAN BAWAH */}
-                      <div className="item-actions position-absolute">
+                      <div className="item-actions">
                         <Button
                           variant="warning"
                           size="sm"
@@ -269,65 +283,64 @@ export default function HomepageManagement() {
             </Card.Body>
           </Card>
 
-           <Card className="cms-card mt-4">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h4 className="cms-section-title">Article Section</h4>
-            <Button
-              className="btn-add"
-              onClick={() => handleOpenModal("article")}
-            >
-              + Add Article
-            </Button>
-          </div>
+          <Card className="cms-card mt-4">
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4 className="cms-section-title">Article Section</h4>
+                <Button
+                  className="btn-add"
+                  onClick={() => handleOpenModal("article")}
+                >
+                  + Add Article
+                </Button>
+              </div>
 
-          <Table className="cms-table" hover responsive>
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {articles.map((article) => (
-                <tr key={article.id}>
-                  <td>
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="table-image"
-                    />
-                  </td>
-                  <td>{article.title}</td>
-                  <td>{article.description}</td>
-                  <td>
-                    <Button
-                      variant="warning"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleOpenModal("article", article)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDelete("article", article.id)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Card.Body>
-      </Card>
+              <Table className="cms-table" hover responsive>
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {articles.map((article) => (
+                    <tr key={article.id}>
+                      <td>
+                        <img
+                          src={article.image}
+                          alt={article.title}
+                          className="table-image"
+                        />
+                      </td>
+                      <td>{article.title}</td>
+                      <td>{article.description}</td>
+                      <td>
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => handleOpenModal("article", article)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete("article", article.id)}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
         </Container>
       </div>
-
 
       {/* Modal for Add/Edit */}
       <Modal show={showModal} onHide={handleCloseModal} centered>
@@ -355,6 +368,7 @@ export default function HomepageManagement() {
                   <Form.Label>Title</Form.Label>
                   <Form.Control
                     type="text"
+                    name="title"
                     defaultValue={editingItem?.title}
                     placeholder="Enter title"
                   />
@@ -365,6 +379,7 @@ export default function HomepageManagement() {
                   <Form.Control
                     as="textarea"
                     rows={3}
+                    name="description"
                     defaultValue={editingItem?.description}
                     placeholder="Enter description"
                   />
@@ -382,7 +397,7 @@ export default function HomepageManagement() {
                 style={{
                   backgroundColor: "#f1c76e",
                   borderColor: "#f1c76e",
-                  color: "#333", // Dark text for better contrast
+                  color: "#333",
                 }}
               >
                 Save Changes
@@ -391,6 +406,18 @@ export default function HomepageManagement() {
           </Form>
         </Modal.Body>
       </Modal>
+
+      <CustomToast toasts={toasts} onClose={removeToast} />
+      <CustomConfirm
+        show={confirmState.show}
+        title={confirmState.options.title}
+        message={confirmState.options.message}
+        confirmText={confirmState.options.confirmText}
+        cancelText={confirmState.options.cancelText}
+        variant={confirmState.options.variant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+      />
     </div>
   );
 }
