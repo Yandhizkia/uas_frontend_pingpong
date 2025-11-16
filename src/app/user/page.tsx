@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import UserSidebar from '../user/components/Sidebar';
 import UserHeader from '../user/components/Header';
@@ -17,6 +17,8 @@ import {
 } from 'react-bootstrap-icons';
 import QuickEventRegistrationModal from '../user/components/QuickEventRegistrationModal';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function UserDashboard() {
   const stats = {
     eventsJoined: 12,
@@ -25,20 +27,30 @@ export default function UserDashboard() {
     announcements: 2,
   };
 
-  const upcomingEvents = [
-    { id: 1, title: 'Latihan Rutin', date: '2024-01-20', time: '16.00 - 18.00', location: 'GOR Untar' },
-    { id: 2, title: 'Tournament Internal', date: '2024-01-25', time: '09.00 - 15.00', location: 'GOR Untar' },
-    { id: 3, title: 'Workshop Teknik', date: '2024-01-28', time: '14.00 - 16.00', location: 'Ruang A' },
-  ];
-
-  const recentActivity = [
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  const [recentActivity] = useState([
     { id: 1, event: 'Latihan Rutin', date: '2024-01-15', status: 'completed' },
     { id: 2, event: 'Friendly Match', date: '2024-01-10', status: 'completed' },
     { id: 3, event: 'Team Meeting', date: '2024-01-05', status: 'completed' },
-  ];
+  ]);
 
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  useEffect(() => {
+    fetchQuick();
+  }, []);
+
+  const fetchQuick = async () => {
+    try {
+      const res = await fetch(`${API}/api/quick-events`);
+      if (!res.ok) throw new Error('Fetch quick events failed');
+      const data = await res.json();
+      setUpcomingEvents(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleRegisterClick = (event: any) => {
     setSelectedEvent(event);
@@ -96,7 +108,7 @@ export default function UserDashboard() {
                 <div className="stat-icon-user mb-3">
                   <Trophy size={32} color="#f1c76e" />
                 </div>
-                <h3 className="stat-number">{stats.upcomingEvents}</h3>
+                <h3 className="stat-number">{upcomingEvents.length}</h3>
                 <p className="stat-label-user">Upcoming Events</p>
               </Card>
             </Col>
@@ -137,9 +149,9 @@ export default function UserDashboard() {
                     {upcomingEvents.map((event) => (
                       <div key={event.id} className="event-item-user">
                         <div className="event-date-badge">
-                          <div className="event-day">{new Date(event.date).getDate()}</div>
+                          <div className="event-day">{event.date ? new Date(event.date).getDate() : ''}</div>
                           <div className="event-month">
-                            {new Date(event.date).toLocaleDateString('en', { month: 'short' })}
+                            {event.date ? new Date(event.date).toLocaleDateString('en', { month: 'short' }) : ''}
                           </div>
                         </div>
                         <div className="event-details">
@@ -157,6 +169,7 @@ export default function UserDashboard() {
                         </button>
                       </div>
                     ))}
+                    {upcomingEvents.length === 0 && <div className="text-muted">No upcoming events.</div>}
                   </div>
                 </Card.Body>
               </Card>

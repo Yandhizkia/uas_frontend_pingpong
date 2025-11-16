@@ -1,108 +1,68 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { Container, Card, Button, Table, Modal, Form, Badge, Tabs, Tab } from 'react-bootstrap';
+
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function EventsManagementPage() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'quick' | 'regular' | 'special'>('quick');
   const [editingItem, setEditingItem] = useState<any>(null);
 
-  // Quick Events (yang di dashboard)
-  const [quickEvents, setQuickEvents] = useState([
-    {
-      id: 1,
-      title: 'Latihan Rutin',
-      date: '2024-01-20',
-      time: '16.00 - 18.00 WIB',
-      location: 'GOR Untar',
-      type: 'training',
-    },
-    {
-      id: 2,
-      title: 'Tournament Internal',
-      date: '2024-01-25',
-      time: '09.00 - 15.00',
-      location: 'GOR Untar',
-      type: 'tournament',
-    },
-    {
-      id: 3,
-      title: 'Workshop Teknik',
-      date: '2024-01-28',
-      time: '14.00 - 16.00',
-      location: 'Ruang A',
-      type: 'workshop',
-    },
-  ]);
+  const [quickEvents, setQuickEvents] = useState<any[]>([]);
+  const [regularSchedule, setRegularSchedule] = useState<any[]>([]);
+  const [specialEvents, setSpecialEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Regular Schedule (yang di schedule page - recurring)
-  const [regularSchedule, setRegularSchedule] = useState([
-    {
-      id: 1,
-      title: 'Latihan Rutin',
-      day: 'Monday',
-      time: '16.00 - 18.00 WIB',
-      location: 'GOR Untar',
-      type: 'training',
-      recurring: true,
-    },
-    {
-      id: 2,
-      title: 'Latihan Rutin',
-      day: 'Wednesday',
-      time: '16.00 - 18.00 WIB',
-      location: 'GOR Untar',
-      type: 'training',
-      recurring: true,
-    },
-    {
-      id: 3,
-      title: 'Latihan Rutin',
-      day: 'Friday',
-      time: '16.00 - 18.00 WIB',
-      location: 'GOR Untar',
-      type: 'training',
-      recurring: true,
-    },
-    {
-      id: 4,
-      title: 'Latihan Khusus',
-      day: 'Saturday',
-      time: '09.00 - 12.00 WIB',
-      location: 'GOR Untar',
-      type: 'special',
-      recurring: true,
-    },
-  ]);
+  useEffect(() => {
+    fetchAll();
+  }, []);
 
-  // Special Upcoming Events (yang di schedule page - upcoming special events)
-  const [specialEvents, setSpecialEvents] = useState([
-    {
-      id: 1,
-      title: 'Tournament Internal',
-      date: '2024-01-25',
-      time: '09.00 - 15.00',
-      location: 'GOR Untar',
-      type: 'tournament',
-      participants: 24,
-      maxParticipants: 50,
-      description: 'Tournament internal untuk seleksi atlet',
-    },
-    {
-      id: 2,
-      title: 'Workshop Teknik Serve',
-      date: '2024-01-28',
-      time: '14.00 - 16.00',
-      location: 'Ruang A',
-      type: 'workshop',
-      participants: 15,
-      maxParticipants: 30,
-      description: 'Workshop teknik backhand dengan coach profesional',
-    },
-  ]);
+  const fetchAll = async () => {
+    setLoading(true);
+    await Promise.all([fetchQuickEvents(), fetchSchedules(), fetchSpecialEvents()]);
+    setLoading(false);
+  };
+
+  const fetchQuickEvents = async () => {
+    try {
+      const res = await fetch(`${API}/api/quick-events`);
+      if (!res.ok) throw new Error('Gagal fetch quick events');
+      const data = await res.json();
+      setQuickEvents(data);
+    } catch (err) {
+      console.error(err);
+      alert('Gagal memuat quick events');
+    }
+  };
+
+  const fetchSchedules = async () => {
+    try {
+      const res = await fetch(`${API}/api/schedules`);
+      if (!res.ok) throw new Error('Gagal fetch schedules');
+      const data = await res.json();
+      setRegularSchedule(data);
+    } catch (err) {
+      console.error(err);
+      alert('Gagal memuat schedules');
+    }
+  };
+
+  const fetchSpecialEvents = async () => {
+    try {
+      const res = await fetch(`${API}/api/events`);
+      if (!res.ok) throw new Error('Gagal fetch events');
+      const data = await res.json();
+      // treat all events as "special" for this tab (backend's event model)
+      setSpecialEvents(data);
+    } catch (err) {
+      console.error(err);
+      alert('Gagal memuat special events');
+    }
+  };
 
   const handleOpenModal = (type: 'quick' | 'regular' | 'special', item?: any) => {
     setModalType(type);
@@ -115,31 +75,159 @@ export default function EventsManagementPage() {
     setEditingItem(null);
   };
 
-  const handleDeleteQuick = (id: number) => {
-    if (confirm('Yakin ingin menghapus event ini?')) {
-      setQuickEvents(quickEvents.filter(e => e.id !== id));
+  // ---------- DELETE handlers ----------
+  const handleDeleteQuick = async (id: number) => {
+    if (!confirm('Yakin ingin menghapus event ini?')) return;
+    try {
+      const res = await fetch(`${API}/api/quick-events/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setQuickEvents(prev => prev.filter(e => e.id !== id));
       alert('Event berhasil dihapus!');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus quick event');
     }
   };
 
-  const handleDeleteRegular = (id: number) => {
-    if (confirm('Yakin ingin menghapus schedule ini?')) {
-      setRegularSchedule(regularSchedule.filter(e => e.id !== id));
+  const handleDeleteRegular = async (id: number) => {
+    if (!confirm('Yakin ingin menghapus schedule ini?')) return;
+    try {
+      const res = await fetch(`${API}/api/schedules/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setRegularSchedule(prev => prev.filter(e => e.id !== id));
       alert('Schedule berhasil dihapus!');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus schedule');
     }
   };
 
-  const handleDeleteSpecial = (id: number) => {
-    if (confirm('Yakin ingin menghapus special event ini?')) {
-      setSpecialEvents(specialEvents.filter(e => e.id !== id));
+  const handleDeleteSpecial = async (id: number) => {
+    if (!confirm('Yakin ingin menghapus special event ini?')) return;
+    try {
+      const res = await fetch(`${API}/api/events/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setSpecialEvents(prev => prev.filter(e => e.id !== id));
       alert('Special event berhasil dihapus!');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus special event');
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  // ---------- SAVE (Create or Update) ----------
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert('Event berhasil disimpan!');
-    handleCloseModal();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+
+    try {
+      if (modalType === 'quick') {
+        // quick event fields
+        const payload: any = {
+          title: fd.get('title') as string,
+          date: fd.get('date') as string,
+          time: fd.get('time') as string,
+          location: fd.get('location') as string,
+          type: fd.get('type') as string,
+          recurringWeekly: fd.get('recurringWeekly') ? true : false,
+        };
+
+        if (editingItem) {
+          // UPDATE
+          const res = await fetch(`${API}/api/quick-events/${editingItem.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error('Update failed');
+          const data = await res.json();
+          setQuickEvents(prev => prev.map(p => (p.id === data.id ? data : p)));
+          alert('Quick event berhasil diperbarui');
+        } else {
+          // CREATE
+          const res = await fetch(`${API}/api/quick-events`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error('Create failed');
+          const data = await res.json();
+          setQuickEvents(prev => [data, ...prev]);
+          alert('Quick event berhasil dibuat');
+        }
+      } else if (modalType === 'regular') {
+        // schedule fields
+        const payload: any = {
+          title: fd.get('title') as string,
+          day: fd.get('day') as string,
+          time: fd.get('time') as string,
+          location: fd.get('location') as string,
+          type: fd.get('type') as string,
+          recurringWeekly: fd.get('recurringWeekly') ? true : false,
+        };
+
+        if (editingItem) {
+          const res = await fetch(`${API}/api/schedules/${editingItem.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error('Update failed');
+          const data = await res.json();
+          setRegularSchedule(prev => prev.map(p => (p.id === data.id ? data : p)));
+          alert('Schedule berhasil diperbarui');
+        } else {
+          const res = await fetch(`${API}/api/schedules`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error('Create failed');
+          const data = await res.json();
+          setRegularSchedule(prev => [data, ...prev]);
+          alert('Schedule berhasil dibuat');
+        }
+      } else {
+        // special event fields (use Event model)
+        const payload: any = {
+          title: fd.get('title') as string,
+          description: fd.get('description') as string,
+          date: fd.get('date') as string,
+          time: fd.get('time') as string,
+          location: fd.get('location') as string,
+          type: fd.get('type') as string,
+          max_participants: Number(fd.get('max_participants') || 0),
+        };
+
+        if (editingItem) {
+          const res = await fetch(`${API}/api/events/${editingItem.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error('Update failed');
+          const data = await res.json();
+          setSpecialEvents(prev => prev.map(p => (p.id === data.id ? data : p)));
+          alert('Special event berhasil diperbarui');
+        } else {
+          const res = await fetch(`${API}/api/events`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error('Create failed');
+          const data = await res.json();
+          setSpecialEvents(prev => [data, ...prev]);
+          alert('Special event berhasil dibuat');
+        }
+      }
+
+      handleCloseModal();
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menyimpan data. Cek console untuk detail.');
+    }
   };
 
   const getTypeBadge = (type: string) => {
@@ -150,20 +238,19 @@ export default function EventsManagementPage() {
       special: 'warning',
       match: 'success'
     };
-    return <Badge bg={colors[type] || 'secondary'}>{type.toUpperCase()}</Badge>;
+    return <Badge bg={colors[type] || 'secondary'}>{(type || '').toUpperCase()}</Badge>;
   };
-
 
   return (
     <div className="admin-layout">
       <Sidebar />
       <div className="admin-content">
         <Header title="Events Management" />
-        
+
         <Container fluid className="admin-main">
           <Tabs defaultActiveKey="quick" className="event-tabs mb-4">
             {/* Quick Events Tab */}
-            <Tab eventKey="quick" title="Quick Events (Dashboard)">
+            <Tab eventKey="quick" title={`Quick Events (Dashboard) ${loading ? '— loading...' : ''}`}>
               <Card className="cms-card">
                 <Card.Body>
                   <div className="d-flex justify-content-between align-items-center mb-4">
@@ -218,6 +305,9 @@ export default function EventsManagementPage() {
                             </td>
                           </tr>
                         ))}
+                        {quickEvents.length === 0 && (
+                          <tr><td colSpan={6} className="text-center">No quick events</td></tr>
+                        )}
                       </tbody>
                     </Table>
                   </div>
@@ -260,9 +350,7 @@ export default function EventsManagementPage() {
                             <td>{schedule.day}</td>
                             <td>{schedule.time}</td>
                             <td>{schedule.location}</td>
-
                             <td>{getTypeBadge(schedule.type)}</td>
-
                             <td>
                               <div className="d-flex gap-1">
                                 <Button 
@@ -283,6 +371,9 @@ export default function EventsManagementPage() {
                             </td>
                           </tr>
                         ))}
+                        {regularSchedule.length === 0 && (
+                          <tr><td colSpan={6} className="text-center">No schedules</td></tr>
+                        )}
                       </tbody>
                     </Table>
                   </div>
@@ -290,7 +381,7 @@ export default function EventsManagementPage() {
               </Card>
             </Tab>
 
-            {/* Special Upcoming Events Tab - NEW! */}
+            {/* Special Upcoming Events Tab */}
             <Tab eventKey="special" title="Upcoming Special Events">
               <Card className="cms-card">
                 <Card.Body>
@@ -335,7 +426,7 @@ export default function EventsManagementPage() {
                             <td>{getTypeBadge(event.type)}</td>
                             <td>
                               <Badge bg="info">
-                                {event.participants}/{event.maxParticipants}
+                                {event.participants ?? 0}/{event.max_participants ?? event.maxParticipants ?? 0}
                               </Badge>
                             </td>
                             <td>
@@ -358,6 +449,9 @@ export default function EventsManagementPage() {
                             </td>
                           </tr>
                         ))}
+                        {specialEvents.length === 0 && (
+                          <tr><td colSpan={7} className="text-center">No special events</td></tr>
+                        )}
                       </tbody>
                     </Table>
                   </div>
@@ -387,6 +481,7 @@ export default function EventsManagementPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Event Title</Form.Label>
                   <Form.Control
+                    name="title"
                     type="text"
                     placeholder="e.g., Tournament Internal"
                     defaultValue={editingItem?.title}
@@ -399,6 +494,7 @@ export default function EventsManagementPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Date</Form.Label>
                       <Form.Control
+                        name="date"
                         type="date"
                         defaultValue={editingItem?.date}
                         required
@@ -409,6 +505,7 @@ export default function EventsManagementPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Time</Form.Label>
                       <Form.Control
+                        name="time"
                         type="text"
                         placeholder="e.g., 16.00 - 18.00 WIB"
                         defaultValue={editingItem?.time}
@@ -421,6 +518,7 @@ export default function EventsManagementPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Location</Form.Label>
                   <Form.Control
+                    name="location"
                     type="text"
                     placeholder="e.g., GOR Untar"
                     defaultValue={editingItem?.location}
@@ -432,7 +530,7 @@ export default function EventsManagementPage() {
                   <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Event Type</Form.Label>
-                      <Form.Select defaultValue={editingItem?.type || 'training'}>
+                      <Form.Select name="type" defaultValue={editingItem?.type || 'training'}>
                         <option value="training">Training</option>
                         <option value="tournament">Tournament</option>
                         <option value="workshop">Workshop</option>
@@ -442,6 +540,15 @@ export default function EventsManagementPage() {
                     </Form.Group>
                   </div>
                 </div>
+
+                <Form.Group className="mb-3">
+                  <Form.Check 
+                    name="recurringWeekly"
+                    type="checkbox"
+                    label="Recurring Weekly"
+                    defaultChecked={editingItem?.recurringWeekly ?? false}
+                  />
+                </Form.Group>
               </>
             ) : modalType === 'regular' ? (
               // Regular Schedule Form
@@ -449,6 +556,7 @@ export default function EventsManagementPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Schedule Title</Form.Label>
                   <Form.Control
+                    name="title"
                     type="text"
                     placeholder="e.g., Latihan Rutin"
                     defaultValue={editingItem?.title}
@@ -460,7 +568,7 @@ export default function EventsManagementPage() {
                   <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Day</Form.Label>
-                      <Form.Select defaultValue={editingItem?.day || 'Monday'}>
+                      <Form.Select name="day" defaultValue={editingItem?.day || 'Monday'}>
                         <option value="Monday">Monday</option>
                         <option value="Tuesday">Tuesday</option>
                         <option value="Wednesday">Wednesday</option>
@@ -475,6 +583,7 @@ export default function EventsManagementPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Time</Form.Label>
                       <Form.Control
+                        name="time"
                         type="text"
                         placeholder="e.g., 16.00 - 18.00 WIB"
                         defaultValue={editingItem?.time}
@@ -487,6 +596,7 @@ export default function EventsManagementPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Location</Form.Label>
                   <Form.Control
+                    name="location"
                     type="text"
                     placeholder="e.g., GOR Untar"
                     defaultValue={editingItem?.location}
@@ -498,7 +608,7 @@ export default function EventsManagementPage() {
                   <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>Type</Form.Label>
-                      <Form.Select defaultValue={editingItem?.type || 'training'}>
+                      <Form.Select name="type" defaultValue={editingItem?.type || 'training'}>
                         <option value="training">Training</option>
                         <option value="special">Special Training</option>
                       </Form.Select>
@@ -508,9 +618,10 @@ export default function EventsManagementPage() {
 
                 <Form.Group className="mb-3">
                   <Form.Check 
+                    name="recurringWeekly"
                     type="checkbox"
                     label="Recurring Weekly"
-                    defaultChecked={editingItem?.recurring ?? true}
+                    defaultChecked={editingItem?.recurringWeekly ?? false}
                   />
                 </Form.Group>
               </>
@@ -520,6 +631,7 @@ export default function EventsManagementPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Event Title</Form.Label>
                   <Form.Control
+                    name="title"
                     type="text"
                     placeholder="e.g., Tournament Nasional"
                     defaultValue={editingItem?.title}
@@ -530,6 +642,7 @@ export default function EventsManagementPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Description</Form.Label>
                   <Form.Control
+                    name="description"
                     as="textarea"
                     rows={2}
                     placeholder="Brief description of the event"
@@ -543,6 +656,7 @@ export default function EventsManagementPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Date</Form.Label>
                       <Form.Control
+                        name="date"
                         type="date"
                         defaultValue={editingItem?.date}
                         required
@@ -553,6 +667,7 @@ export default function EventsManagementPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Time</Form.Label>
                       <Form.Control
+                        name="time"
                         type="text"
                         placeholder="e.g., 09.00 - 15.00"
                         defaultValue={editingItem?.time}
@@ -565,6 +680,7 @@ export default function EventsManagementPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Location</Form.Label>
                   <Form.Control
+                    name="location"
                     type="text"
                     placeholder="e.g., Jakarta Convention Center"
                     defaultValue={editingItem?.location}
@@ -576,7 +692,7 @@ export default function EventsManagementPage() {
                   <div className="col-md-4">
                     <Form.Group className="mb-3">
                       <Form.Label>Event Type</Form.Label>
-                      <Form.Select defaultValue={editingItem?.type || 'tournament'}>
+                      <Form.Select name="type" defaultValue={editingItem?.type || 'tournament'}>
                         <option value="tournament">Tournament</option>
                         <option value="workshop">Workshop</option>
                         <option value="match">Match</option>
@@ -588,9 +704,10 @@ export default function EventsManagementPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Max Participants</Form.Label>
                       <Form.Control
+                        name="max_participants"
                         type="number"
                         placeholder="e.g., 50"
-                        defaultValue={editingItem?.maxParticipants}
+                        defaultValue={editingItem?.max_participants ?? editingItem?.maxParticipants}
                         required
                       />
                     </Form.Group>

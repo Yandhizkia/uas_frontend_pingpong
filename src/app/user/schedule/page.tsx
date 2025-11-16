@@ -1,81 +1,49 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UserSidebar from '../components/Sidebar';
 import UserHeader from '../components/Header';
 import { Container, Card, Row, Col, Badge, Button } from 'react-bootstrap';
 import { Calendar3, Clock, GeoAlt, People } from 'react-bootstrap-icons';
 import EventRegistrationModal from '../components/EventRegistrationModal';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function SchedulePage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
-  const schedules = [
-    {
-      id: 1,
-      title: 'Latihan Rutin',
-      day: 'Monday',
-      time: '16.00 - 18.00 WIB',
-      location: 'GOR Untar',
-      type: 'training',
-      recurring: true,
-      coach: 'Coach Budi'
-    },
-    {
-      id: 2,
-      title: 'Latihan Rutin',
-      day: 'Wednesday',
-      time: '16.00 - 18.00 WIB',
-      location: 'GOR Untar',
-      type: 'training',
-      recurring: true,
-      coach: 'Coach Sari'
-    },
-    {
-      id: 3,
-      title: 'Latihan Rutin',
-      day: 'Friday',
-      time: '16.00 - 18.00 WIB',
-      location: 'GOR Untar',
-      type: 'training',
-      recurring: true,
-      coach: 'Coach Budi'
-    },
-    {
-      id: 4,
-      title: 'Latihan Khusus',
-      day: 'Saturday',
-      time: '09.00 - 12.00 WIB',
-      location: 'GOR Untar',
-      type: 'special',
-      recurring: true,
-      coach: 'Coach Andi'
-    },
-  ];
+  const [schedules, setSchedules] = useState<any[]>([]);
+  const [upcomingSessions, setUpcomingSessions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const upcomingSessions = [
-    {
-      id: 1,
-      title: 'Tournament Internal',
-      date: '2024-01-25',
-      time: '09.00 - 15.00',
-      location: 'GOR Untar',
-      type: 'tournament',
-      participants: 24
-    },
-    {
-      id: 2,
-      title: 'Workshop Teknik Serve',
-      date: '2024-01-28',
-      time: '14.00 - 16.00',
-      location: 'Ruang A',
-      type: 'workshop',
-      participants: 15
-    },
-  ];
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [resSchedules, resEvents] = await Promise.all([
+        fetch(`${API}/api/schedules`),
+        fetch(`${API}/api/events`)
+      ]);
+      if (resSchedules.ok) {
+        const s = await resSchedules.json();
+        setSchedules(s);
+      }
+      if (resEvents.ok) {
+        const ev = await resEvents.json();
+        // show special events (we'll display all events as upcoming sessions)
+        setUpcomingSessions(ev);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getTypeColor = (type: string) => {
     const colors: any = {
@@ -110,9 +78,9 @@ export default function SchedulePage() {
                       <Card.Body className="p-3">
                         <div className="d-flex justify-content-between align-items-start mb-3">
                           <Badge bg={getTypeColor(schedule.type)}>
-                            {schedule.type.toUpperCase()}
+                            {schedule.type?.toUpperCase()}
                           </Badge>
-                          {schedule.recurring && (
+                          {schedule.recurringWeekly && (
                             <span style={{ color: 'var(--gray-400)', fontSize: '0.75rem' }}>
                               🔁 Weekly
                             </span>
@@ -131,15 +99,12 @@ export default function SchedulePage() {
                             <GeoAlt size={14} />
                             <span>{schedule.location}</span>
                           </div>
-                          <div className="schedule-detail-item">
-                            <People size={14} />
-                            <span>{schedule.coach}</span>
-                          </div>
                         </div>
                       </Card.Body>
                     </Card>
                   </Col>
                 ))}
+                {schedules.length === 0 && !loading && <div className="text-muted">No schedules available.</div>}
               </Row>
             </Card.Body>
           </Card>
@@ -156,15 +121,15 @@ export default function SchedulePage() {
                         <div className="d-flex justify-content-between align-items-start mb-3">
                           <div>
                             <Badge bg={getTypeColor(session.type)} className="mb-2">
-                              {session.type.toUpperCase()}
+                              {session.type?.toUpperCase()}
                             </Badge>
                             <h5 style={{ color: '#d3d7e8', marginBottom: '0.5rem' }}>
                               {session.title}
                             </h5>
                           </div>
                           <div className="event-date-mini">
-                            {new Date(session.date).getDate()}
-                            <span>{new Date(session.date).toLocaleDateString('en', { month: 'short' })}</span>
+                            {session.date ? new Date(session.date).getDate() : ''}
+                            <span>{session.date ? new Date(session.date).toLocaleDateString('en', { month: 'short' }) : ''}</span>
                           </div>
                         </div>
 
@@ -183,7 +148,7 @@ export default function SchedulePage() {
                           </div>
                           <div className="event-meta-item">
                             <People size={16} color="#f1c76e" />
-                            <span>{session.participants} participants</span>
+                            <span>{session.participants ?? 0} participants</span>
                           </div>
                         </div>
 
@@ -197,6 +162,7 @@ export default function SchedulePage() {
                     </Card>
                   </Col>
                 ))}
+                {upcomingSessions.length === 0 && !loading && <div className="text-muted">No upcoming special events.</div>}
               </Row>
             </Card.Body>
           </Card>
