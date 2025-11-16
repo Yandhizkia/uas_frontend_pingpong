@@ -187,7 +187,8 @@ export default function HomepageManagement() {
                         alt="Carousel"
                         className="carousel-preview"
                       />
-                      <div className="item-actions">
+                      {/* BUTTON DIPINDAH KE KANAN BAWAH */}
+                      <div className="item-actions position-absolute">
                         <Button
                           variant="warning"
                           size="sm"
@@ -375,7 +376,7 @@ export default function HomepageManagement() {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cancel
               </Button>
-<Button
+              <Button
                 variant="primary"
                 type="submit"
                 style={{

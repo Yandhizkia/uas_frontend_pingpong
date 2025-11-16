@@ -731,7 +731,7 @@ export default function EventsManagementPage() {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cancel
               </Button>
-<Button 
+              <Button 
                 variant="primary"
                 type="submit"
                 // Apply custom styles for the background, border, and text color

@@ -6,10 +6,14 @@ import UserSidebar from '../user/components/Sidebar';
 import UserHeader from '../user/components/Header';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import {
-  Calendar,
-  Trophy,
-  ChatDots,
-  Megaphone,
+  Calendar,        // Already used for "Events Joined" stat
+  Trophy,          // Already used for "Upcoming Events" stat
+  ChatDots,        // Already used for "Feedback Sent" stat
+  Megaphone,       // Already used for "Announcements" stat
+  CalendarEvent,   // For event date in event list
+  Clock,           // For event time in event list
+  GeoAlt,          // For event location in event list
+  CheckCircleFill, // For activity status in recent activity
 } from 'react-bootstrap-icons';
 import QuickEventRegistrationModal from '../user/components/QuickEventRegistrationModal';
 
@@ -153,8 +157,8 @@ export default function UserDashboard() {
                         <div className="event-details">
                           <h5>{event.title}</h5>
                           <p className="event-info">
-                            <span>🕐 {event.time}</span>
-                            <span>📍 {event.location}</span>
+                            <span><Clock className="me-1" /> {event.time}</span>
+                            <span><GeoAlt className="me-1" /> {event.location}</span>
                           </p>
                         </div>
                         <button
@@ -184,7 +188,8 @@ export default function UserDashboard() {
                   <div className="activity-list">
                     {recentActivity.map((activity) => (
                       <div key={activity.id} className="activity-item-user">
-                        <div className="activity-icon">✓</div>
+                        {/* Changed '✓' to CheckCircleFill icon */}
+                        <div className="activity-icon"><CheckCircleFill color="#28a745" size={20} /></div>
                         <div className="activity-content">
                           <strong>{activity.event}</strong>
                           <small>{activity.date}</small>
