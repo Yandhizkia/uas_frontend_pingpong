@@ -4,6 +4,10 @@ import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { Container, Card, Button, Form, Modal, Row, Col, Table } from 'react-bootstrap';
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
 
 interface Product {
   id: number;
@@ -16,6 +20,8 @@ export default function EventManagement() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'hero' | 'product'>('hero');
   const [editingItem, setEditingItem] = useState<any>(null);
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
 
   const [hero, setHero] = useState({
     image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400',
@@ -54,12 +60,20 @@ export default function EventManagement() {
     }
   };
 
-  const handleDelete = (id: number) => {
-    if (confirm('Yakin ingin menghapus produk ini?')) {
-      setProducts(products.filter(item => item.id !== id));
-      alert('Produk berhasil dihapus!');
-    }
-  };
+const handleDelete = (id: number) => {
+  showConfirm({
+    title: "Konfirmasi Penghapusan",
+    message: "Yakin ingin menghapus item ini?",
+    confirmText: "Ya, Hapus",
+    cancelText: "Batal",
+    variant: "danger",
+    onConfirm: () => {
+      setProducts(products.filter((item) => item.id !== id));
+      success("Item berhasil dihapus!");
+    },
+  });
+};
+
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,7 +104,7 @@ export default function EventManagement() {
         setProducts([...products, newProduct]);
       }
     }
-    alert('Data berhasil disimpan!');
+    success('Event berhasil disimpan!');
     handleCloseModal();
   };
 
@@ -236,6 +250,18 @@ export default function EventManagement() {
           </Form>
         </Modal.Body>
       </Modal>
+
+      <CustomToast toasts={toasts} onClose={removeToast} />
+ <CustomConfirm
+   show={confirmState.show}
+   title={confirmState.options.title}
+   message={confirmState.options.message}
+   confirmText={confirmState.options.confirmText}
+   cancelText={confirmState.options.cancelText}
+   variant={confirmState.options.variant}
+   onConfirm={handleConfirm}
+   onCancel={hideConfirm}
+ />
     </div>
   );
 }
