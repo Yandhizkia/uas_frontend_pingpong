@@ -6,7 +6,7 @@ import UserSidebar from '../user/components/Sidebar';
 import UserHeader from '../user/components/Header';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import axios from 'axios';
-import { Calendar, Trophy, ChatDots, Megaphone } from 'react-bootstrap-icons';
+import { Calendar, Trophy, ChatDots, Megaphone, CheckCircleFill } from 'react-bootstrap-icons';
 import QuickEventRegistrationModal from '../user/components/QuickEventRegistrationModal';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -43,7 +43,7 @@ export default function UserDashboard() {
     { id: 1, event: 'Latihan Rutin', date: '2024-01-15', status: 'completed' },
     { id: 2, event: 'Friendly Match', date: '2024-01-10', status: 'completed' },
     { id: 3, event: 'Team Meeting', date: '2024-01-05', status: 'completed' },
-  ]);
+  ];
 
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
