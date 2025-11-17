@@ -1,22 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserSidebar from '../components/Sidebar';
 import UserHeader from '../components/Header';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 
 export default function UserProfilePage() {
+
   const [profile, setProfile] = useState({
-    name: 'John Doe',
-    email: 'john.doe@student.untar.ac.id',
+    name: '',
+    email: '',
     phone: '081234567890',
     nim: '525200999',
     faculty: 'Teknik',
     major: 'Informatika',
-    photo: 'https://ui-avatars.com/api/?name=John+Doe&background=b8a080&color=231e16&size=200'
+    photo: ''
   });
 
-  const [previewPhoto, setPreviewPhoto] = useState(profile.photo);
+  const [previewPhoto, setPreviewPhoto] = useState('');
+
+  // ADDED: ambil nama & email dari localStorage
+  useEffect(() => {
+    const savedName = localStorage.getItem("name") || "User";
+    const savedEmail = localStorage.getItem("email") || "";
+
+    const avatar = `https://ui-avatars.com/api/?name=${savedName.replace(" ", "+")}&background=b8a080&color=231e16&size=200`;
+
+    setProfile((prev) => ({
+      ...prev,
+      name: savedName,
+      email: savedEmail,
+      photo: avatar
+    }));
+
+    setPreviewPhoto(avatar);
+  }, []);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
