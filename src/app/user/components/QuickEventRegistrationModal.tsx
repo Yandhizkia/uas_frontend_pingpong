@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import {CalendarEvent, GeoAlt, Clock} from 'react-bootstrap-icons';
 
 interface QuickEventRegistrationModalProps {
   show: boolean;

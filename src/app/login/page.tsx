@@ -44,6 +44,10 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
 
+      localStorage.setItem("username", data.user.username);
+      localStorage.setItem("name", data.user.name || data.user.username);
+      localStorage.setItem("email", data.user.email || "");
+
       // sesuai role
       if (data.role === "admin") {
         window.location.href = "/admin";

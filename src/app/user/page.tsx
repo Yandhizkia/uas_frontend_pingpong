@@ -23,12 +23,21 @@ export default function UserDashboard() {
     announcements: 2,
   };
 
+  // ⬇️⬇️⬇️ TAMBAHAN: ambil nama dari localStorage
+  const [name, setName] = useState("User");
+
+  useEffect(() => {
+    const savedName = localStorage.getItem("name") || "User";
+    setName(savedName);
+  }, []);
+  // ⬆️⬆️⬆️
+
   // Fetch events from backend
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/quick-events");
-        setUpcomingEvents(res.data);       // <= MONGODB EVENTS
+        setUpcomingEvents(res.data);
       } catch (err) {
         console.error("Error fetching events:", err);
       } finally {
@@ -64,13 +73,13 @@ export default function UserDashboard() {
   };
 
   const handleRegisterClick = (event: any) => {
-  setSelectedEvent({
-  _id: event._id,      // ✔ pakai _id
-  title: event.title,
-  date: event.date,
-  time: event.time,
-  location: event.location
-});
+    setSelectedEvent({
+      _id: event._id,
+      title: event.title,
+      date: event.date,
+      time: event.time,
+      location: event.location
+    });
 
     setShowRegisterModal(true);
   };
@@ -89,7 +98,7 @@ export default function UserDashboard() {
               <Row className="align-items-center">
                 <Col md={8}>
                   <h3 className="mb-2" style={{ color: '#f1c76e' }}>
-                    Welcome back, John! 👋
+                    Welcome back, {name}! 👋
                   </h3>
                   <p className="mb-0" style={{ color: '#cbd5e0' }}>
                     Ready for today's training?
@@ -147,7 +156,7 @@ export default function UserDashboard() {
 
           <Row className="g-4">
 
-            {/* Upcoming events real dari DB */}
+            {/* Upcoming Events */}
             <Col lg={7}>
               <Card className="cms-card">
                 <Card.Body>
@@ -161,7 +170,7 @@ export default function UserDashboard() {
                     <div className="event-list">
                       {upcomingEvents.map((event) => (
                         <div key={event._id} className="event-item-user">
-                          
+
                           <div className="event-date-badge">
                             <div className="event-day">{new Date(event.date).getDate()}</div>
                             <div className="event-month">
@@ -205,8 +214,9 @@ export default function UserDashboard() {
                   <div className="activity-list">
                     {recentActivity.map((activity) => (
                       <div key={activity.id} className="activity-item-user">
-                        {/* Changed '✓' to CheckCircleFill icon */}
-                        <div className="activity-icon"><CheckCircleFill color="#28a745" size={20} /></div>
+                        <div className="activity-icon">
+                          <CheckCircleFill color="#28a745" size={20} />
+                        </div>
                         <div className="activity-content">
                           <strong>{activity.event}</strong>
                           <small>{activity.date}</small>
@@ -221,7 +231,6 @@ export default function UserDashboard() {
             </Col>
           </Row>
 
-          {/* Registration modal */}
           <QuickEventRegistrationModal
             show={showRegisterModal}
             onHide={() => setShowRegisterModal(false)}
