@@ -1,34 +1,43 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Modal, Form, Button, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import {CalendarEvent, GeoAlt, Clock} from 'react-bootstrap-icons';
+import React, { useState } from "react";
+import { Modal, Form, Button } from "react-bootstrap";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { CalendarEvent, GeoAlt, Clock } from "react-bootstrap-icons";
 
 interface QuickEventRegistrationModalProps {
   show: boolean;
   onHide: () => void;
   event: {
-    _id: string;   // <= pakai _id dari MongoDB
+    _id: string;
     title: string;
     date: string;
     time: string;
     location: string;
   } | null;
+  onSuccess?: () => void;
+  onError?: (message: string) => void;
 }
 
-export default function QuickEventRegistrationModal({ show, onHide, event }: QuickEventRegistrationModalProps) {
+export default function QuickEventRegistrationModal({
+  show,
+  onHide,
+  event,
+  onSuccess,
+  onError,
+}: QuickEventRegistrationModalProps) {
   const [formData] = useState({
-    name: 'John Doe',
-    nim: '525200999',
-    faculty: 'Teknik',
-    major: 'Informatika'
+    name: "John Doe",
+    nim: "525200999",
+    faculty: "Teknik",
+    major: "Informatika",
   });
 
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const decoded: any = token ? jwtDecode(token) : null;
   const userId = decoded?.id;
@@ -36,31 +45,43 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!token) return alert("Anda harus login dulu!");
-    if (!userId) return alert("Token tidak valid!");
+    if (!token) {
+      onError?.("You must login first!");
+      return;
+    }
+
+    if (!userId) {
+      onError?.("Invalid token!");
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       await axios.post(
         "http://localhost:5000/api/registrations",
         {
           user_id: userId,
-          event_id: event?._id
+          event_id: event?._id,
         },
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      setShowSuccess(true);
+      onSuccess?.();
 
+      // Close modal after short delay
       setTimeout(() => {
-        setShowSuccess(false);
         onHide();
-      }, 2000);
-
-    } catch (err) {
+      }, 1500);
+    } catch (err: any) {
       console.error(err);
-      alert("Gagal mengirim pendaftaran");
+      const errorMessage =
+        err.response?.data?.message || "Failed to submit registration";
+      onError?.(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -73,18 +94,15 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
       </Modal.Header>
 
       <Modal.Body className="modal-body-custom">
-        {showSuccess && (
-          <Alert variant="success" className="mb-3">
-            Registration successful! Check your email for confirmation.
-          </Alert>
-        )}
-
         <div className="mb-4">
-          <h5 style={{ color: '#f1c76e', marginBottom: '0.5rem' }}>{event.title}</h5>
-          <p style={{ color: '#cbd5e0', fontSize: '0.9rem', margin: 0 }}>
-            <CalendarEvent className="me-2" /> {event.date} | <Clock className="me-2" /> {event.time}
+          <h5 style={{ color: "#f1c76e", marginBottom: "0.5rem" }}>
+            {event.title}
+          </h5>
+          <p style={{ color: "#cbd5e0", fontSize: "0.9rem", margin: 0 }}>
+            <CalendarEvent className="me-2" /> {event.date} |{" "}
+            <Clock className="me-2" /> {event.time}
           </p>
-          <p style={{ color: '#cbd5e0', fontSize: '0.9rem', margin: 0 }}>
+          <p style={{ color: "#cbd5e0", fontSize: "0.9rem", margin: 0 }}>
             <GeoAlt className="me-2" /> {event.location}
           </p>
         </div>
@@ -92,31 +110,59 @@ export default function QuickEventRegistrationModal({ show, onHide, event }: Qui
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">Full Name</Form.Label>
-            <Form.Control type="text" value={formData.name} readOnly className="user-form-input" />
+            <Form.Control
+              type="text"
+              value={formData.name}
+              readOnly
+              className="user-form-input"
+            />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">NIM</Form.Label>
-            <Form.Control type="text" value={formData.nim} readOnly className="user-form-input" />
+            <Form.Control
+              type="text"
+              value={formData.nim}
+              readOnly
+              className="user-form-input"
+            />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">Faculty</Form.Label>
-            <Form.Control type="text" value={formData.faculty} readOnly className="user-form-input" />
+            <Form.Control
+              type="text"
+              value={formData.faculty}
+              readOnly
+              className="user-form-input"
+            />
           </Form.Group>
 
           <Form.Group className="mb-4">
             <Form.Label className="user-form-label">Major</Form.Label>
-            <Form.Control type="text" value={formData.major} readOnly className="user-form-input" />
+            <Form.Control
+              type="text"
+              value={formData.major}
+              readOnly
+              className="user-form-input"
+            />
           </Form.Group>
 
           <div className="d-flex gap-2 justify-content-end">
-            <Button variant="secondary" onClick={onHide}>
+            <Button
+              variant="secondary"
+              onClick={onHide}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
 
-            <Button type="submit" className="btn-user-submit">
-              Confirm Registration
+            <Button
+              type="submit"
+              className="btn-user-submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Confirm Registration"}
             </Button>
           </div>
         </Form>

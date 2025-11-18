@@ -11,8 +11,11 @@ import {
   Modal,
   Badge,
   Table,
-  Accordion,
 } from "react-bootstrap";
+import CustomToast from "@/components/CustomToast";
+import CustomConfirm from "@/components/CustomConfirm";
+import { useToast } from "@/app/hooks/UseToast";
+import { useConfirm } from "@/app/hooks/UseConfirm";
 
 interface Feedback {
   id: number;
@@ -32,6 +35,10 @@ export default function FeedbackPage() {
     null
   );
   const [replyText, setReplyText] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+
+  const { toasts, removeToast, success, error } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
 
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([
     {
@@ -39,7 +46,7 @@ export default function FeedbackPage() {
       name: "John Doe",
       email: "john@example.com",
       message:
-        "Halo admin, saya mau tanya tentang jadwal latihan minggu depan. Apakah ada perubahan?",
+        "Hi admin, I'd like to ask about next week's training schedule. Are there any changes?",
       date: "2024-01-15",
       status: "new",
       isLoggedIn: true,
@@ -49,12 +56,12 @@ export default function FeedbackPage() {
       name: "Guest User",
       email: "guest@example.com",
       message:
-        "Saya tertarik untuk bergabung dengan club ini. Bagaimana caranya?",
+        "I'm interested in joining this club. How can I register?",
       date: "2024-01-14",
       status: "replied",
       isLoggedIn: false,
       reply:
-        "Terima kasih atas minatnya! Silakan kunjungi halaman registrasi kami.",
+        "Thank you for your interest! Please visit our registration page.",
       replyDate: "2024-01-14",
     },
     {
@@ -62,12 +69,16 @@ export default function FeedbackPage() {
       name: "Jane Smith",
       email: "jane@example.com",
       message:
-        "Website-nya keren! Tapi saya ada saran untuk menambah fitur gallery foto kegiatan.",
+        "The website looks great! But I have a suggestion to add a photo gallery feature for activities.",
       date: "2024-01-13",
       status: "read",
       isLoggedIn: true,
     },
   ]);
+
+  const filteredFeedbacks = feedbacks.filter(f => 
+    filterStatus === 'all' || f.status === filterStatus
+  );
 
   const handleOpenModal = (feedback: Feedback) => {
     setSelectedFeedback(feedback);
@@ -94,6 +105,11 @@ export default function FeedbackPage() {
     e.preventDefault();
     if (!selectedFeedback) return;
 
+    if (!replyText.trim()) {
+      error("Please write a reply message.");
+      return;
+    }
+
     setFeedbacks(
       feedbacks.map((f) =>
         f.id === selectedFeedback.id
@@ -107,15 +123,31 @@ export default function FeedbackPage() {
       )
     );
 
-    alert("Reply berhasil dikirim!");
+    success("Reply sent successfully!");
     handleCloseModal();
   };
 
-  const handleDelete = (id: number) => {
-    if (confirm("Yakin ingin menghapus feedback ini?")) {
-      setFeedbacks(feedbacks.filter((f) => f.id !== id));
-      alert("Feedback berhasil dihapus!");
-    }
+  const handleDelete = (id: number, name: string) => {
+    showConfirm({
+      title: "Delete Feedback",
+      message: `Are you sure you want to delete feedback from ${name}?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: () => {
+        setFeedbacks(feedbacks.filter((f) => f.id !== id));
+        success("Feedback deleted successfully!");
+      },
+    });
+  };
+
+  const handleMarkAsRead = (id: number) => {
+    setFeedbacks(
+      feedbacks.map((f) =>
+        f.id === id && f.status === "new" ? { ...f, status: "read" } : f
+      )
+    );
+    success("Marked as read!");
   };
 
   const getStatusBadge = (status: string) => {
@@ -181,7 +213,24 @@ export default function FeedbackPage() {
           {/* Feedback List */}
           <Card className="cms-card">
             <Card.Body>
-              <h4 className="cms-section-title mb-4">All Feedback</h4>
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h4 className="cms-section-title">All Feedback</h4>
+                <Form.Select
+                  value={filterStatus}
+                  onChange={e => setFilterStatus(e.target.value)}
+                  style={{
+                    width: 'auto',
+                    backgroundColor: 'var(--gray-700)',
+                    border: '1px solid var(--gray-600)',
+                    color: 'white'
+                  }}
+                >
+                  <option value="all">All Status</option>
+                  <option value="new">New</option>
+                  <option value="read">Read</option>
+                  <option value="replied">Replied</option>
+                </Form.Select>
+              </div>
 
               <div className="table-responsive">
                 <Table className="cms-table" hover>
@@ -197,17 +246,23 @@ export default function FeedbackPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {feedbacks.map((feedback) => (
+                    {filteredFeedbacks.map((feedback) => (
                       <tr
                         key={feedback.id}
-                        className={
-                          feedback.status === "new" ? "feedback-new" : ""
-                        }
+                        style={{
+                          backgroundColor: feedback.status === "new" 
+                            ? "rgba(13, 110, 253, 0.05)" 
+                            : "transparent"
+                        }}
                       >
                         <td>
                           <strong>{feedback.name}</strong>
                         </td>
-                        <td>{feedback.email}</td>
+                        <td>
+                          <small style={{ color: 'var(--gray-400)' }}>
+                            {feedback.email}
+                          </small>
+                        </td>
                         <td>
                           <div
                             style={{ maxWidth: "300px", fontSize: "0.9rem" }}
@@ -227,18 +282,20 @@ export default function FeedbackPage() {
                         </td>
                         <td>{getStatusBadge(feedback.status)}</td>
                         <td>
-                          <div className="d-flex gap-1">
+                          <div className="d-flex gap-1 flex-nowrap">
                             <Button
                               variant="primary"
                               size="sm"
                               onClick={() => handleOpenModal(feedback)}
+                              style={{ minWidth: '60px' }}
                             >
                               {feedback.status === "replied" ? "View" : "Reply"}
                             </Button>
                             <Button
                               variant="danger"
                               size="sm"
-                              onClick={() => handleDelete(feedback.id)}
+                              onClick={() => handleDelete(feedback.id, feedback.name)}
+                              style={{ minWidth: '60px' }}
                             >
                               Delete
                             </Button>
@@ -250,9 +307,9 @@ export default function FeedbackPage() {
                 </Table>
               </div>
 
-              {feedbacks.length === 0 && (
+              {filteredFeedbacks.length === 0 && (
                 <div className="text-center py-5 text-muted">
-                  <p>Belum ada feedback dari users.</p>
+                  <p>No feedback found.</p>
                 </div>
               )}
             </Card.Body>
@@ -269,64 +326,72 @@ export default function FeedbackPage() {
           {selectedFeedback && (
             <>
               {/* Feedback Detail */}
-              <Card
-                className="mb-3"
-                style={{ backgroundColor: "#ffffff", border: "none" }}
+              <div 
+                className="mb-3 p-3"
+                style={{ 
+                  backgroundColor: 'var(--gray-800)', 
+                  border: '1px solid var(--gray-600)',
+                  borderRadius: '0.5rem'
+                }}
               >
-                <Card.Body>
-                  <div className="mb-2">
-                    <strong>From:</strong> {selectedFeedback.name} (
-                    {selectedFeedback.email})
-                  </div>
-                  <div className="mb-2">
-                    <strong>Date:</strong> {selectedFeedback.date}
-                  </div>
-                  <div className="mb-2">
-                    <strong>User Type:</strong>{" "}
-                    {selectedFeedback.isLoggedIn ? (
-                      <Badge bg="info">Member</Badge>
-                    ) : (
-                      <Badge bg="secondary">Guest</Badge>
-                    )}
-                  </div>
-                  <div className="mb-2">
-                    <strong>Status:</strong>{" "}
-                    {getStatusBadge(selectedFeedback.status)}
-                  </div>
-                  <hr style={{ borderColor: "var(--gray-600)" }} />
-                  <div>
-                    <strong>Message:</strong>
-                    <p className="mt-2 mb-0">{selectedFeedback.message}</p>
-                  </div>
-                </Card.Body>
-              </Card>
+                <div className="mb-2">
+                  <strong style={{ color: '#f1c76e' }}>From:</strong>{' '}
+                  <span style={{ color: '#cbd5e0' }}>
+                    {selectedFeedback.name} ({selectedFeedback.email})
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <strong style={{ color: '#f1c76e' }}>Date:</strong>{' '}
+                  <span style={{ color: '#cbd5e0' }}>{selectedFeedback.date}</span>
+                </div>
+                <div className="mb-2">
+                  <strong style={{ color: '#f1c76e' }}>User Type:</strong>{' '}
+                  {selectedFeedback.isLoggedIn ? (
+                    <Badge bg="info">Member</Badge>
+                  ) : (
+                    <Badge bg="secondary">Guest</Badge>
+                  )}
+                </div>
+                <div className="mb-3">
+                  <strong style={{ color: '#f1c76e' }}>Status:</strong>{' '}
+                  {getStatusBadge(selectedFeedback.status)}
+                </div>
+                <hr style={{ borderColor: 'var(--gray-600)' }} />
+                <div>
+                  <strong style={{ color: '#f1c76e' }}>Message:</strong>
+                  <p className="mt-2 mb-0" style={{ color: '#cbd5e0' }}>
+                    {selectedFeedback.message}
+                  </p>
+                </div>
+              </div>
 
               {/* Previous Reply (if exists) */}
               {selectedFeedback.reply && (
-                <Card
-                  className="mb-3"
+                <div
+                  className="mb-3 p-3"
                   style={{
-                    backgroundColor: "rgba(184, 160, 128, 0.1)",
-                    border: "1px solid var(--gray-600)",
+                    backgroundColor: 'rgba(241, 199, 110, 0.1)',
+                    border: '1px solid rgba(241, 199, 110, 0.3)',
+                    borderRadius: '0.5rem'
                   }}
                 >
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <strong>Your Previous Reply:</strong>
-                      <small className="text-muted">
-                        Sent on {selectedFeedback.replyDate}
-                      </small>
-                    </div>
-                    <p className="mb-0">{selectedFeedback.reply}</p>
-                  </Card.Body>
-                </Card>
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <strong style={{ color: '#f1c76e' }}>Your Previous Reply:</strong>
+                    <small style={{ color: 'var(--gray-400)' }}>
+                      Sent on {selectedFeedback.replyDate}
+                    </small>
+                  </div>
+                  <p className="mb-0" style={{ color: '#cbd5e0' }}>
+                    {selectedFeedback.reply}
+                  </p>
+                </div>
               )}
 
               {/* Reply Form */}
               <Form onSubmit={handleSendReply}>
-                <Form.Group className="mb-3" >
+                <Form.Group className="mb-3">
                   <Form.Label>
-                    <strong>
+                    <strong style={{ color: '#f1c76e' }}>
                       {selectedFeedback.status === "replied"
                         ? "Update Reply"
                         : "Your Reply"}
@@ -339,10 +404,14 @@ export default function FeedbackPage() {
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Type your reply here..."
                     required
-                    style={{ backgroundColor: "#ffffff", border: "none" , color: "black"}}
+                    style={{ 
+                      backgroundColor: 'var(--gray-700)', 
+                      border: '1px solid var(--gray-600)',
+                      color: 'white'
+                    }}
                   />
-                  <Form.Text>
-                    Reply ini akan dikirim ke email: {selectedFeedback.email}
+                  <Form.Text style={{ color: 'var(--gray-400)' }}>
+                    This reply will be sent to: {selectedFeedback.email}
                   </Form.Text>
                 </Form.Group>
 
@@ -356,7 +425,7 @@ export default function FeedbackPage() {
                     style={{
                       backgroundColor: "#f1c76e",
                       borderColor: "#f1c76e",
-                      color: "#333", // Dark text for better contrast
+                      color: "#333",
                     }}
                   >
                     Send Reply
@@ -367,6 +436,18 @@ export default function FeedbackPage() {
           )}
         </Modal.Body>
       </Modal>
+
+      <CustomToast toasts={toasts} onClose={removeToast} />
+      <CustomConfirm
+        show={confirmState.show}
+        title={confirmState.options.title}
+        message={confirmState.options.message}
+        confirmText={confirmState.options.confirmText}
+        cancelText={confirmState.options.cancelText}
+        variant={confirmState.options.variant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+      />
     </div>
   );
 }
