@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Modal, Form, Button, Alert } from "react-bootstrap";
-// Import ikon dari react-bootstrap-icons
-import { CalendarEvent, Clock, GeoAlt } from 'react-bootstrap-icons';
-
+import { Modal, Form, Button } from "react-bootstrap";
+import { CalendarEvent, Clock, GeoAlt } from "react-bootstrap-icons";
 
 interface EventRegistrationModalProps {
   show: boolean;
@@ -16,12 +14,16 @@ interface EventRegistrationModalProps {
     time: string;
     location: string;
   } | null;
+  onSuccess?: () => void;
+  onError?: (message: string) => void;
 }
 
 export default function EventRegistrationModal({
   show,
   onHide,
   event,
+  onSuccess,
+  onError,
 }: EventRegistrationModalProps) {
   const [formData, setFormData] = useState({
     name: "",
@@ -35,7 +37,7 @@ export default function EventRegistrationModal({
     notes: "",
   });
 
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<any>) => {
     setFormData({
@@ -44,27 +46,49 @@ export default function EventRegistrationModal({
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Registration submitted:", { ...formData, eventId: event?.id });
-    setShowSuccess(true);
 
-    setTimeout(() => {
-      setShowSuccess(false);
-      onHide();
-      // Optionally reset form after submission
-      setFormData({
-        name: "",
-        nim: "",
-        email: "",
-        phone: "",
-        faculty: "",
-        major: "",
-        category: "",
-        experience: "",
-        notes: "",
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call
+      console.log("Registration submitted:", {
+        ...formData,
+        eventId: event?.id,
       });
-    }, 2000);
+
+      // TODO: Replace with actual API call
+      // await axios.post('/api/event-registrations', { ...formData, eventId: event?.id });
+
+      // Simulate delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      onSuccess?.();
+
+      // Close modal and reset form
+      setTimeout(() => {
+        onHide();
+        setFormData({
+          name: "",
+          nim: "",
+          email: "",
+          phone: "",
+          faculty: "",
+          major: "",
+          category: "",
+          experience: "",
+          notes: "",
+        });
+      }, 1500);
+    } catch (err: any) {
+      console.error(err);
+      const errorMessage =
+        err.response?.data?.message || "Failed to submit registration";
+      onError?.(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!event) return null;
@@ -75,17 +99,12 @@ export default function EventRegistrationModal({
         <Modal.Title>Event Registration</Modal.Title>
       </Modal.Header>
       <Modal.Body className="modal-body-custom">
-        {showSuccess && (
-          <Alert variant="success" className="mb-3">
-            Registration successful! We'll contact you soon.
-          </Alert>
-        )}
-
         <div className="mb-4">
           <h5 style={{ color: "#f1c76e" }}>{event.title}</h5>
           <p style={{ color: "#cbd5e0", fontSize: "0.9rem", margin: 0 }}>
-            {/* Menggunakan ikon dari react-bootstrap-icons */}
-            <CalendarEvent className="me-1" /> {event.date} | <Clock className="me-1" /> {event.time} | <GeoAlt className="me-1" /> {event.location}
+            <CalendarEvent className="me-1" /> {event.date} |{" "}
+            <Clock className="me-1" /> {event.time} |{" "}
+            <GeoAlt className="me-1" /> {event.location}
           </p>
         </div>
 
@@ -101,7 +120,7 @@ export default function EventRegistrationModal({
                   value={formData.name}
                   onChange={handleChange}
                   className="user-form-input"
-                  placeholder="Masukkan Nama Lengkap Anda" // Placeholder ditambahkan
+                  placeholder="Enter your full name"
                   required
                 />
               </Form.Group>
@@ -115,7 +134,7 @@ export default function EventRegistrationModal({
                   value={formData.nim}
                   onChange={handleChange}
                   className="user-form-input"
-                  placeholder="Masukkan NIM Anda" // Placeholder ditambahkan
+                  placeholder="Enter your NIM"
                   required
                 />
               </Form.Group>
@@ -133,7 +152,7 @@ export default function EventRegistrationModal({
                   value={formData.email}
                   onChange={handleChange}
                   className="user-form-input"
-                  placeholder="Masukkan Email Anda" // Placeholder ditambahkan
+                  placeholder="Enter your email"
                   required
                 />
               </Form.Group>
@@ -149,7 +168,7 @@ export default function EventRegistrationModal({
                   value={formData.phone}
                   onChange={handleChange}
                   className="user-form-input"
-                  placeholder="Masukkan Nomor Telepon Anda" // Placeholder ditambahkan
+                  placeholder="Enter your phone number"
                   required
                 />
               </Form.Group>
@@ -167,7 +186,7 @@ export default function EventRegistrationModal({
                   value={formData.faculty}
                   onChange={handleChange}
                   className="user-form-input"
-                  placeholder="Masukkan Fakultas Anda" // Placeholder ditambahkan
+                  placeholder="Enter your faculty"
                   required
                 />
               </Form.Group>
@@ -181,7 +200,7 @@ export default function EventRegistrationModal({
                   value={formData.major}
                   onChange={handleChange}
                   className="user-form-input"
-                  placeholder="Masukkan Jurusan Anda" // Placeholder ditambahkan
+                  placeholder="Enter your major"
                   required
                 />
               </Form.Group>
@@ -199,10 +218,11 @@ export default function EventRegistrationModal({
                   onChange={handleChange}
                   className="user-form-input"
                   required
-                  style={{ color: formData.category ? '' : '#cbd5e0' }} // Mengatur warna teks untuk placeholder
+                  style={{ color: formData.category ? "" : "#cbd5e0" }}
                 >
-                  {/* Teks "placeholder" untuk select */}
-                  <option value="" disabled hidden style={{ color: '#cbd5e0' }}>-- Pilih Kategori --</option>
+                  <option value="" disabled hidden style={{ color: "#cbd5e0" }}>
+                    -- Select Category --
+                  </option>
                   <option value="singles">Singles</option>
                   <option value="doubles">Doubles</option>
                   <option value="mixed">Mixed Doubles</option>
@@ -221,10 +241,11 @@ export default function EventRegistrationModal({
                   onChange={handleChange}
                   className="user-form-input"
                   required
-                  style={{ color: formData.experience ? '' : '#cbd5e0' }} // Mengatur warna teks untuk placeholder
+                  style={{ color: formData.experience ? "" : "#cbd5e0" }}
                 >
-                  {/* Teks "placeholder" untuk select */}
-                  <option value="" disabled hidden style={{ color: '#cbd5e0' }}>-- Pilih Level Pengalaman --</option>
+                  <option value="" disabled hidden style={{ color: "#cbd5e0" }}>
+                    -- Select Experience Level --
+                  </option>
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
                   <option value="advanced">Advanced</option>
@@ -245,7 +266,7 @@ export default function EventRegistrationModal({
               name="notes"
               value={formData.notes}
               onChange={handleChange}
-              placeholder="Tulis catatan atau kebutuhan khusus Anda di sini..." // Placeholder ditambahkan
+              placeholder="Write any notes or special requirements here..."
               className="user-form-input"
             />
           </Form.Group>
@@ -255,6 +276,7 @@ export default function EventRegistrationModal({
             <Button
               variant="secondary"
               onClick={onHide}
+              disabled={isSubmitting}
               style={{
                 backgroundColor: "var(--gray-600)",
                 border: "none",
@@ -265,17 +287,18 @@ export default function EventRegistrationModal({
             <Button
               type="submit"
               className="btn-user-submit"
+              disabled={isSubmitting}
               style={{
                 backgroundColor: "#f1c76e",
                 borderColor: "#f1c76e",
-                color: "#333", // Dark text for better contrast
+                color: "#333",
               }}
             >
-              Submit Registration
+              {isSubmitting ? "Submitting..." : "Submit Registration"}
             </Button>
           </div>
         </Form>
       </Modal.Body>
     </Modal>
   );
-} 
+}
