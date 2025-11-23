@@ -17,7 +17,7 @@ import QuickEventRegistrationModal from "../user/components/QuickEventRegistrati
 import CustomToast from "@/components/CustomToast";
 import { useToast } from "@/app/hooks/UseToast";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_EVENT_MANAGEMENT || "";
 
 export default function UserDashboard() {
   const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
@@ -47,7 +47,7 @@ export default function UserDashboard() {
   const fetchQuick = async () => {
     try {
       setLoadingEvents(true);
-      const res = await fetch(`${API}/api/quick-events`);
+      const res = await fetch(`${API}/quick-events`);
       if (!res.ok) throw new Error("Fetch quick events failed");
       const data = await res.json();
       setUpcomingEvents(data);

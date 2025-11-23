@@ -9,7 +9,7 @@ import CustomConfirm from "@/components/CustomConfirm";
 import { useToast } from "@/app/hooks/UseToast";
 import { useConfirm } from "@/app/hooks/UseConfirm";
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API = process.env.NEXT_PUBLIC_EVENT_MANAGEMENT || "";
 
 export default function EventsManagementPage() {
   const [showModal, setShowModal] = useState(false);
@@ -36,7 +36,7 @@ export default function EventsManagementPage() {
 
   const fetchQuickEvents = async () => {
     try {
-      const res = await fetch(`${API}/api/quick-events`);
+      const res = await fetch(`${API}/quick-events`);
       if (!res.ok) throw new Error('Gagal fetch quick events');
       const data = await res.json();
       setQuickEvents(data);
@@ -48,7 +48,7 @@ export default function EventsManagementPage() {
 
   const fetchSchedules = async () => {
     try {
-      const res = await fetch(`${API}/api/schedules`);
+      const res = await fetch(`${API}/schedules`);
       if (!res.ok) throw new Error('Gagal fetch schedules');
       const data = await res.json();
       setRegularSchedule(data);
@@ -60,7 +60,7 @@ export default function EventsManagementPage() {
 
   const fetchSpecialEvents = async () => {
     try {
-      const res = await fetch(`${API}/api/events`);
+      const res = await fetch(`${API}/events`);
       if (!res.ok) throw new Error('Gagal fetch events');
       const data = await res.json();
       setSpecialEvents(data);
@@ -91,7 +91,7 @@ export default function EventsManagementPage() {
       variant: "danger",
       onConfirm: async () => {
         try {
-          const res = await fetch(`${API}/api/quick-events/${id}`, { method: 'DELETE' });
+          const res = await fetch(`${API}/quick-events/${id}`, { method: 'DELETE' });
           if (!res.ok) throw new Error('Delete failed');
           setQuickEvents(prev => prev.filter(e => e.id !== id));
           success('Quick event deleted successfully!');
@@ -112,7 +112,7 @@ export default function EventsManagementPage() {
       variant: "danger",
       onConfirm: async () => {
         try {
-          const res = await fetch(`${API}/api/schedules/${id}`, { method: 'DELETE' });
+          const res = await fetch(`${API}/schedules/${id}`, { method: 'DELETE' });
           if (!res.ok) throw new Error('Delete failed');
           setRegularSchedule(prev => prev.filter(e => e.id !== id));
           success('Schedule deleted successfully!');
@@ -133,7 +133,7 @@ export default function EventsManagementPage() {
       variant: "danger",
       onConfirm: async () => {
         try {
-          const res = await fetch(`${API}/api/events/${id}`, { method: 'DELETE' });
+          const res = await fetch(`${API}/events/${id}`, { method: 'DELETE' });
           if (!res.ok) throw new Error('Delete failed');
           setSpecialEvents(prev => prev.filter(e => e.id !== id));
           success('Special event deleted successfully!');
@@ -163,7 +163,7 @@ export default function EventsManagementPage() {
         };
 
         if (editingItem) {
-          const res = await fetch(`${API}/api/quick-events/${editingItem.id}`, {
+          const res = await fetch(`${API}/quick-events/${editingItem.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -173,7 +173,7 @@ export default function EventsManagementPage() {
           setQuickEvents(prev => prev.map(p => (p.id === data.id ? data : p)));
           success('Quick event updated successfully!');
         } else {
-          const res = await fetch(`${API}/api/quick-events`, {
+          const res = await fetch(`${API}/quick-events`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -194,7 +194,7 @@ export default function EventsManagementPage() {
         };
 
         if (editingItem) {
-          const res = await fetch(`${API}/api/schedules/${editingItem.id}`, {
+          const res = await fetch(`${API}/schedules/${editingItem.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -204,7 +204,7 @@ export default function EventsManagementPage() {
           setRegularSchedule(prev => prev.map(p => (p.id === data.id ? data : p)));
           success('Schedule updated successfully!');
         } else {
-          const res = await fetch(`${API}/api/schedules`, {
+          const res = await fetch(`${API}/schedules`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -226,7 +226,7 @@ export default function EventsManagementPage() {
         };
 
         if (editingItem) {
-          const res = await fetch(`${API}/api/events/${editingItem.id}`, {
+          const res = await fetch(`${API}/events/${editingItem.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -236,7 +236,7 @@ export default function EventsManagementPage() {
           setSpecialEvents(prev => prev.map(p => (p.id === data.id ? data : p)));
           success('Special event updated successfully!');
         } else {
-          const res = await fetch(`${API}/api/events`, {
+          const res = await fetch(`${API}/events`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),

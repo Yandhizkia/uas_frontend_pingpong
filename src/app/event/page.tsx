@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   Nav,
@@ -19,90 +19,69 @@ interface EventType {
   id: number;
   title: string;
   shortDescription: string;
-  image: string;
+  image: string; // base64 string from backend or URL fallback
   fullDescription: string;
   date: string;
   time: string;
   location: string;
 }
 
-// Data contoh untuk event-event Anda
-const eventsData: EventType[] = [
-  // Gunakan EventType[] untuk array
-  {
-    id: 1,
-    title: "Event 1",
-    shortDescription: "Keterangan event 1",
-    image: "/images/Event/Event2.jpg",
-    fullDescription:
-      "Detail lengkap untuk Event 1. Acara ini akan menampilkan kompetisi tenis meja antar fakultas dengan hadiah menarik.",
-    date: "10 Desember 2025",
-    time: "14:00 - 17:00 WIB",
-    location: "Untar Arena, Gedung Utama",
-  },
-  {
-    id: 2,
-    title: "Event 2",
-    shortDescription: "Keterangan Event 2",
-    image: "/images/Event/Event3.jpg",
-    fullDescription:
-      "Detail lengkap untuk Event 2. Workshop ini akan membahas teknik dasar dan strategi bermain tenis meja untuk pemula.",
-    date: "15 Desember 2025",
-    time: "09:00 - 12:00 WIB",
-    location: "Aula Gedung M, Lantai 5",
-  },
-  {
-    id: 3,
-    title: "Event 3",
-    shortDescription: "Keterangan Event 3",
-    image: "/images/Event/Event4.jpg",
-    fullDescription:
-      "Detail lengkap untuk Event 3. Turnamen persahabatan antara LTMU dengan komunitas tenis meja dari universitas lain.",
-    date: "20 Desember 2025",
-    time: "13:00 - 18:00 WIB",
-    location: "Untar Arena, Gedung Utama",
-  },
-  {
-    id: 4,
-    title: "Event 4",
-    shortDescription: "Keterangan Event 4",
-    image: "/images/Event/Event5.jpg",
-    fullDescription:
-      "Detail lengkap untuk Event 4. Sesi latihan bersama dengan pelatih profesional untuk meningkatkan skill pemain.",
-    date: "26 Desember 2025",
-    time: "16:00 - 19:00 WIB",
-    location: "Untar Arena, Gedung Utama",
-  },
-  {
-    id: 5,
-    title: "Event 5",
-    shortDescription: "Keterangan Event 5",
-    image: "/images/Event/Event6.jpg",
-    fullDescription:
-      "Detail lengkap untuk Event 5. Malam keakraban anggota LTMU dengan berbagai permainan dan hiburan.",
-    date: "28 Desember 2025",
-    time: "18:00 - 21:00 WIB",
-    location: "Kantin Pusat, Universitas Tarumanagara",
-  },
-  {
-    id: 6,
-    title: "Event 6",
-    shortDescription: "Keterangan Event 6",
-    image: "/images/Event/Event7.jpg",
-    fullDescription:
-      "Detail lengkap untuk Event 6. Demonstrasi teknik-teknik khusus tenis meja oleh atlet berprestasi.",
-    date: "05 Januari 2026",
-    time: "10:00 - 13:00 WIB",
-    location: "Untar Arena, Gedung Utama",
-  },
-];
+// ambil backend base dari env (configable)
+const BACKEND_BASE = process.env.NEXT_PUBLIC_EVENT_PAGE || "";
 
 export default function EventPage() {
   const [showModal, setShowModal] = useState(false);
-  // Anotasi tipe untuk selectedEvent, bisa berupa EventType atau null
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
 
-  // Anotasi tipe untuk parameter 'event'
+  // state untuk data yang diambil dari backend
+  const [eventsData, setEventsData] = useState<EventType[]>([]);
+  const [heroData, setHeroData] = useState<{ id: number; image: string; title: string; description: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      setLoading(true);
+      try {
+        // GET hero -> backend returns array (controller uses find())
+        const heroRes = await fetch(`${BACKEND_BASE}/hero`);
+        if (heroRes.ok) {
+          const heroArr = await heroRes.json();
+          if (Array.isArray(heroArr) && heroArr.length > 0) {
+            // ambil item pertama sebagai hero
+            const h = heroArr[0];
+            setHeroData({
+              id: h.id,
+              image: h.image,
+              title: h.title,
+              description: h.description,
+            });
+          } else {
+            setHeroData(null);
+          }
+        } else {
+          setHeroData(null);
+        }
+
+        // GET next events (controller route: /nextevent)
+        const eventsRes = await fetch(`${BACKEND_BASE}/nextevent`);
+        if (eventsRes.ok) {
+          const arr = await eventsRes.json();
+          setEventsData(Array.isArray(arr) ? arr : []);
+        } else {
+          setEventsData([]);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setHeroData(null);
+        setEventsData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
+  }, []);
+
   const handleCardClick = (event: EventType) => {
     setSelectedEvent(event);
     setShowModal(true);
@@ -153,29 +132,49 @@ export default function EventPage() {
         </Container>
       </Navbar>
 
+      {/* HERO: gunakan heroData apabila tersedia */}
       <div
         className="event-hero"
-        style={{ marginTop: "100px", marginBottom: "10px" }}
+        style={{ marginTop: "100px", marginBottom: "10px", position: "relative" }}
       >
         <Container>
           <div className="event-hero-content">
             <img
-              src="/images/Event/Event1.jpg"
+              src={heroData?.image ?? "/images/Home/pingpong.jpeg"}
               alt="Event Hero"
               className="event-hero-image"
               style={{ objectPosition: "center 75%" }}
             />
+            {/* tampilkan description di dalam gambar jika ada */}
+            {heroData?.description && (
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: "18%",
+                  textAlign: "center",
+                  color: "#fff",
+                  padding: "1rem",
+                  textShadow: "0 2px 8px rgba(0,0,0,0.6)",
+                  zIndex: 3,
+                }}
+              >
+                <h2 style={{ marginBottom: 8 }}>{heroData.title}</h2>
+                <p style={{ maxWidth: 900, margin: "0 auto" }}>{heroData.description}</p>
+              </div>
+            )}
           </div>
         </Container>
       </div>
 
       <Container className="my-5 py-5">
         <h2 className="section-title">Next Event</h2>
-        <Row className="g-4">
-          {eventsData.map(
-            (
-              event: EventType // Anotasi tipe di map juga opsional tapi bagus
-            ) => (
+        {loading ? (
+          <p>Loading events...</p>
+        ) : (
+          <Row className="g-4">
+            {eventsData.map((event) => (
               <Col md={4} key={event.id}>
                 <Card
                   className="product-card"
@@ -202,9 +201,10 @@ export default function EventPage() {
                   </Card.Body>
                 </Card>
               </Col>
-            )
-          )}
-        </Row>
+            ))}
+            {eventsData.length === 0 && <p>Tidak ada event tersedia.</p>}
+          </Row>
+        )}
       </Container>
 
       {/* Modal untuk detail event */}
