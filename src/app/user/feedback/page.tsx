@@ -51,14 +51,37 @@ export default function FeedbackPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Feedback submitted:", formData);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch("http://localhost:5000/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert("Gagal mengirim feedback");
+      return;
+    }
+
+    console.log("Response:", data);
+
     setShowSuccess(true);
     setFormData({ subject: "", category: "training", message: "" });
 
     setTimeout(() => setShowSuccess(false), 5000);
-  };
+  } catch (error) {
+    console.error(error);
+    alert("Terjadi error pada server");
+  }
+};
+
 
   return (
     <div className="admin-layout">
