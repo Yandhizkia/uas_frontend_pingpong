@@ -9,7 +9,7 @@ import EventRegistrationModal from "../components/EventRegistrationModal";
 import CustomToast from "@/components/CustomToast";
 import { useToast } from "@/app/hooks/UseToast";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_EVENT_MANAGEMENT || "";
 
 export default function SchedulePage() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -29,8 +29,8 @@ export default function SchedulePage() {
     setLoading(true);
     try {
       const [resSchedules, resEvents] = await Promise.all([
-        fetch(`${API}/api/schedules`),
-        fetch(`${API}/api/events`),
+        fetch(`${API}/schedules`),
+        fetch(`${API}/events`),
       ]);
       if (resSchedules.ok) {
         const s = await resSchedules.json();

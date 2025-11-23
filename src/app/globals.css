@@ -311,33 +311,45 @@ body {
   margin: 0;
 }
 
-.related-card {
+.pengurus-card {
   background-color: transparent;
   border: none;
   transition: transform 0.3s;
 }
 
-.related-card:hover {
+.pengurus-card:hover {
   transform: translateY(-5px);
 }
 
-.related-card img {
+.pengurus-card img {
   border-radius: 0.75rem;
   width: 100%;
   height: 300px;
   object-fit: cover;
 }
 
-.related-card .card-body {
+.pengurus-card .card-body {
   padding: 1rem 0;
   background: transparent;
 }
 
-.related-title {
+.pengurus-title {
   color: white;
   font-size: 1rem;
   font-weight: 500;
-  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* MODAL FADE-IN ANIMATION */
+.modal-custom-fade .modal-dialog {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.modal-custom-fade.show .modal-dialog {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {
@@ -357,7 +369,7 @@ body {
     font-size: 1.5rem;
   }
 
-  .related-card img {
+  .pengurus-card img {
     height: 250px;
   }
 }

@@ -1,6 +1,7 @@
+// src/app/admin/about/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import CustomToast from "@/components/CustomToast";
@@ -18,62 +19,79 @@ import {
   Table,
 } from "react-bootstrap";
 
+const API_BASE = process.env.NEXT_PUBLIC_ABOUT_PAGE || "";
+
 export default function AboutManagement() {
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState<"ltmu" | "foto" | "related">(
+  const [modalType, setModalType] = useState<"ltmu" | "foto" | "pengurus">(
     "ltmu"
   );
 
-const { success, error, info } = useToast();
-const { showConfirm } = useConfirm();
-const { toasts, removeToast } = useToast();
-const { confirmState, hideConfirm, handleConfirm } = useConfirm();
+  const { toasts, removeToast, success, error, info } = useToast();
+  const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
 
   const [editingItem, setEditingItem] = useState<any>(null);
 
-  const [ltmu, setLtmu] = useState({
-    title: "LTMU",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
-  });
+  const [ltmu, setLtmu] = useState<any | null>(null);
+  const [fotos, setFotos] = useState<any[]>([]);
+  const [pengurus, setPengurus] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [fotos, setFotos] = useState([
-    {
-      id: 1,
-      title: "Foto 1",
-      description: "Lorem ipsum",
-      image:
-        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
-    },
-    {
-      id: 2,
-      title: "Foto 2",
-      description: "Lorem ipsum",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
-    },
-  ]);
+  // helper: convert File to base64
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result);
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
 
-  const [related, setRelated] = useState([
-    {
-      id: 1,
-      title: "Related",
-      image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400",
-    },
-    {
-      id: 2,
-      title: "Item",
-      image:
-        "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400",
-    },
-    {
-      id: 3,
-      title: "Payback",
-      image:
-        "https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400",
-    },
-  ]);
+  const fetchAll = async () => {
+    try {
+      setLoading(true);
+      const [heroRes, fotoRes, pengurusRes] = await Promise.all([
+        fetch(`${API_BASE}/hero`),
+        fetch(`${API_BASE}/foto`),
+        fetch(`${API_BASE}/pengurus`),
+      ]);
 
-  const handleOpenModal = (type: "ltmu" | "foto" | "related", item?: any) => {
+      if (heroRes.ok) {
+        const heroData = await heroRes.json();
+        setLtmu(Array.isArray(heroData) && heroData.length > 0 ? heroData[0] : null);
+      } else {
+        setLtmu(null);
+      }
+
+      if (fotoRes.ok) {
+        const fotoData = await fotoRes.json();
+        setFotos(Array.isArray(fotoData) ? fotoData : []);
+      } else {
+        setFotos([]);
+      }
+
+      if (pengurusRes.ok) {
+        const pengurusData = await pengurusRes.json();
+        setPengurus(Array.isArray(pengurusData) ? pengurusData : []);
+      } else {
+        setPengurus([]);
+      }
+    } catch (err) {
+      console.error("Fetch admin about data error:", err);
+      error("Gagal mengambil data dari server");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleOpenModal = (type: "ltmu" | "foto" | "pengurus", item?: any) => {
     setModalType(type);
     setEditingItem(item || null);
     setShowModal(true);
@@ -84,90 +102,154 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
     setEditingItem(null);
   };
 
-  const handleDelete = (type: "foto" | "related", id: number) => {
- showConfirm({
-  title: "Konfirmasi Penghapusan",
-  message: "Yakin ingin menghapus item ini?",
-  confirmText: "Ya, Hapus",
-  cancelText: "Batal",
-  variant: "danger",
-  onConfirm: () => {
-    if (type === "foto") {
-      setFotos(fotos.filter((item) => item.id !== id));
-    } else {
-      setRelated(related.filter((item) => item.id !== id));
-    }
-    success("Item berhasil dihapus!");
-  },
-});
+  const handleDelete = (type: "foto" | "pengurus" | "ltmu", id: number) => {
+    showConfirm({
+      title: "Konfirmasi Penghapusan",
+      message: "Yakin ingin menghapus item ini?",
+      confirmText: "Ya, Hapus",
+      cancelText: "Batal",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          const endpoint =
+            type === "foto" ? `${API_BASE}/foto/${id}` :
+            type === "pengurus" ? `${API_BASE}/pengurus/${id}` :
+            `${API_BASE}/hero/${id}`;
 
+          const res = await fetch(endpoint, { method: "DELETE" });
+          if (!res.ok) throw new Error("Delete failed");
+          success("Item berhasil dihapus!");
+          await fetchAll();
+        } catch (err) {
+          console.error(err);
+          error("Gagal menghapus item");
+        }
+      },
+    });
   };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const image = formData.get("image") as File;
+    const title = (formData.get("title") as string) || "";
+    const description = (formData.get("description") as string) || "";
+    const file = formData.get("image") as File | null;
 
-    // kalau user upload gambar baru, preview dulu
-    const imageUrl =
-      image && image.size > 0 ? URL.createObjectURL(image) : editingItem?.image;
-
-    if (modalType === "ltmu") {
-      setLtmu({
-        title: title || ltmu.title,
-        description: description || ltmu.description,
-        image: imageUrl || ltmu.image,
-      });
-    } else if (modalType === "foto") {
-      if (editingItem) {
-        // edit foto existing
-        setFotos(
-          fotos.map((f) =>
-            f.id === editingItem.id
-              ? { ...f, title, description, image: imageUrl || f.image }
-              : f
-          )
-        );
+    try {
+      // image handling: jika ada file baru -> base64, jika tidak -> pakai editingItem.image
+      let imageBase64: string | undefined = undefined;
+      if (file && (file as File).size > 0) {
+        imageBase64 = await fileToBase64(file as File);
       } else {
-        // add foto baru
-        setFotos([
-          ...fotos,
-          {
-            id: Date.now(),
+        imageBase64 = editingItem?.image; // may be undefined
+      }
+
+      if (modalType === "ltmu") {
+        // single hero logic: jika ada ltmu di DB -> update, else create
+        if (ltmu && ltmu.id) {
+          // update
+          const payload: any = {
+            title: title || ltmu.title,
+            description: description || ltmu.description,
+          };
+          if (imageBase64) payload.image = imageBase64;
+          const res = await fetch(`${API_BASE}/hero/${ltmu.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Failed to update hero");
+          success("Hero berhasil diupdate");
+        } else {
+          // create
+          if (!imageBase64) {
+            error("Image dibutuhkan untuk membuat Hero baru");
+            return;
+          }
+          const payload = {
             title,
             description,
-            image: imageUrl,
-          },
-        ]);
-      }
-    } else if (modalType === "related") {
-      if (editingItem) {
-        // edit related article
-        setRelated(
-          related.map((r) =>
-            r.id === editingItem.id
-              ? { ...r, title, image: imageUrl || r.image }
-              : r
-          )
-        );
-      } else {
-        // add related article baru
-        setRelated([
-          ...related,
-          {
-            id: Date.now(),
-            title,
-            image: imageUrl,
-          },
-        ]);
-      }
-    }
+            image: imageBase64,
+          };
+          const res = await fetch(`${API_BASE}/hero`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Failed to create hero");
+          success("Hero berhasil dibuat");
+        }
+      } else if (modalType === "foto") {
+        const payload: any = {
+          name: title,
+          description,
+          image: imageBase64,
+        };
 
-    handleCloseModal();
-    success('Event berhasil disimpan!');
+        if (editingItem && editingItem.id) {
+          // update foto
+          const res = await fetch(`${API_BASE}/foto/${editingItem.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Failed to update foto");
+          success("Foto berhasil diupdate");
+        } else {
+          // create foto
+          if (!payload.image) {
+            error("Image dibutuhkan untuk menambahkan Foto");
+            return;
+          }
+          const res = await fetch(`${API_BASE}/foto`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Failed to create foto");
+          success("Foto berhasil ditambahkan");
+        }
+      } else if (modalType === "pengurus") {
+      const payload: any = {
+        name: title,
+        shortDescription: formData.get("shortDescription") || editingItem?.shortDescription || "",
+        fullDescription: formData.get("fullDescription") || editingItem?.fullDescription || "",
+      };
+
+      if (imageBase64) payload.image = imageBase64;
+
+        if (editingItem && editingItem.id) {
+          // update pengurus
+          const res = await fetch(`${API_BASE}/pengurus/${editingItem.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Failed to update pengurus");
+          success("Pengurus berhasil diupdate");
+        } else {
+          // create pengurus
+          if (!payload.image) {
+            error("Image dibutuhkan untuk menambahkan Pengurus");
+            return;
+          }
+          const res = await fetch(`${API_BASE}/pengurus`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Failed to create pengurus");
+          success("Pengurus berhasil ditambahkan");
+        }
+      }
+
+      handleCloseModal();
+      await fetchAll();
+    } catch (err) {
+      console.error("Save error:", err);
+      error("Terjadi kesalahan saat menyimpan. Cek console untuk detail.");
+    }
   };
 
   return (
@@ -182,21 +264,32 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="cms-section-title">LTMU Hero Section</h4>
-                <Button
-                  className="btn-add"
-                  onClick={() => handleOpenModal("ltmu", ltmu)}
-                >
-                  Edit
-                </Button>
+                <div>
+                  <Button
+                    className="btn-add me-2"
+                    onClick={() => handleOpenModal("ltmu", ltmu || null)}
+                  >
+                    {ltmu ? "Edit" : "Create"}
+                  </Button>
+                  {ltmu && ltmu.id && (
+                    <Button variant="danger" onClick={() => handleDelete("ltmu", ltmu.id)}>
+                      Delete
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <Row>
                 <Col md={4}>
-                  <img src={ltmu.image} alt="LTMU" className="w-100 rounded" />
+                  <img
+                    src={ltmu?.image || "/images/Home/pingpong.jpeg"}
+                    alt="LTMU"
+                    className="w-100 rounded"
+                  />
                 </Col>
                 <Col md={8}>
-                  <h5>{ltmu.title}</h5>
-                  <p className="text-muted">{ltmu.description}</p>
+                  <h5>{ltmu?.title || "Tidak ada judul"}</h5>
+                  <p className="text-muted">{ltmu?.description || "Deskripsi belum tersedia."}</p>
                 </Col>
               </Row>
             </Card.Body>
@@ -230,11 +323,11 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
                       <td>
                         <img
                           src={foto.image}
-                          alt={foto.title}
+                          alt={foto.name}
                           className="table-image"
                         />
                       </td>
-                      <td>{foto.title}</td>
+                      <td>{foto.name}</td>
                       <td>{foto.description}</td>
                       <td>
                         <Button
@@ -255,48 +348,52 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
                       </td>
                     </tr>
                   ))}
+                  {fotos.length === 0 && (
+                    <tr><td colSpan={4} style={{textAlign: "center"}}>Tidak ada info ketua dan wakil</td></tr>
+                  )}
                 </tbody>
               </Table>
             </Card.Body>
           </Card>
 
-          {/* Related Articles */}
+          {/* Pengurus Sections */}
           <Card className="cms-card">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h4 className="cms-section-title">Related Articles</h4>
+                <h4 className="cms-section-title">Pengurus Sections</h4>
                 <Button
                   className="btn-add"
-                  onClick={() => handleOpenModal("related")}
+                  onClick={() => handleOpenModal("pengurus")}
                 >
-                  + Add Article
+                  + Add Pengurus 
                 </Button>
               </div>
 
               <Row className="g-3">
-                {related.map((item) => (
+                {pengurus.map((item) => (
                   <Col md={4} key={item.id}>
                     <div className="carousel-item-card">
                       <img
                         src={item.image}
-                        alt={item.title}
+                        alt={item.name}
                         className="carousel-preview"
                       />
-                      <div className="mt-2">
-                        <strong>{item.title}</strong>
+                      <div className="mt-2 text-center">
+                        <strong>{item.name}</strong>
+                        <p className="carousel-desc">{item.shortDescription}</p>
                       </div>
                       <div className="item-actions">
                         <Button
                           variant="warning"
                           size="sm"
-                          onClick={() => handleOpenModal("related", item)}
+                          onClick={() => handleOpenModal("pengurus", item)}
                         >
                           Edit
                         </Button>
                         <Button
                           variant="danger"
                           size="sm"
-                          onClick={() => handleDelete("related", item.id)}
+                          onClick={() => handleDelete("pengurus", item.id)}
                         >
                           Delete
                         </Button>
@@ -319,7 +416,7 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
               ? "LTMU Section"
               : modalType === "foto"
               ? "Foto"
-              : "Related Article"}
+              : "Pengurus Section"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="modal-body-custom">
@@ -327,6 +424,12 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
             <Form.Group className="mb-3">
               <Form.Label>Upload Image</Form.Label>
               <Form.Control type="file" name="image" accept="image/*" />
+              {editingItem?.image && (
+                <div className="mt-2">
+                  <small>Preview saat ini:</small>
+                  <img src={editingItem.image} alt="preview" style={{ width: 120, display: "block", marginTop: 8 }} />
+                </div>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -334,20 +437,53 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
               <Form.Control
                 type="text"
                 name="title"
-                defaultValue={editingItem?.title || ""}
+                defaultValue={
+                  modalType === "ltmu"
+                    ? editingItem?.title || ltmu?.title || ""
+                    : editingItem?.name || ""
+                }
                 placeholder="Enter title"
                 required
               />
             </Form.Group>
 
-            {modalType !== "related" && (
+            {modalType === "pengurus" ? (
+              <>
+                <Form.Group className="mb-3">
+                  <Form.Label>Short Description</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="shortDescription"
+                    defaultValue={editingItem?.shortDescription || ""}
+                    placeholder="Enter short description"
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Full Description</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={4}
+                    name="fullDescription"
+                    defaultValue={editingItem?.fullDescription || ""}
+                    placeholder="Enter full description"
+                    required
+                  />
+                </Form.Group>
+              </>
+            ) : (
               <Form.Group className="mb-3">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={4}
                   name="description"
-                  defaultValue={editingItem?.description || ""}
+                  defaultValue={
+                    modalType === "ltmu"
+                      ? editingItem?.description || ltmu?.description || ""
+                      : editingItem?.description || ""
+                  }
                   placeholder="Enter description"
                 />
               </Form.Group>
@@ -374,17 +510,16 @@ const { confirmState, hideConfirm, handleConfirm } = useConfirm();
       </Modal>
       <CustomToast toasts={toasts} onClose={removeToast} />
 
-<CustomConfirm
-  show={confirmState.show}
-  title={confirmState.options.title}
-  message={confirmState.options.message}
-  confirmText={confirmState.options.confirmText}
-  cancelText={confirmState.options.cancelText}
-  variant={confirmState.options.variant}
-  onConfirm={handleConfirm}
-  onCancel={hideConfirm}
-/>
-
+      <CustomConfirm
+        show={confirmState.show}
+        title={confirmState.options.title}
+        message={confirmState.options.message}
+        confirmText={confirmState.options.confirmText}
+        cancelText={confirmState.options.cancelText}
+        variant={confirmState.options.variant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+      />
     </div>
   );
 }
