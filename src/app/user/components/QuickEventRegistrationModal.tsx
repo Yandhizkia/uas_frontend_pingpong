@@ -27,9 +27,17 @@ export default function QuickEventRegistrationModal({
   onSuccess,
   onError,
 }: QuickEventRegistrationModalProps) {
-  const [formData] = useState({
-    name: "John Doe",
-    nim: "525200999",
+
+  // Ambil nama dari localStorage (jika ada)
+  const storedName = typeof window !== "undefined" 
+    ? localStorage.getItem("name") 
+    : null;
+
+  // === FIX UTAMA ===  
+  // Gunakan setFormData supaya input bisa diketik
+  const [formData, setFormData] = useState({
+    name: storedName || "My Custom Name",
+    nim: "525200123",
     faculty: "Teknik",
     major: "Informatika",
   });
@@ -71,7 +79,6 @@ export default function QuickEventRegistrationModal({
 
       onSuccess?.();
 
-      // Close modal after short delay
       setTimeout(() => {
         onHide();
       }, 1500);
@@ -108,42 +115,54 @@ export default function QuickEventRegistrationModal({
         </div>
 
         <Form onSubmit={handleSubmit}>
+          {/* FULL NAME */}
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">Full Name</Form.Label>
             <Form.Control
               type="text"
               value={formData.name}
-              readOnly
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="user-form-input"
             />
           </Form.Group>
 
+          {/* NIM */}
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">NIM</Form.Label>
             <Form.Control
               type="text"
               value={formData.nim}
-              readOnly
+              onChange={(e) =>
+                setFormData({ ...formData, nim: e.target.value })
+              }
               className="user-form-input"
             />
           </Form.Group>
 
+          {/* FACULTY */}
           <Form.Group className="mb-3">
             <Form.Label className="user-form-label">Faculty</Form.Label>
             <Form.Control
               type="text"
               value={formData.faculty}
-              readOnly
+              onChange={(e) =>
+                setFormData({ ...formData, faculty: e.target.value })
+              }
               className="user-form-input"
             />
           </Form.Group>
 
+          {/* MAJOR */}
           <Form.Group className="mb-4">
             <Form.Label className="user-form-label">Major</Form.Label>
             <Form.Control
               type="text"
               value={formData.major}
-              readOnly
+              onChange={(e) =>
+                setFormData({ ...formData, major: e.target.value })
+              }
               className="user-form-input"
             />
           </Form.Group>
