@@ -1,69 +1,48 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserSidebar from '../components/Sidebar';
 import UserHeader from '../components/Header';
 import { Container, Card, Badge, Form, Modal, Button } from 'react-bootstrap';
 import { BellFill, CheckCircleFill, ExclamationDiamondFill } from 'react-bootstrap-icons';
 
+const API_BASE = process.env.NEXT_PUBLIC_ANNOUNCEMENT_MANAGEMENT || "";
 
 export default function AnnouncementPage() {
   const [filter, setFilter] = useState('all');
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [announcements, setAnnouncements] = useState([
-    {
-      id: 1,
-      title: 'Kegiatan Club Ditiadakan',
-      message: 'Kegiatan club minggu ini ditiadakan karena ada acara sekolah. Mohon maaf atas ketidaknyamanannya. Kami akan mengadakan kegiatan pengganti minggu depan.',
-      type: 'warning',
-      date: '2024-01-15',
-      time: '10:30 AM',
-      read: false,
-      important: true
-    },
-    {
-      id: 2,
-      title: 'Perubahan Jadwal Latihan',
-      message: 'Jadwal latihan dipindah dari Jumat ke Sabtu jam 14.00. Harap semua member hadir tepat waktu. Jangan lupa bawa perlengkapan lengkap.',
-      type: 'info',
-      date: '2024-01-10',
-      time: '09:15 AM',
-      read: true,
-      important: false
-    },
-    {
-      id: 3,
-      title: 'Tournament Nasional - Pendaftaran Dibuka!',
-      message: 'Pendaftaran untuk tournament nasional sudah dibuka! Buruan daftar sebelum tanggal 20 Januari 2024. Kuota terbatas hanya 50 peserta. Info lengkap hubungi admin.',
-      type: 'urgent',
-      date: '2024-01-08',
-      time: '02:45 PM',
-      read: true,
-      important: true
-    },
-    {
-      id: 4,
-      title: 'Workshop Teknik Serve',
-      message: 'Workshop khusus teknik serve akan diadakan minggu depan. Free untuk semua member LTMU! Akan dibimbing oleh coach profesional dari luar negeri.',
-      type: 'info',
-      date: '2024-01-05',
-      time: '11:20 AM',
-      read: true,
-      important: false
-    },
-    {
-      id: 5,
-      title: 'Iuran Bulanan Reminder',
-      message: 'Reminder untuk membayar iuran bulanan sebelum tanggal 25. Transfer ke rekening yang sudah ditentukan. Konfirmasi ke bendahara setelah transfer.',
-      type: 'warning',
-      date: '2024-01-03',
-      time: '08:00 AM',
-      read: true,
-      important: false
-    },
-  ]);
+  const fetchAnnouncements = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/announcement`);
+      if (!res.ok) throw new Error("Failed to fetch announcements");
+      const data = await res.json();
+      // 🔥 Sorting berdasarkan date + time
+      const sorted = data.sort((a: any, b: any) => {
+        const toDate = (x: any) => {
+          const [day, month, year] = x.date.split("/").map(Number);
+          return new Date(`${year}-${month}-${day}T${x.time}`);
+        };
+
+        return toDate(b).getTime() - toDate(a).getTime(); // terbaru paling atas
+      });
+
+      setAnnouncements(sorted);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredAnnouncements = filter === 'all'
     ? announcements
@@ -87,15 +66,51 @@ export default function AnnouncementPage() {
     );
   };
 
-  const handleReadAnnouncement = (announcement: any) => {
+  const handleReadAnnouncement = async (announcement: any) => {
     setSelectedAnnouncement(announcement);
     setShowDetailModal(true);
     
-    // Mark as read
+    // Mark as read (update on server) if unread
     if (!announcement.read) {
-      setAnnouncements(announcements.map(a => 
-        a.id === announcement.id ? { ...a, read: true } : a
-      ));
+      try {
+        const payload = {
+          title: announcement.title,
+          message: announcement.message,
+          type: announcement.type,
+          important: announcement.important,
+          read: true
+        };
+        const res = await fetch(`${API_BASE}/announcement/${announcement.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          console.error("Failed to mark read");
+        } else {
+          // update local state
+          setAnnouncements(prev => {
+            const updated = prev.map(a =>
+              a.id === announcement.id ? { ...a, read: true } : a
+            );
+
+            // 🔥 kirim event ke Sidebar (real-time)
+            const unreadCount = updated.filter(a => !a.read).length;
+            window.dispatchEvent(new CustomEvent("announcement-updated", {
+              detail: { unreadCount }
+            }));
+
+            return updated;
+          });
+
+          setAnnouncements(prev => prev.map(a => a.id === announcement.id ? { ...a, read: true } : a));
+          setSelectedAnnouncement((prev: any) => prev ? { ...prev, read: true } : prev);
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -235,7 +250,7 @@ export default function AnnouncementPage() {
                   </Card>
                 ))}
 
-                {filteredAnnouncements.length === 0 && (
+                {filteredAnnouncements.length === 0 && !loading && (
                   <div className="text-center py-5">
                     <p style={{ color: 'var(--gray-400)' }}>
                       No announcements found
@@ -262,8 +277,8 @@ export default function AnnouncementPage() {
                     {selectedAnnouncement.title}
                   </h4>
                  {selectedAnnouncement.important && (
-  <ExclamationDiamondFill size={24} color="#f1c76e" />
-)}
+                  <ExclamationDiamondFill size={24} color="#f1c76e" />
+                  )}
 
                 </div>
                 {getTypeBadge(selectedAnnouncement.type)}

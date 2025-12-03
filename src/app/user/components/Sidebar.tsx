@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';   // ⬅️ tambah useState & useEffect
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Badge } from 'react-bootstrap';
@@ -15,7 +15,34 @@ import {
 
 export default function UserSidebar() {
   const pathname = usePathname();
-  const unreadAnnouncements = 3;
+  const [unreadAnnouncements, setUnreadAnnouncements] = useState(0);
+
+  useEffect(() => {
+    // Fetch awal
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_ANNOUNCEMENT_MANAGEMENT}/announcement`);
+        const data = await res.json();
+        const unread = data.filter((a: any) => !a.read).length;
+        setUnreadAnnouncements(unread);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUnread();
+
+    // 🟡 Listen real-time update dari AnnouncementPage
+    const updateHandler = (e: any) => {
+      setUnreadAnnouncements(e.detail.unreadCount);
+    };
+
+    window.addEventListener("announcement-updated", updateHandler);
+
+    return () => {
+      window.removeEventListener("announcement-updated", updateHandler);
+    };
+  }, []);
 
   const menuItems = [
     { name: 'Dashboard', path: '/user', icon: Speedometer2, badge: null },
@@ -50,7 +77,7 @@ export default function UserSidebar() {
         {menuItems.map((item) => {
           const isActive = pathname === item.path;
           const Icon = item.icon;
-          const iconColor = isActive ? '#f1c76e' : '#ffffff'; // 👈 cuma ini yang berubah
+          const iconColor = isActive ? '#f1c76e' : '#ffffff';
 
           return (
             <Link
@@ -67,7 +94,7 @@ export default function UserSidebar() {
                 }}
               />
               <span className="sidebar-text">{item.name}</span>
-              {item.badge && item.badge > 0 && (
+              {(item.badge ?? 0) > 0 && (
                 <Badge bg="danger" className="sidebar-badge" pill>
                   {item.badge}
                 </Badge>

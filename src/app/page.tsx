@@ -119,7 +119,7 @@ export default function HomePage() {
       </Navbar>
 
       <Carousel className="hero-carousel" fade interval={5000} pause="hover">
-        {heroItems && heroItems.length > 0 && (
+        {heroItems && heroItems.length > 0 ? (
           heroItems.map((h) => (
             <Carousel.Item key={h.id}>
               <img
@@ -140,6 +140,28 @@ export default function HomePage() {
               </Carousel.Caption>
             </Carousel.Item>
           ))
+        ) : (
+          // ==== FALLBACK STATIC HERO (jika tidak ada data) ====
+            <Carousel.Item>
+              <img
+                src="/images/Home/pingpong.jpeg"
+                alt="Default"
+                style={{
+                  maxWidth: "1800px",
+                  maxHeight: "680px",
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                }}
+              />
+              <div className="hero-overlay"></div>
+              <Carousel.Caption className="hero-caption">
+                <h2 className="hero-caption-title">Selamat Datang di LTMU</h2>
+                <p className="hero-caption-text">
+                  Unit Kegiatan Mahasiswa Tenis Meja Universitas Tarumanagara
+                </p>
+              </Carousel.Caption>
+            </Carousel.Item>
         )}
       </Carousel>
 
