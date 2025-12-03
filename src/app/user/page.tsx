@@ -22,15 +22,14 @@ const API = process.env.NEXT_PUBLIC_EVENT_MANAGEMENT || "";
 export default function UserDashboard() {
   const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [unreadAnnouncements, setUnreadAnnouncements] = useState(0);
+  const [stats , setStats] = useState<{eventsJoined: number , upcomingEvents : number  , feedbackSent: number}>({
+    eventsJoined: 0,
+    upcomingEvents: 0,
+    feedbackSent: 0,
+  })
 
   const { toasts, removeToast, success, error } = useToast();
-
-  const stats = {
-    eventsJoined: 12,
-    upcomingEvents: 3,
-    feedbackSent: 5,
-    announcements: 2,
-  };
 
   const [name, setName] = useState("User");
 
@@ -44,12 +43,36 @@ export default function UserDashboard() {
     fetchQuick();
   }, []);
 
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_ANNOUNCEMENT_MANAGEMENT}/announcement`);
+        const data = await res.json();
+        const unread = data.filter((a: any) => !a.read).length;
+        setUnreadAnnouncements(unread);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUnread();
+
+    const updateHandler = (e: any) => {
+      setUnreadAnnouncements(e.detail.unreadCount);
+    };
+
+    window.addEventListener("announcement-updated", updateHandler);
+
+    return () => window.removeEventListener("announcement-updated", updateHandler);
+  }, []);
+
   const fetchQuick = async () => {
     try {
       setLoadingEvents(true);
       const res = await fetch(`${API}/quick-events`);
       if (!res.ok) throw new Error("Fetch quick events failed");
       const data = await res.json();
+      setStats({...stats , upcomingEvents:data.length});
       setUpcomingEvents(data);
     } catch (err) {
       console.error(err);
@@ -124,6 +147,7 @@ export default function UserDashboard() {
               <Link
                 href="/user/events-joined"
                 style={{ textDecoration: "none" }}
+                
               >
                 <Card className="stat-card-user text-center p-4">
                   <Calendar size={32} color="#f1c76e" />
@@ -156,7 +180,7 @@ export default function UserDashboard() {
               >
                 <Card className="stat-card-user text-center p-4">
                   <Megaphone size={32} color="#f1c76e" />
-                  <h3 className="stat-number">{stats.announcements}</h3>
+                  <h3 className="stat-number">{unreadAnnouncements}</h3>
                   <p className="stat-label-user">New Announcements</p>
                 </Card>
               </Link>

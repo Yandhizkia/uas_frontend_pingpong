@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 
@@ -25,8 +25,12 @@ interface Announcement {
   message: string;
   type: "info" | "warning" | "urgent";
   date: string;
+  time?: string;
   important: boolean;
+  read?: boolean;
 }
+
+const API_BASE = process.env.NEXT_PUBLIC_ANNOUNCEMENT_MANAGEMENT || "";
 
 export default function AnnouncementPage() {
   // 🔥 Tambahin hook toast & confirm
@@ -36,25 +40,28 @@ export default function AnnouncementPage() {
 
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Announcement | null>(null);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [announcements, setAnnouncements] = useState<Announcement[]>([
-    {
-      id: 1,
-      title: "Kegiatan Club Ditiadakan",
-      message: "Kegiatan club minggu ini ditiadakan karena ada acara sekolah.",
-      type: "warning",
-      date: "2024-01-15",
-      important: false,
-    },
-    {
-      id: 2,
-      title: "Perubahan Jadwal",
-      message: "Jadwal latihan dipindah dari Jumat ke Sabtu jam 14.00.",
-      type: "info",
-      date: "2024-01-10",
-      important: false,
-    },
-  ]);
+  const fetchAnnouncements = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/announcement`);
+      if (!res.ok) throw new Error("Failed to fetch announcements");
+      const data = await res.json();
+      setAnnouncements(data);
+    } catch (err: any) {
+      console.error(err);
+      error?.("Gagal mengambil announcements");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleOpenModal = (item?: Announcement) => {
     setEditingItem(item || null);
@@ -74,44 +81,91 @@ export default function AnnouncementPage() {
       confirmText: "Delete",
       cancelText: "Cancel",
       variant: "danger",
-      onConfirm: () => {
-        setAnnouncements((prev) => prev.filter((item) => item.id !== id));
-        success("Announcement berhasil dihapus!");
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API_BASE}/announcement/${id}`, {
+            method: "DELETE",
+          });
+          if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body.message || "Delete failed");
+          }
+          success("Announcement berhasil dihapus!");
+          await fetchAnnouncements();
+        } catch (err: any) {
+          console.error(err);
+          error?.("Gagal menghapus announcement");
+        } finally {
+          hideConfirm();
+        }
       },
     });
   };
 
   // 🚀 Ganti alert() → success()
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const form = e.currentTarget;
-    const newAnnouncement: Announcement = {
-      id: editingItem ? editingItem.id : Date.now(),
-      title: (form.elements.namedItem("title") as HTMLInputElement).value,
-      message: (form.elements.namedItem("message") as HTMLTextAreaElement)
-        .value,
-      type: (form.elements.namedItem("type") as HTMLSelectElement).value as
-        | "info"
-        | "warning"
-        | "urgent",
-      date: (form.elements.namedItem("date") as HTMLInputElement).value,
-      important: (form.elements.namedItem("important") as HTMLInputElement).checked,
+    const title = (form.elements.namedItem("title") as HTMLInputElement).value;
+    const message = (form.elements.namedItem("message") as HTMLTextAreaElement)
+      .value;
+    const type = (form.elements.namedItem("type") as HTMLSelectElement)
+      .value as "info" | "warning" | "urgent";
+    const date = (form.elements.namedItem("date") as HTMLInputElement).value;
+    const important = (form.elements.namedItem("important") as HTMLInputElement)
+      .checked;
 
+    const payload = {
+      title,
+      message,
+      type,
+      // backend will set date/time, but include date if UI provided (controller overwrites date/time anyway)
+      date,
+      important,
+      read: editingItem ? editingItem.read ?? false : false,
     };
 
-    if (editingItem) {
-      setAnnouncements((prev) =>
-        prev.map((item) =>
-          item.id === editingItem.id ? newAnnouncement : item
-        )
-      );
-    } else {
-      setAnnouncements((prev) => [...prev, newAnnouncement]);
-    }
+    try {
+      if (editingItem) {
+        // UPDATE
+        const res = await fetch(
+          `${API_BASE}/announcement/${editingItem.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.message || "Update failed");
+        }
+        success("Announcement berhasil diperbarui!");
+      } else {
+        // CREATE
+        const res = await fetch(`${API_BASE}/announcement`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.message || "Create failed");
+        }
+        success("Announcement berhasil disimpan!");
+      }
 
-    handleCloseModal();
-    success("Announcement berhasil disimpan!");
+      handleCloseModal();
+      await fetchAnnouncements();
+    } catch (err: any) {
+      console.error(err);
+      error?.("Gagal menyimpan announcement");
+    }
   };
 
   const getBadgeVariant = (type: string) => {
@@ -179,13 +233,13 @@ export default function AnnouncementPage() {
                       </td>
                       <td>{item.date}</td>
 
-                        <td>
-        {item.important ? (
-          <Badge bg="danger">YES</Badge>
-        ) : (
-          <Badge bg="secondary">NO</Badge>
-        )}
-      </td>
+                      <td>
+                        {item.important ? (
+                          <Badge bg="danger">YES</Badge>
+                        ) : (
+                          <Badge bg="secondary">NO</Badge>
+                        )}
+                      </td>
                       <td>
                         <Button
                           variant="warning"
@@ -209,7 +263,7 @@ export default function AnnouncementPage() {
               </Table>
 
               {/* Empty State */}
-              {announcements.length === 0 && (
+              {announcements.length === 0 && !loading && (
                 <div className="text-center py-5 text-muted">
                   <p>
                     Belum ada announcement. Klik "New Announcement" untuk
@@ -225,7 +279,7 @@ export default function AnnouncementPage() {
       {/* Modal */}
       <Modal show={showModal} onHide={handleCloseModal} centered>
         <Modal.Header closeButton className="modal-header-custom">
-          <Modal.Title>{editingItem ? "Edit" : "New"} Announcement</Modal.Title>
+          <Modal.Title>{editingItem ? "Edit" : "New"} Announcements</Modal.Title>
         </Modal.Header>
         <Modal.Body className="modal-body-custom">
           <Form onSubmit={handleSave}>
@@ -291,13 +345,12 @@ export default function AnnouncementPage() {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Cancel
               </Button>
-              <Button 
+              <Button
                 type="submit"
-                // Apply custom styles for the background, border, and text color
-                style={{ 
-                  backgroundColor: '#f1c76e', 
-                  borderColor: '#f1c76e', 
-                  color: '#333' // Dark text for better contrast
+                style={{
+                  backgroundColor: "#f1c76e",
+                  borderColor: "#f1c76e",
+                  color: "#333",
                 }}
               >
                 Save Announcement
