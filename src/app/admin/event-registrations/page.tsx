@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { Container, Card, Table, Badge, Button, Modal, Form } from 'react-bootstrap';
@@ -8,77 +8,13 @@ import CustomToast from "@/components/CustomToast";
 import CustomConfirm from "@/components/CustomConfirm";
 import { useToast } from "@/app/hooks/UseToast";
 import { useConfirm } from "@/app/hooks/UseConfirm";
- 
+
+// API baru khusus registrasi
+const API_REG = process.env.NEXT_PUBLIC_EVENT_REGISTRATION_API || "http://localhost:5000/api";
 
 export default function EventRegistrationsPage() {
-  const [registrations, setRegistrations] = useState([
-    {
-      id: 1,
-      eventTitle: 'Tournament Internal 2024',
-      eventDate: '2024-02-15',
-      name: 'John Doe',
-      nim: '525200999',
-      email: 'john.doe@student.untar.ac.id',
-      phone: '081234567890',
-      faculty: 'Teknik',
-      major: 'Informatika',
-      category: 'singles',
-      experience: 'intermediate',
-      registrationDate: '2024-01-20',
-      status: 'pending',
-      notes: 'Ready to compete!'
-    },
-    {
-      id: 2,
-      eventTitle: 'Workshop Teknik Serve',
-      eventDate: '2024-02-20',
-      name: 'Jane Smith',
-      nim: '525200888',
-      email: 'jane.smith@student.untar.ac.id',
-      phone: '081234567891',
-      faculty: 'Ekonomi',
-      major: 'Manajemen',
-      category: 'singles',
-      experience: 'beginner',
-      registrationDate: '2024-01-21',
-      status: 'approved',
-      notes: 'First time joining'
-    },
-    {
-      id: 3,
-      eventTitle: 'Tournament Internal 2024',
-      eventDate: '2024-02-15',
-      name: 'Bob Wilson',
-      nim: '525200777',
-      email: 'bob.wilson@student.untar.ac.id',
-      phone: '081234567892',
-      faculty: 'Hukum',
-      major: 'Ilmu Hukum',
-      category: 'doubles',
-      experience: 'advanced',
-      registrationDate: '2024-01-22',
-      status: 'approved',
-      notes: 'Looking for doubles partner'
-    },
-    {
-      id: 4,
-      eventTitle: 'Friendly Match',
-      eventDate: '2024-02-10',
-      name: 'Alice Brown',
-      nim: '525200666',
-      email: 'alice.brown@student.untar.ac.id',
-      phone: '081234567893',
-      faculty: 'Psikologi',
-      major: 'Psikologi',
-      category: 'singles',
-      experience: 'intermediate',
-      registrationDate: '2024-01-23',
-      status: 'rejected',
-      rejectionReason: 'Event full',
-      notes: ''
-    },
-  ]);
-
+  // state akan menampung bentuk data yang UI ekspektasikan (tanpa ubah UI)
+  const [registrations, setRegistrations] = useState<any[]>([]);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterEvent, setFilterEvent] = useState('all');
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -88,11 +24,59 @@ export default function EventRegistrationsPage() {
   const { toasts, removeToast, success, error } = useToast();
   const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
 
+  // fetch dari backend dan map ke bentuk yang UI sudah gunakan
+  const fetchRegistrations = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_REG}/registrations`);
+      if (!res.ok) throw new Error("Failed to fetch registrations");
+      const data = await res.json();
+
+      // map setiap item ke bentuk yang digunakan UI (eventTitle, eventDate, name, nim, faculty, registrationDate, status, id, etc.)
+      const mapped = (data || []).map((r: any) => {
+        const statusLower = (r.status || '').toString().toLowerCase();
+        return {
+          id: r._id,
+          eventTitle: r?.event_id?.title || (r.eventTitle ?? ''),
+          eventDate: r?.event_id?.date || (r.eventDate ?? ''),
+          name: r?.user_id?.full_name || r?.user_name || (r.name ?? ''),
+          nim: r?.user_id?.nim || (r.nim ?? ''),
+          email: r?.user_id?.email || (r.email ?? ''),
+          phone: r?.user_id?.phone || (r.phone ?? ''),
+          faculty: r?.user_id?.faculty || (r.faculty ?? ''),
+          major: r?.user_id?.major || (r.major ?? ''),
+          category: (r.category || '').toString(),
+          experience: (r.experience || '').toString(),
+          registrationDate: r?.created_at ? new Date(r.created_at).toISOString().split('T')[0] : (r.registrationDate ?? ''),
+          status: statusLower === 'pending' ? 'pending' : statusLower === 'approved' ? 'approved' : statusLower === 'rejected' ? 'rejected' : (r.status ?? 'pending').toString().toLowerCase(),
+          rejectionReason: r.rejectionReason || r.rejection_reason || null,
+          notes: r.notes || '',
+          raw: r // simpan raw jika diperlukan
+        };
+      });
+
+      setRegistrations(mapped);
+    } catch (err) {
+      console.error(err);
+      error("Failed to load registrations");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    fetchRegistrations();
+
+    // Dengarkan event dari QuickEventRegistrationModal agar admin refetch saat ada pendaftaran baru
+    const handler = () => {
+      fetchRegistrations();
+    };
+    window.addEventListener("registrations-updated", handler);
+
+    return () => {
+      window.removeEventListener("registrations-updated", handler);
+    };
+  }, [fetchRegistrations]);
 
   const safeRegistrations = registrations || [];
-
-  const events = Array.from(new Set(registrations.map(r => r.eventTitle)));
-
+  const events = Array.from(new Set(safeRegistrations.map(r => r.eventTitle)));
 
   const filteredRegistrations = safeRegistrations.filter(reg => {
     const matchesStatus = filterStatus === 'all' || reg.status === filterStatus;
@@ -115,44 +99,68 @@ export default function EventRegistrationsPage() {
     setShowDetailModal(true);
   };
 
-  const handleApprove = (id: number) => {
+  // panggil API untuk approve (PUT /registrations/:id/status)
+  const handleApprove = (id: string) => {
     showConfirm({
       title: "Approve Registration",
       message: "Are you sure you want to approve this participant?",
       confirmText: "Approve",
       cancelText: "Cancel",
       variant: "success",
-      onConfirm: () => {
-        setRegistrations(prev =>
-          prev.map(r => (r.id === id ? { ...r, status: 'approved' } : r))
-        );
-        success("Registration approved successfully!");
-        setShowDetailModal(false);
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API_REG}/registrations/${id}/status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "Approved" }), // backend enum capitalized
+          });
+          if (!res.ok) throw new Error("Update failed");
+          success("Registration approved successfully!");
+          setShowDetailModal(false);
+          fetchRegistrations();
+          // dispatch agar user page juga bisa mendengar (opsional)
+          window.dispatchEvent(new CustomEvent("registrations-updated"));
+        } catch (err) {
+          console.error(err);
+          error("Failed to approve registration");
+        }
       },
     });
   };
 
-  const handleReject = (id: number) => {
+  const handleReject = (id: string) => {
     setSelectedRegistration(registrations.find(r => r.id === id));
     setShowRejectModal(true);
   };
 
-  const confirmReject = () => {
+  const confirmReject = async () => {
     if (!rejectionReason.trim()) {
       error("Please provide a rejection reason.");
       return;
     }
-    setRegistrations(prev =>
-      prev.map(r =>
-        r.id === selectedRegistration.id
-          ? { ...r, status: 'rejected', rejectionReason: rejectionReason }
-          : r
-      )
-    );
-    error("Registration has been rejected.");
-    setShowRejectModal(false);
-    setShowDetailModal(false);
-    setRejectionReason('');
+    try {
+      const id = selectedRegistration?.id;
+      if (!id) throw new Error("No selected registration");
+
+      const res = await fetch(`${API_REG}/registrations/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Rejected", rejectionReason }), // backend akan menyimpan 'status'
+      });
+
+      if (!res.ok) throw new Error("Reject failed");
+
+      // update UI
+      error("Registration has been rejected.");
+      setShowRejectModal(false);
+      setShowDetailModal(false);
+      setRejectionReason('');
+      fetchRegistrations();
+      window.dispatchEvent(new CustomEvent("registrations-updated"));
+    } catch (err) {
+      console.error(err);
+      error("Failed to reject registration");
+    }
   };
 
   return (
@@ -249,7 +257,7 @@ export default function EventRegistrationsPage() {
                         </td>
                         <td>{reg.nim}</td>
                         <td>{reg.faculty}</td>
-                        <td><Badge bg="info">{reg.category.toUpperCase()}</Badge></td>
+                        <td><Badge bg="info">{(reg.category || '').toString().toUpperCase()}</Badge></td>
                         <td>{reg.registrationDate}</td>
                         <td>{getStatusBadge(reg.status)}</td>
                         <td>
@@ -308,7 +316,7 @@ export default function EventRegistrationsPage() {
 
                   <div className="detail-section mt-4">
                     <h6 style={{ color: '#b8bee6', marginBottom: '1rem' }}>Event Details</h6>
-                    <div className="detail-row"><strong>Category:</strong> <Badge bg="info">{selectedRegistration.category.toUpperCase()}</Badge></div>
+                    <div className="detail-row"><strong>Category:</strong> <Badge bg="info">{(selectedRegistration.category || '').toString().toUpperCase()}</Badge></div>
                     <div className="detail-row"><strong>Experience:</strong> <span className="text-capitalize">{selectedRegistration.experience}</span></div>
                     <div className="detail-row"><strong>Registration Date:</strong> <span>{selectedRegistration.registrationDate}</span></div>
                     <div className="detail-row"><strong>Status:</strong> {getStatusBadge(selectedRegistration.status)}</div>
