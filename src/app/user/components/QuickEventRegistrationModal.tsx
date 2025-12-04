@@ -77,6 +77,17 @@ export default function QuickEventRegistrationModal({
         }
       );
 
+      // beri tahu parent/komponen lain (admin) bahwa ada perubahan registrasi
+      // admin page mendengarkan event 'registrations-updated' untuk refetch
+      try {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("registrations-updated"));
+        }
+      } catch (evErr) {
+        // silent fail jika environment tidak mendukung CustomEvent
+        console.warn("dispatch registrations-updated failed", evErr);
+      }
+
       onSuccess?.();
 
       setTimeout(() => {

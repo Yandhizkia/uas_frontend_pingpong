@@ -26,7 +26,6 @@ export default function AboutManagement() {
   const [modalType, setModalType] = useState<"ltmu" | "foto" | "pengurus">(
     "ltmu"
   );
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const { toasts, removeToast, success, error, info } = useToast();
   const { confirmState, showConfirm, hideConfirm, handleConfirm } = useConfirm();
@@ -92,24 +91,15 @@ export default function AboutManagement() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleImagePreview = (file: File | null) => {
-    if (!file) return setPreviewImage(null);
-    const reader = new FileReader();
-    reader.onloadend = () => setPreviewImage(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
   const handleOpenModal = (type: "ltmu" | "foto" | "pengurus", item?: any) => {
     setModalType(type);
     setEditingItem(item || null);
-    setPreviewImage(item?.image || null); // show existing image if editing
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingItem(null);
-    setPreviewImage(null);
   };
 
   const handleDelete = (type: "foto" | "pengurus" | "ltmu", id: number) => {
@@ -148,7 +138,7 @@ export default function AboutManagement() {
 
     try {
       // image handling: jika ada file baru -> base64, jika tidak -> pakai editingItem.image
-      let imageBase64 = previewImage;
+      let imageBase64: string | undefined = undefined;
       if (file && (file as File).size > 0) {
         imageBase64 = await fileToBase64(file as File);
       } else {
@@ -322,7 +312,7 @@ export default function AboutManagement() {
                 <thead>
                   <tr>
                     <th>Image</th>
-                    <th>Title</th>
+                    <th>Name</th>
                     <th>Description</th>
                     <th>Actions</th>
                   </tr>
@@ -433,45 +423,26 @@ export default function AboutManagement() {
           <Form onSubmit={handleSave}>
             <Form.Group className="mb-3">
               <Form.Label>Upload Image</Form.Label>
-              <Form.Control type="file" name="image" accept="image/*"
-                onChange={(e: any) => handleImagePreview(e.target.files?.[0] || null)}
-              />
-
-              {previewImage && (
-                <div className="mt-2 text-center">
-                  <img
-                    src={previewImage}
-                    alt="preview"
-                    style={{
-                      width: "100%",
-                      maxHeight: 200,
-                      objectFit: "cover",
-                      borderRadius: 8,
-                      marginTop: 8,
-                    }}
-                  />
+              <Form.Control type="file" name="image" accept="image/*" />
+              {editingItem?.image && (
+                <div className="mt-2">
+                  <small>Preview saat ini:</small>
+                  <img src={editingItem.image} alt="preview" style={{ width: 120, display: "block", marginTop: 8 }} />
                 </div>
               )}
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>
-                {modalType === "ltmu" ? "Title" : "Name"}
-              </Form.Label>
-
+              <Form.Label>Title</Form.Label>
               <Form.Control
                 type="text"
-                name={modalType === "ltmu" ? "title" : "name"}
+                name="title"
                 defaultValue={
                   modalType === "ltmu"
                     ? editingItem?.title || ltmu?.title || ""
                     : editingItem?.name || ""
                 }
-                placeholder={
-                  modalType === "ltmu"
-                    ? "Enter title"
-                    : "Enter name"
-                }
+                placeholder="Enter title"
                 required
               />
             </Form.Group>
